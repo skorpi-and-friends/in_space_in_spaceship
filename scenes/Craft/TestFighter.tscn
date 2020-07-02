@@ -1,0 +1,26 @@
+[gd_scene load_steps=7 format=2]
+
+[ext_resource path="res://scenes/Craft.tscn" type="PackedScene" id=1]
+[ext_resource path="res://craft_configs/states/TestCraft.tres" type="Resource" id=2]
+[ext_resource path="res://scripts/drivers/SimpleDriver.gd" type="Script" id=3]
+[ext_resource path="res://scripts/motors/SimpleMotor.gd" type="Script" id=4]
+[ext_resource path="res://mesh/testCraftBody.tres" type="CubeMesh" id=5]
+
+[sub_resource type="BoxShape" id=1]
+extents = Vector3( 3, 3, 8 )
+
+[node name="TestFighter" instance=ExtResource( 1 )]
+_state = ExtResource( 2 )
+
+[node name="Driver" parent="." index="0"]
+script = ExtResource( 3 )
+
+[node name="Motor" parent="." index="1"]
+script = ExtResource( 4 )
+
+[node name="MeshInstance" type="MeshInstance" parent="." index="2"]
+mesh = ExtResource( 5 )
+material/0 = null
+
+[node name="CollisionShape" type="CollisionShape" parent="." index="3"]
+shape = SubResource( 1 )
