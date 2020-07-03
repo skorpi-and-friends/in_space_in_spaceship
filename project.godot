@@ -9,37 +9,67 @@
 config_version=4
 
 _global_script_classes=[ {
+"base": "Resource",
+"class": "CraftConfig",
+"language": "GDScript",
+"path": "res://scripts/crafts/craft_config.gd"
+}, {
 "base": "Node",
 "class": "CraftDriver",
 "language": "GDScript",
-"path": "res://scripts/CraftDriver.gd"
+"path": "res://scripts/crafts/craft_driver.gd"
+}, {
+"base": "RigidBody",
+"class": "CraftEngine",
+"language": "GDScript",
+"path": "res://scripts/crafts/craft_engine.gd"
 }, {
 "base": "Node",
 "class": "CraftMotor",
 "language": "GDScript",
-"path": "res://scripts/CraftMotor.gd"
+"path": "res://scripts/crafts/craft_motor.gd"
 }, {
-"base": "Resource",
+"base": "Node",
 "class": "CraftState",
 "language": "GDScript",
-"path": "res://scripts/CraftState.gd"
+"path": "res://scripts/crafts/craft_state.gd"
+}, {
+"base": "Node",
+"class": "PIDControllerVector",
+"language": "GDScript",
+"path": "res://scripts/utility/pid_controller_vector.gd"
+}, {
+"base": "Node",
+"class": "PlayerMind",
+"language": "GDScript",
+"path": "res://scripts/ai/player_mind.gd"
+}, {
+"base": "CraftMotor",
+"class": "SimpleMotorAcceleration",
+"language": "GDScript",
+"path": "res://scripts/crafts/motors/simple_motor_acceleration.gd"
 }, {
 "base": "Object",
-"class": "Utilities",
+"class": "Utility",
 "language": "GDScript",
-"path": "res://scripts/Utilities.gd"
+"path": "res://scripts/utility/utility.gd"
 } ]
 _global_script_class_icons={
+"CraftConfig": "",
 "CraftDriver": "",
+"CraftEngine": "",
 "CraftMotor": "",
 "CraftState": "",
-"Utilities": ""
+"PIDControllerVector": "",
+"PlayerMind": "",
+"SimpleMotorAcceleration": "",
+"Utility": ""
 }
 
 [application]
 
 config/name="IN SPACE IN SPACESHIP"
-run/main_scene="res://scenes/Main.tscn"
+run/main_scene="res://scenes/main.tscn"
 config/icon="res://icon.png"
 
 [input]
@@ -74,10 +104,42 @@ Thrust={
 "events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":81,"unicode":0,"echo":false,"script":null)
  ]
 }
+"Pitch Up"={
+"deadzone": 0.5,
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":16777358,"unicode":0,"echo":false,"script":null)
+ ]
+}
+"Pitch Down"={
+"deadzone": 0.5,
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":16777355,"unicode":0,"echo":false,"script":null)
+ ]
+}
+"Yaw Left"={
+"deadzone": 0.5,
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":16777354,"unicode":0,"echo":false,"script":null)
+ ]
+}
+"Yaw Right"={
+"deadzone": 0.5,
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":16777356,"unicode":0,"echo":false,"script":null)
+ ]
+}
+"Roll Left"={
+"deadzone": 0.5,
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":16777357,"unicode":0,"echo":false,"script":null)
+ ]
+}
+"Roll Right"={
+"deadzone": 0.5,
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":16777359,"unicode":0,"echo":false,"script":null)
+ ]
+}
 
 [physics]
 
 3d/default_gravity=0.0
+3d/default_linear_damp=0.0
+3d/default_angular_damp=0.0
 
 [rendering]
 

@@ -1,4 +1,4 @@
-extends Resource
+extends Node
 
 class_name CraftState
 # Linear velocity in local-space.
@@ -53,10 +53,27 @@ export var linear_v_limit: Vector3 = Vector3(40, 40, 100)
 # In rad/s.
 export var angular_v_limit: Vector3 = Vector3(2, 2, 2)
 
+# Number by which to multiply the thruster forces.
+export var force_multiplier:float = 1_000_000
+
 # Max force the linear thrusters are capable of exerting.
 # In Newtons.
-export var linear_thruster_force:Vector3 = Vector3(1_000_000, 1_000_000, 1_500_000)
+export var linear_thruster_force:Vector3 = Vector3(1, 1, 1.5)
 
 # Max torque the angular thrusters are capable of exerting.
 # In Newtons.
-export var angular_thruster_force: Vector3 = Vector3(1_000_000, 1_000_000, 1_000_000)
+export var angular_thruster_torque: Vector3 = Vector3(1, 1, 1)
+
+
+func _init_from_config(config: CraftConfig):
+	set_speed = config.set_speed;
+	forward_dampener_on = config.forward_dampener_on;
+	starfe_dampener_on = config.starfe_dampener_on;
+	angular_dampener_on = config.angular_dampener_on;
+	acceleration_dampener_on = config.acceleration_dampener_on;
+	acceleration_limit = config.acceleration_limit;
+	linear_v_limit = config.linear_v_limit;
+	angular_v_limit = config.angular_v_limit;
+	force_multiplier = config.force_multiplier;
+	linear_thruster_force = config.linear_thruster_force;
+	angular_thruster_torque = config.angular_thruster_torque;
