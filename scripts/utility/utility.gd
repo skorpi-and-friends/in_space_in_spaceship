@@ -52,4 +52,14 @@ static func transform_direction_inv(
 		direction_vector: Vector3) -> Vector3:
 	return transform.basis.orthonormalized().xform_inv(direction_vector);
 
+static func format_vector(
+		format_string: String,
+		vector: Vector3) -> String:
+		return "({x}, {y}, {z})".format({
+					"x" : format_string % vector.x,
+					"y" : format_string % vector.y,
+					"z" : format_string % vector.z});
 
+static func format_vector_std(vector: Vector3) -> String:
+#	return format_vector("%+003.5f",vector);
+	return format_vector("%+03.f",vector);

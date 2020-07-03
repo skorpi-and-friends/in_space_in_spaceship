@@ -24,6 +24,11 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://scripts/crafts/craft_engine.gd"
 }, {
+"base": "MarginContainer",
+"class": "CraftInterface",
+"language": "GDScript",
+"path": "res://scripts/craft_interface.gd"
+}, {
 "base": "Node",
 "class": "CraftMotor",
 "language": "GDScript",
@@ -58,6 +63,7 @@ _global_script_class_icons={
 "CraftConfig": "",
 "CraftDriver": "",
 "CraftEngine": "",
+"CraftInterface": "",
 "CraftMotor": "",
 "CraftState": "",
 "PIDControllerVector": "",
@@ -71,6 +77,10 @@ _global_script_class_icons={
 config/name="IN SPACE IN SPACESHIP"
 run/main_scene="res://scenes/main.tscn"
 config/icon="res://icon.png"
+
+[global]
+
+enviro=false
 
 [input]
 
@@ -144,4 +154,4 @@ Thrust={
 [rendering]
 
 quality/driver/fallback_to_gles2=true
-environment/default_environment="res://default_env.tres"
+environment/default_environment="res://enviroments/default_env.tres"
