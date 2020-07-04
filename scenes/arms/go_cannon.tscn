@@ -1,0 +1,17 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://scripts/arms/go_cannon.gd" type="Script" id=1]
+
+[node name="GOCannon" type="CSGBox"]
+width = 1.0
+height = 1.0
+depth = 3.0
+script = ExtResource( 1 )
+_shell_speed = 300.0
+_shell_lifetime = 4.0
+_instanitate_offset = Vector3( 0, 0, 2.3 )
+
+[node name="CSGBox" type="CSGBox" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0054183, 0, 1.11053 )
+width = 0.5
+height = 0.5

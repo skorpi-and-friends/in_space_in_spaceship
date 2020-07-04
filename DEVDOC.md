@@ -2,7 +2,13 @@
 
 ## To-do
 
-- [ ] PID Driver
+- [x] PID Driver
+- [ ] armament
+  - [ ] missile
+  - [ ] particle cannon
+  - [ ] mesh cannon
+- [ ] attire
+- [ ] ai
 
 ## design-doc
 

@@ -2,16 +2,19 @@ extends Node
 
 class_name PlayerMind
 
-export var _craft: NodePath
-var _state: CraftState
-
+export var _craft_path: NodePath
+onready var _craft := get_node(_craft_path) as CraftMaster;
+var _state: CraftState;
 
 func _process(delta):
 	update_craft_input(delta);
+	
+	if Input.is_action_pressed("Fire Primary"):
+		_craft.arms.primary_weapon._activate();
 
 
 func update_craft_input(delta):
-	var state := get_craft_state();
+	var state := _craft.engine.state;
 	var linear_input := Vector3();
 	if Input.is_action_pressed("Thrust"):
 		linear_input.z += 1
@@ -56,11 +59,3 @@ func update_craft_input(delta):
 	angular_input *= state.angular_v_limit;
 	
 	state.angular_input = angular_input;
-
-
-func get_craft_state() -> CraftState:
-	if !_state:
-		_state = get_node(_craft).get_node("State") as CraftState;
-		# TODO: remove this assert
-		assert(_state != null);
-	return _state;

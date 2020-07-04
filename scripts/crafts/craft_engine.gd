@@ -1,46 +1,56 @@
-extends RigidBody
+extends Node
 
 class_name CraftEngine
 
+#export var _root_rigidbody: NodePath;
 export var _config: Resource;
-var _state: CraftState;
-var _driver: CraftDriver;
-var _motor: CraftMotor;
+
+var _rigidbody: RigidBody
+
+var state: CraftState;
+var driver: CraftDriver;
+var motor: CraftMotor;
 
 
 func _ready():
-	_state = ($State as CraftState);
-	_driver = ($Driver as CraftDriver);
-	_motor = ($Motor as CraftMotor);
+	state = ($State as CraftState);
+	driver = ($Driver as CraftDriver);
+	motor = ($Motor as CraftMotor);
 	_init_from_config(_config as CraftConfig);
-	linear_damp = 0.0
-	angular_damp = 0.0
-	mass = _state.mass
 
+#	_rigidbody = $_root_rigidbody as RigidBody;
+	_rigidbody = get_parent() as RigidBody;
+	assert(_rigidbody);
+	_rigidbody.linear_damp = 0.0
+	_rigidbody.angular_damp = 0.0
+	_rigidbody.mass = state.mass
+	
 
 func _init_from_config(config: CraftConfig):
-	_state._init_from_config(config);
-	_driver._init_from_config(config);
-	_motor._init_from_config(config);
+	state._init_from_config(config);
+	driver._init_from_config(config);
+	motor._init_from_config(config);
 
 
 func _physics_process(delta):
 	update_readings();
-	_driver._update_flames(_state);
-	_motor._apply_flames(_state, self);
+	driver._update_flames(state);
+	motor._apply_flames(state, _rigidbody);
 	
 	# orthonormalize to clean up inaccuracies
 	#transform = transform.orthonormalized();
 
 func update_readings():
 	# rotate them to local space
-	_state.linear_velocity = Utility.transform_vector_inv(global_transform,linear_velocity);
-	_state.angular_velocity = Utility.transform_vector_inv(global_transform, angular_velocity);
+	state.linear_velocity = Utility.transform_vector_inv(
+			_rigidbody.global_transform, _rigidbody.linear_velocity);
+	state.angular_velocity = Utility.transform_vector_inv(
+			_rigidbody.global_transform, _rigidbody.angular_velocity);
 
 
 func set_mass(mass: float):
-	_state.mass = mass
-	mass = mass
+	state.mass = mass
+	_rigidbody.mass = mass
 
 
 
