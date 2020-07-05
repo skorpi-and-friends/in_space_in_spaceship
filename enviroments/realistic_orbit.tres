@@ -1,0 +1,13 @@
+[gd_resource type="Environment" load_steps=3 format=2]
+
+[sub_resource type="ViewportTexture" id=1]
+viewport_path = NodePath("WorldEnvironment/Skybox")
+
+[sub_resource type="PanoramaSky" id=2]
+resource_local_to_scene = true
+panorama = SubResource( 1 )
+
+[resource]
+resource_local_to_scene = true
+background_mode = 2
+background_sky = SubResource( 2 )

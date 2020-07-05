@@ -11,6 +11,8 @@ func _process(delta):
 	
 	if Input.is_action_pressed("Fire Primary"):
 		_craft.arms.primary_weapon._activate();
+	if Input.is_action_pressed("Fire Secondary"):
+		_craft.arms.secondary_weapon._activate();
 
 
 func update_craft_input(delta):

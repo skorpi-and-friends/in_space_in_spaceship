@@ -1,0 +1,22 @@
+[gd_resource type="ShaderMaterial" load_steps=4 format=2]
+
+[ext_resource path="res://shaders/skybox.shader" type="Shader" id=1]
+
+[sub_resource type="OpenSimplexNoise" id=1]
+seed = 6
+octaves = 6
+period = 0.5
+lacunarity = 0.6
+
+[sub_resource type="NoiseTexture" id=2]
+width = 4096
+height = 2048
+seamless = true
+noise = SubResource( 1 )
+
+[resource]
+shader = ExtResource( 1 )
+shader_param/star_percent = 0.585
+shader_param/star_color = Plane( 1, 1, 1, 1 )
+shader_param/back_color = Plane( 0, 0, 0, 0 )
+shader_param/noise = SubResource( 2 )
