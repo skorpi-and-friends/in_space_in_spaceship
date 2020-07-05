@@ -11,9 +11,12 @@ func _ready():
 		if !weapon: continue;
 		damage += weapon.damage;
 		active = active || weapon.active;
+		weapon.connect("damage_done", self, "report_child_damage");
 		children.append(weapon);
 	damage /= len(children);
 
+func report_child_damage(child_weapon: Weapon, node: Node, damage_done: float):
+	emit_signal("damage_done", child_weapon, node, damage_done);
 
 func _activate():
 	# TODO: cache this stuff
@@ -22,3 +25,4 @@ func _activate():
 		damage += weapon.damage;
 		active = active || weapon.active;
 	damage /= len(children);
+

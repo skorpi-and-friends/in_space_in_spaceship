@@ -9,6 +9,9 @@ export var _rounds_per_second := 5.0;
 
 var _time_since_last_round := INF;
 
+func _enter_tree():
+	damage_type = Damage.Type.PLASMA;
+
 func _process(delta):
 	if !active:
 		_time_since_last_round += delta;
@@ -30,4 +33,4 @@ func _activate():
 
 
 func shell_contact(shell: Shell, body: Node):
-	print("shellcontact!");
+	pass

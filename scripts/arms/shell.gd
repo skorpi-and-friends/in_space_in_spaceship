@@ -1,4 +1,4 @@
-extends Spatial
+extends Area
 
 class_name Shell
 
@@ -12,8 +12,8 @@ var _speed: float;
 var _lifetime: float;
 
 func _ready():
-	$Area.connect("body_entered", self, "collided");
-
+	connect("area_entered",self,"on_entered");
+	connect("body_entered",self,"on_entered");
 
 func _activate(owner: Weapon, speed: float, lifetime: float):
 	_owner_weapon = owner;
@@ -31,8 +31,12 @@ func _physics_process(delta):
 		queue_free();
 
 
-func collided(body):
+func on_entered(body):
 	if !_hit_something && _owner_weapon.has_method("shell_contact"):
 		_owner_weapon.shell_contact(self, body);
 	_hit_something = true;
 	queue_free();
+
+
+func get_weapon() -> Weapon:
+	return _owner_weapon;

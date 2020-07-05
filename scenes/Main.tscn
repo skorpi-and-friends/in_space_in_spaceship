@@ -65,13 +65,12 @@ shader = SubResource( 7 )
 [node name="Main" type="Spatial"]
 
 [node name="Enviroment" type="Spatial" parent="."]
+editor/display_folded = true
 
 [node name="Capsule" type="Spatial" parent="Enviroment"]
-editor/display_folded = true
 transform = Transform( 10, 0, 0, 0, 10, 0, 0, 0, 10, 58.0971, 0, 221.331 )
 
 [node name="Mesh" type="MeshInstance" parent="Enviroment/Capsule"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.110248, -0.119886, 0.0503559 )
 mesh = SubResource( 1 )
 material/0 = null
 
@@ -84,7 +83,7 @@ shape = SubResource( 2 )
 
 [node name="Planetoid" type="MeshInstance" parent="Enviroment"]
 editor/display_folded = true
-transform = Transform( 10000, -1, 0, 1, 10000, 0, 0, 0, 10000, 697.213, 115.406, 15616.2 )
+transform = Transform( 20000, -2, 0, 2, 20000, 0, 0, 0, 20000, -10000, 0, 25000 )
 material_override = SubResource( 5 )
 mesh = SubResource( 6 )
 material/0 = null
@@ -124,3 +123,6 @@ margin_bottom = 40.0
 
 [node name="CraftInteface" parent="HUD" instance=ExtResource( 4 )]
 _craft_path = NodePath("../../PlayerMind/TestFighter")
+
+[node name="TestFighter" parent="." instance=ExtResource( 3 )]
+transform = Transform( -0.995978, -0.00597653, 0.089402, -0.00604856, 0.999982, -0.000534748, -0.0893972, -0.00107335, -0.995995, -1.96746, -0.213693, 86 )

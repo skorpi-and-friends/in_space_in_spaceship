@@ -6,8 +6,10 @@
 - [ ] armament
   - [ ] missile
   - [ ] particle cannon
-  - [ ] mesh cannon
+  - [x] mesh cannon
 - [ ] attire
+  - [ ] collision damage detection
+    - [ ] contact reporting
 - [ ] ai
 
 ## design-doc
