@@ -34,6 +34,16 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://scripts/ai/contacts/boid.gd"
 }, {
+"base": "Camera",
+"class": "CraftCamera",
+"language": "GDScript",
+"path": "res://scripts/craft_camera.gd"
+}, {
+"base": "Camera",
+"class": "CraftCameraAngle",
+"language": "GDScript",
+"path": "res://scripts/craft_camera_vec.gd"
+}, {
 "base": "Resource",
 "class": "CraftConfig",
 "language": "GDScript",
@@ -89,7 +99,7 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://scripts/utility/pid_controller_vector.gd"
 }, {
-"base": "Node",
+"base": "CraftMind",
 "class": "PlayerMind",
 "language": "GDScript",
 "path": "res://scripts/ai/player_mind.gd"
@@ -135,6 +145,8 @@ _global_script_class_icons={
 "AttireMaster": "",
 "AttireProfile": "",
 "Boid": "",
+"CraftCamera": "",
+"CraftCameraAngle": "",
 "CraftConfig": "",
 "CraftDriver": "",
 "CraftEngine": "",
@@ -226,12 +238,17 @@ Thrust={
 }
 "Fire Primary"={
 "deadzone": 0.5,
-"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":16777240,"unicode":0,"echo":false,"script":null)
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":32,"unicode":0,"echo":false,"script":null)
  ]
 }
 "Fire Secondary"={
 "deadzone": 0.5,
 "events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":69,"unicode":0,"echo":false,"script":null)
+ ]
+}
+"Toggle Mouse Capture"={
+"deadzone": 0.5,
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":74,"unicode":0,"echo":false,"script":null)
  ]
 }
 

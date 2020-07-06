@@ -53,6 +53,3 @@ func set_mass(mass: float):
 	_rigidbody.mass = mass
 
 
-
-
-

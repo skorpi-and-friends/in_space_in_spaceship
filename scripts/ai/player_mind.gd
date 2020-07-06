@@ -1,22 +1,27 @@
-extends Node
+extends CraftMind
 
 class_name PlayerMind
 
-export var _craft_path: NodePath
-onready var _craft := get_node(_craft_path) as CraftMaster;
-var _state: CraftState;
+
+onready var craft_camera := $Camera as CraftCamera;
+
 
 func _process(delta):
-	update_craft_input(delta);
+	updatecraft_master_input(delta);
 	
 	if Input.is_action_pressed("Fire Primary"):
-		_craft.arms.primary_weapon._activate();
+		craft_master.arms.activate_primary();
 	if Input.is_action_pressed("Fire Secondary"):
-		_craft.arms.secondary_weapon._activate();
+		craft_master.arms.activate_secondary();
+	if Input.is_action_pressed("Toggle Mouse Capture"):
+		var new_mouse_mode := Input.MOUSE_MODE_CAPTURED;
+		if Input.get_mouse_mode() == new_mouse_mode:
+			new_mouse_mode = Input.MOUSE_MODE_VISIBLE 
+		Input.set_mouse_mode(new_mouse_mode);
 
 
-func update_craft_input(delta):
-	var state := _craft.engine.state;
+func updatecraft_master_input(delta):
+	var state := craft_master.engine.state;
 	var linear_input := Vector3();
 	if Input.is_action_pressed("Thrust"):
 		linear_input.z += 1
@@ -57,7 +62,11 @@ func update_craft_input(delta):
 		angular_input.y += 1
 	if Input.is_action_pressed("Yaw Right"):
 		angular_input.y -= 1
+#
 	
-	angular_input *= state.angular_v_limit;
+#	var angular_input := face_dir_angular_input(
+#			craft_camera.facing_direction, craft_master.global_transform);
+#	angular_input *= state.angular_v_limit;
+#	angular_input *= delta;
 	
 	state.angular_input = angular_input;

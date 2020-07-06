@@ -20,6 +20,7 @@ margin_right = 1014.0
 margin_bottom = 590.0
 
 [node name="StateLabels" type="VBoxContainer" parent="Columns"]
+editor/display_folded = true
 margin_right = 72.0
 margin_bottom = 580.0
 custom_constants/separation = 10
@@ -72,8 +73,30 @@ margin_bottom = 179.0
 text = "1000 m/s"
 uppercase = true
 
-[node name="RichTextLabel" type="RichTextLabel" parent="."]
-margin_left = 10.0
-margin_top = 10.0
-margin_right = 1014.0
-margin_bottom = 590.0
+[node name="Space" type="Control" parent="Columns"]
+margin_left = 76.0
+margin_right = 928.0
+margin_bottom = 580.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="CameraLables" type="VBoxContainer" parent="Columns"]
+margin_left = 932.0
+margin_right = 1004.0
+margin_bottom = 580.0
+custom_constants/separation = 10
+
+[node name="Pitch" type="Label" parent="Columns/CameraLables"]
+margin_right = 72.0
+margin_bottom = 17.0
+text = "1000 m/s"
+uppercase = true
+
+[node name="Yaw" type="Label" parent="Columns/CameraLables"]
+margin_top = 27.0
+margin_right = 72.0
+margin_bottom = 44.0
+text = "1000 m/s"
+uppercase = true
