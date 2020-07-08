@@ -58,11 +58,15 @@ static func transform_direction_inv(
 
 
 static func face_direction(tform:Transform, direction: Vector3, up: Vector3) -> Transform:
-	return tform.looking_at((tform.origin + direction), up);
+	# use negeative direction since looking_at align the -Z axis
+	return tform.looking_at((tform.origin - direction), up);
 	
 # FIXME: this horrible hack
-static func look_direction_basis(forward: Vector3, upward: Vector3 = Vector3.UP) -> Basis:
-	return Transform().looking_at(forward, upward).basis;
+static func get_basis_facing_direction(forward: Vector3, 
+		upward: Vector3 = Vector3.UP) -> Basis:
+	# use negeative direction since looking_at align the -Z axis
+	return Transform().looking_at(-forward, upward).basis;
+
 
 #static func look_direction_basis(forward: Vector3, upward: Vector3 = Vector3.UP) -> Basis:
 #	var z := forward.normalized();
@@ -126,3 +130,19 @@ static func lerp_angle(from: float, to: float, weight: float) -> float:
 
 static func move_towards_angle(from: float, to: float, max_delta: float) -> float:
 	return to if abs(max_delta) > delta_angle(from, to) else from + max_delta;
+
+
+static func min_vec_componentwise(a: Vector3, b: Vector3) -> Vector3:
+	return Vector3(
+			min(a.x, b.x),
+			min(a.y, b.y),
+			min(a.z, b.z)
+	);
+
+
+static func max_vec_componentwise(a: Vector3, b: Vector3) -> Vector3:
+	return Vector3(
+			max(a.x, b.x),
+			max(a.y, b.y),
+			max(a.z, b.z)
+	);

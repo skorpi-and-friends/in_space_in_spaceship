@@ -10,7 +10,7 @@ export var distance := 30.0;
 
 export var facing_direction := Vector3(0.0, 1.0, -1.0);
 export var rotation_speed := 5.0 / 1000.0;
-export var auto_align := true;
+export var auto_align := false;
 
 export(float, 0, 90, 0.1) var align_delay := 1.5;
 export(float, 0, 90, 0.1) var align_smooth_range := 45.0;
@@ -26,6 +26,8 @@ var _target_rotation: Basis;
 #var _x_manual_motion_flipped := false; 
 
 func _process(delta: float):
+	if !target_path:
+		return;
 	update_state(delta);
 	facing_direction = facing_direction.normalized();
 	var target_up := _target_rotation.y.normalized();
@@ -48,19 +50,18 @@ func _process(delta: float):
 				facing_direction, adjusted_rotation.normalized(), rotation_speed * 10).normalized();
 
 	
-	# face the other way since camera forward is reversed
-	var new_rotation := Utility.look_direction_basis(
+	# we need to invert the directin since camera is looking
+	# toward -Z 
+	var new_rotation := Utility.get_basis_facing_direction(
 				-facing_direction, target_up);
-	var new_position := _focus_point + (facing_direction * distance);
+	var new_position := _focus_point - (facing_direction * distance);
 	
 #	look_at_from_position(new_position, _focus_point, target_up);
 	global_transform = Transform(new_rotation, new_position);
 
 
 func update_state(delta: float):
-	# TODO: target caching
 	_target = get_node(target_path) as Spatial;
-	
 	_last_manual_rotation_time += delta;
 	
 	_previous_focus_point = _focus_point;

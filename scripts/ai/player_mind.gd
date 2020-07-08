@@ -4,7 +4,16 @@ class_name PlayerMind
 
 export var camera_free_look := false;
 
+onready var craft_master: CraftMaster;
 onready var craft_camera := $Camera as CraftCamera;
+
+func _ready():
+	for child in get_children():
+		var craft := child as CraftMaster;
+		if craft:
+			craft_master = craft;
+			craft_camera.target_path = craft_master.get_path();
+			break;
 
 
 func _process(delta):
@@ -32,6 +41,10 @@ func _input(event: InputEvent):
 		camera_free_look = true;
 	if event.is_action_pressed("Camera Free Look"):
 		camera_free_look = false;
+	if event.is_action_pressed("Increase Camera Distance"):
+		craft_camera.distance += 1;
+	if event.is_action_pressed("Decrease Camera Distance"):
+		craft_camera.distance -= 1;
 			
 #	if Input.is_action_just_released("Camera Free Look"):
 #		camera_free_look = false;
@@ -71,22 +84,21 @@ func updatecraft_master_input(delta):
 	state.linear_input = linear_input;
 	
 	var angular_input := Vector3();
-	if camera_free_look:
-		if Input.is_action_pressed("Roll Right"):
-			angular_input.z += 1
-		if Input.is_action_pressed("Roll Left"):
-			angular_input.z -= 1
-		if Input.is_action_pressed("Pitch Up"):
-			angular_input.x -= 1
-		if Input.is_action_pressed("Pitch Down"):
-			angular_input.x += 1
-		if Input.is_action_pressed("Yaw Left"):
-			angular_input.y += 1
-		if Input.is_action_pressed("Yaw Right"):
-			angular_input.y -= 1
-		angular_input *= state.angular_v_limit;
-	else:
-		angular_input = face_dir_angular_input(
+	if Input.is_action_pressed("Roll Right"):
+		angular_input.z += 1
+	if Input.is_action_pressed("Roll Left"):
+		angular_input.z -= 1
+	if Input.is_action_pressed("Pitch Up"):
+		angular_input.x -= 1
+	if Input.is_action_pressed("Pitch Down"):
+		angular_input.x += 1
+	if Input.is_action_pressed("Yaw Left"):
+		angular_input.y += 1
+	if Input.is_action_pressed("Yaw Right"):
+		angular_input.y -= 1
+	angular_input *= state.angular_v_limit;
+	if !camera_free_look:
+		angular_input += face_dir_angular_input(
 				craft_camera.facing_direction, craft_master.global_transform);
 #	angular_input *= state.angular_v_limit;
 #	angular_input *= delta;

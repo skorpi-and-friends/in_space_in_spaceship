@@ -38,10 +38,8 @@ func _init_from_config(config: CraftConfig):
 	var linear_acceleration_limit := max_linear_force / config.mass;
 	var manual_acceleration_limit := config.acceleration_limit * config.acceleration_multiplier;
 	
-	_linear_pid.integrat_max = Vector3(
-			min(manual_acceleration_limit.x, linear_acceleration_limit.x),
-			min(manual_acceleration_limit.y, linear_acceleration_limit.y),
-			min(manual_acceleration_limit.z, linear_acceleration_limit.z)
+	_linear_pid.integrat_max = Utility.min_vec_componentwise(
+			manual_acceleration_limit, linear_acceleration_limit
 	);
 	_linear_pid.integrat_min = -_linear_pid.integrat_max;
 	
@@ -58,10 +56,8 @@ func _moi_changed(state: CraftState):
 	var max_torque := state.angular_thruster_torque * state.force_multiplier;
 	var acceleration_limit := max_torque / state.moment_of_inertia;
 	var manual_acceleration_limit := state.angular_acceleration_limit * state.acceleration_multiplier;
-	_angular_pid.integrat_max = Vector3(
-			min(manual_acceleration_limit.x, acceleration_limit.x),
-			min(manual_acceleration_limit.y, acceleration_limit.y),
-			min(manual_acceleration_limit.z, acceleration_limit.z)
+	_angular_pid.integrat_max = Utility.min_vec_componentwise(
+			manual_acceleration_limit, acceleration_limit
 	);
 	_angular_pid.integrat_min = -_angular_pid.integrat_max;
 

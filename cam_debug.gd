@@ -10,7 +10,7 @@ func _process(delta):
 	var adjusted_rotation := Utility.transform_direction(
 			_camera._target_rotation, 
 			_camera.facing_direction);
-	var new_rotation = Utility.look_direction_basis(
+	var new_rotation = Utility.get_basis_facing_direction(
 			adjusted_rotation,
 			_camera._target_rotation.y);
 #			Vector3.UP);

@@ -70,15 +70,17 @@ func caclulate_torque():
 #	state.angular_thruster_torque = axes_diameter.cross(thruster_force);
 	# FIXME: is this correct?
 	state.angular_thruster_torque = thruster_force * axes_diameter;
-	
-#	accel_of_a_point  = derivative(angular_vel * r)
-#	
+
 #	var axes_circimferences := axes_diameter * PI;
 #	var radian_to_meter := axes_circimferences / TAU;
 #	state.angular_acceleration_limit = accel_limit / radian_to_meter;
-	state.angular_acceleration_limit = accel_limit * axes_diameter * .5;
+	
+#	state.angular_acceleration_limit = accel_limit * axes_diameter * .5;
 
-	state.angular_thruster_torque = state.angular_acceleration_limit * state.moment_of_inertia;
+	# FIXME: have disabled angular_acceleartion limit for now
+	# meaning it'll use all the acceleration the angular thrusters
+	# will allow
+	state.angular_acceleration_limit = Vector3.INF;
 
 
 func set_mass(mass: float):
