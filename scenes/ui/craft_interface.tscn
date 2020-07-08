@@ -1,0 +1,102 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://themes/craft_hud_main.tres" type="Theme" id=1]
+[ext_resource path="res://scripts/craft_interface.gd" type="Script" id=2]
+
+[node name="CraftInteface" type="MarginContainer"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme = ExtResource( 1 )
+custom_constants/margin_right = 10
+custom_constants/margin_top = 10
+custom_constants/margin_left = 10
+custom_constants/margin_bottom = 10
+script = ExtResource( 2 )
+
+[node name="Columns" type="HBoxContainer" parent="."]
+margin_left = 10.0
+margin_top = 10.0
+margin_right = 1014.0
+margin_bottom = 590.0
+
+[node name="StateLabels" type="VBoxContainer" parent="Columns"]
+editor/display_folded = true
+margin_right = 72.0
+margin_bottom = 580.0
+custom_constants/separation = 10
+
+[node name="LinearVelocity" type="Label" parent="Columns/StateLabels"]
+margin_right = 72.0
+margin_bottom = 17.0
+text = "1000 m/s"
+uppercase = true
+
+[node name="AngularVelocity" type="Label" parent="Columns/StateLabels"]
+margin_top = 27.0
+margin_right = 72.0
+margin_bottom = 44.0
+text = "1000 m/s"
+uppercase = true
+
+[node name="SetSpeed" type="Label" parent="Columns/StateLabels"]
+margin_top = 54.0
+margin_right = 72.0
+margin_bottom = 71.0
+text = "1000 m/s"
+uppercase = true
+
+[node name="LinearInput" type="Label" parent="Columns/StateLabels"]
+margin_top = 81.0
+margin_right = 72.0
+margin_bottom = 98.0
+text = "1000 m/s"
+uppercase = true
+
+[node name="AngularInput" type="Label" parent="Columns/StateLabels"]
+margin_top = 108.0
+margin_right = 72.0
+margin_bottom = 125.0
+text = "1000 m/s"
+uppercase = true
+
+[node name="LinearFlame" type="Label" parent="Columns/StateLabels"]
+margin_top = 135.0
+margin_right = 72.0
+margin_bottom = 152.0
+text = "1000 m/s"
+uppercase = true
+
+[node name="AngularFlame" type="Label" parent="Columns/StateLabels"]
+margin_top = 162.0
+margin_right = 72.0
+margin_bottom = 179.0
+text = "1000 m/s"
+uppercase = true
+
+[node name="Space" type="Control" parent="Columns"]
+margin_left = 76.0
+margin_right = 928.0
+margin_bottom = 580.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="CameraLables" type="VBoxContainer" parent="Columns"]
+margin_left = 932.0
+margin_right = 1004.0
+margin_bottom = 580.0
+custom_constants/separation = 10
+
+[node name="Pitch" type="Label" parent="Columns/CameraLables"]
+margin_right = 72.0
+margin_bottom = 17.0
+text = "1000 m/s"
+uppercase = true
+
+[node name="Yaw" type="Label" parent="Columns/CameraLables"]
+margin_top = 27.0
+margin_right = 72.0
+margin_bottom = 44.0
+text = "1000 m/s"
+uppercase = true

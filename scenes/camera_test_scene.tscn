@@ -1,0 +1,65 @@
+[gd_scene load_steps=8 format=2]
+
+[ext_resource path="res://scripts/ai/player_mind.gd" type="Script" id=1]
+[ext_resource path="res://cam_debug.gd" type="Script" id=2]
+[ext_resource path="res://scripts/craft_camera.gd" type="Script" id=3]
+[ext_resource path="res://scenes/crafts/test_fighter.tscn" type="PackedScene" id=4]
+
+[sub_resource type="CylinderMesh" id=1]
+top_radius = 0.5
+bottom_radius = 0.5
+
+[sub_resource type="CylinderMesh" id=2]
+
+[sub_resource type="CubeMesh" id=3]
+
+[node name="PlayerMind" type="Node"]
+editor/display_folded = true
+script = ExtResource( 1 )
+craft_master_path = NodePath("TestFighter")
+
+[node name="Spatial" type="Spatial" parent="."]
+transform = Transform( -0.92802, -0.372496, 0.00510959, -0.0897872, 0.236961, 0.967361, -0.361549, 0.897271, -0.25335, 0, 31.6774, 0 )
+script = ExtResource( 2 )
+_camera_path = NodePath("../Camera")
+direction = Vector3( 0, 1, 0 )
+
+[node name="MeshInstance" type="MeshInstance" parent="Spatial"]
+transform = Transform( 1.01821, -5.96046e-008, -1.19209e-007, -1.19209e-007, 2.38419e-007, -1.01821, -2.98023e-008, 6.08542, -7.45058e-008, 0.178415, 0.0701642, 6.25686 )
+mesh = SubResource( 1 )
+material/0 = null
+
+[node name="Camera" type="Camera" parent="."]
+editor/display_folded = true
+transform = Transform( -1, -7.04996e-009, -1.1443e-007, -8.00021e-008, 0.757834, 0.652447, 8.21191e-008, 0.652447, -0.757834, 15.6678, 24.5213, 34.1868 )
+current = true
+far = 8192.0
+script = ExtResource( 3 )
+target_path = NodePath("../TestFighter")
+
+[node name="Spatial" type="Spatial" parent="Camera"]
+editor/display_folded = true
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1.90735e-006, 0, 5.51025 )
+
+[node name="MeshInstance4" type="MeshInstance" parent="Camera/Spatial"]
+transform = Transform( 1, -2.84217e-014, -7.10543e-015, 0, 2.63317, -2.98023e-008, 0, -1.19209e-007, 1, 0, 2, 0 )
+mesh = SubResource( 2 )
+material/0 = null
+
+[node name="MeshInstance" type="MeshInstance" parent="Camera/Spatial"]
+transform = Transform( 1, -1.84741e-013, 2.84217e-014, 0, -1.19209e-007, -1, 0, 2.63317, -5.96046e-008, 0, 0, -2 )
+mesh = SubResource( 3 )
+material/0 = null
+
+[node name="MeshInstance3" type="MeshInstance" parent="Camera/Spatial"]
+transform = Transform( -4.37114e-008, -2.63317, 4.37114e-008, 0, -1.151e-007, -1, 1, -1.151e-007, -2.98023e-008, 3, 0, 0 )
+mesh = SubResource( 2 )
+material/0 = null
+
+[node name="TestFighter" parent="." instance=ExtResource( 4 )]
+transform = Transform( -0.995978, -0.00597653, 0.089402, -0.00604856, 0.999982, -0.000534743, -0.0893972, -0.00107336, -0.995995, -1.96746, -0.213694, 86 )
+
+[node name="Camera" type="Camera" parent="TestFighter"]
+transform = Transform( -1, 1.67638e-008, -1.63913e-007, -1.78843e-008, 0.984807, 0.173648, 1.49012e-007, 0.173648, -0.984808, -6.19888e-006, 14.1973, -33.9061 )
+current = true
+far = 8192.0
