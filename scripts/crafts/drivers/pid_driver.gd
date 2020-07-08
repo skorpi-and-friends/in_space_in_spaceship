@@ -19,6 +19,8 @@ func _init_from_config(config: CraftConfig):
 #	else:
 #		_angular_pid = PIDControllerVector.new()
 #		add_child(_angular_pid, false);
+	_angular_input_multiplier = config.angular_input_multiplier;
+	_linear_input_multiplier = config.linear_input_multiplier;
 
 	# look for pid childern. Only usefull for viewing the pid state at runtime i.e.
 	# we don't need to add new children if not found.
@@ -32,12 +34,36 @@ func _init_from_config(config: CraftConfig):
 	_linear_pid.integrat_gain = Vector3.ONE * config.linear_integrat_gain;
 	_linear_pid.differential_gain = Vector3.ONE * config.linear_differential_gain;
 	
+	var max_linear_force := config.linear_thruster_force * config.force_multiplier
+	var linear_acceleration_limit := max_linear_force / config.mass;
+	var manual_acceleration_limit := config.acceleration_limit * config.acceleration_multiplier;
+	
+	_linear_pid.integrat_max = Vector3(
+			min(manual_acceleration_limit.x, linear_acceleration_limit.x),
+			min(manual_acceleration_limit.y, linear_acceleration_limit.y),
+			min(manual_acceleration_limit.z, linear_acceleration_limit.z)
+	);
+	_linear_pid.integrat_min = -_linear_pid.integrat_max;
+	
 	# init angular pid
+	
 	_angular_pid.integrat_max = Vector3.ONE * config.angular_integrat_max;
 	_angular_pid.integrat_min = Vector3.ONE * config.angular_integrat_min;
 	_angular_pid.proportional_gain = Vector3.ONE * config.angular_proportional_gain;
 	_angular_pid.integrat_gain = Vector3.ONE * config.angular_integrat_gain;
 	_angular_pid.differential_gain = Vector3.ONE * config.angular_differential_gain;
+
+# FIXME: this horrible coupling
+func _moi_changed(state: CraftState):
+	var max_torque := state.angular_thruster_torque * state.force_multiplier;
+	var acceleration_limit := max_torque / state.moment_of_inertia;
+	var manual_acceleration_limit := state.angular_acceleration_limit * state.acceleration_multiplier;
+	_angular_pid.integrat_max = Vector3(
+			min(manual_acceleration_limit.x, acceleration_limit.x),
+			min(manual_acceleration_limit.y, acceleration_limit.y),
+			min(manual_acceleration_limit.z, acceleration_limit.z)
+	);
+	_angular_pid.integrat_min = -_angular_pid.integrat_max;
 
 
 func _update_flames(state: CraftState):
@@ -74,12 +100,14 @@ func update_linear_flames(state: CraftState):
 	# calculate the max acceleration the available force allows us
 	var acceleration_limit := max_force / state.mass;
 
+
 	if state.acceleration_dampener_on:
+		var manual_acceleration_limit := state.acceleration_limit * state.acceleration_multiplier;
 		# clamp the acceleration according to the limit
 		acceleration_limit = Utility.clamp_vector_components(
 				acceleration_limit,
-				-state.acceleration_limit,
-				state.acceleration_limit);
+				-manual_acceleration_limit,
+				manual_acceleration_limit);
 	
 	# step the driver to calcuate the flame
 	var linear_flame_vector := pid.update(
@@ -102,9 +130,6 @@ func update_angular_flames(state: CraftState):
 	
 	var angular_input := state.angular_input;
 	
-	if angular_input:
-		pass
-	
 	if state.angular_dampener_on:
 		angular_input = Utility.clamp_vector_components(
 				angular_input,
@@ -114,15 +139,17 @@ func update_angular_flames(state: CraftState):
 	var max_torque := state.angular_thruster_torque * state.force_multiplier;
 
 	# difference here in how we calculate max available acceleration allows to us
-	# TODO: manually caclulate inertia tensor
-	var acceleration_limit := max_torque / state.mass;
+	var acceleration_limit := max_torque / state.moment_of_inertia;
 
 	if state.acceleration_dampener_on:
+		# no need to use the acceleration multiplier: it's already
+		# been used when converting from the linear_accel_limet 
+		var manual_acceleration_limit := state.angular_acceleration_limit;
 		# clamp the acceleration according to the limit
 		acceleration_limit = Utility.clamp_vector_components(
 				acceleration_limit,
-				-state.acceleration_limit,
-				state.acceleration_limit);
+				-manual_acceleration_limit,
+				manual_acceleration_limit);
 	
 	# step the driver to calcuate the flame
 	var angular_flame_vector := pid.update(

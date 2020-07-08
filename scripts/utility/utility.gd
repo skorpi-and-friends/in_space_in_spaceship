@@ -2,8 +2,8 @@ extends Object
 
 class_name Utility
 
-const DEG2RAD := 57.29578;
-const RAD2DEG := 1.0/DEG2RAD;
+const RAD2DEG := 57.29578;
+const DEG2RAD := 1.0/RAD2DEG;
 
 static func clamp_vector_components(
 	value: Vector3, 
@@ -82,7 +82,7 @@ static func format_vector(
 
 static func format_vector_std(vector: Vector3) -> String:
 #	return format_vector("%+003.5f",vector);
-	return format_vector("%+03.f",vector);
+	return format_vector("%+03.3f",vector);
 
 
 static func deg2rad_vec3(vector: Vector3) -> Vector3:

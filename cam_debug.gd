@@ -8,11 +8,11 @@ export var direction := Vector3.LEFT;
 func _process(delta):
 	var position = _camera._focus_point;
 	var adjusted_rotation := Utility.transform_direction(
-			_camera.target_rotation, 
+			_camera._target_rotation, 
 			_camera.facing_direction);
 	var new_rotation = Utility.look_direction_basis(
 			adjusted_rotation,
-			_camera.target_rotation.y);
+			_camera._target_rotation.y);
 #			Vector3.UP);
 	global_transform = Transform(new_rotation, position);
 #	global_transform = Transform().translated(position

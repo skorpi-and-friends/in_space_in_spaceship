@@ -27,7 +27,10 @@ export var mass:float = 15000
 
 # Acceleration limit
 # In m/s.
-export var acceleration_limit: Vector3 = Vector3(999, 999, 999)
+export var acceleration_limit: Vector3 = Vector3(6, 6, 6)
+
+# Number by which to multiply the acceleration limit.
+export var acceleration_multiplier:float = 9.81
 
 # Linear velocity limit. To be respected no matter the linear input.
 # In m/s.
@@ -44,9 +47,9 @@ export var force_multiplier:float = 1_000_000
 # In Newtons.
 export var linear_thruster_force:Vector3 = Vector3(1, 1, 1.5)
 
-# Max torque the angular thrusters are capable of exerting.
+# Max force the angular thrusters are capable of exerting.
 # In Newtons.
-export var angular_thruster_torque: Vector3 = Vector3(1, 1, 1.5)
+export var angular_thruster_force: Vector3 = Vector3(1, 1, 1.5)
 
 export var linear_input_multiplier := 1.0;
 export var angular_input_multiplier := 1.0;

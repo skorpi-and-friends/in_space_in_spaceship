@@ -14,3 +14,7 @@ func _init_from_config(config: CraftConfig):
 
 func _update_flames(state: CraftState):
 	pass
+
+
+func _moi_changed(state: CraftState):
+	pass

@@ -11,7 +11,6 @@ func _ready():
 		var profile := child as AttireProfile;
 		if !profile: continue;
 		profile.connect("contact", self, "contact");
-		profile.connect("contact", self, "contact");
 		profiles.append(profile);
 	if profiles.empty():
 		printerr("no profiles found on attire master");
