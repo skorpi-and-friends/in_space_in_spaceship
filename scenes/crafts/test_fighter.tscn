@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=2]
+[gd_scene load_steps=13 format=2]
 
 [ext_resource path="res://scenes/crafts/craft_template.tscn" type="PackedScene" id=1]
 [ext_resource path="res://craft_configs/test_craft.tres" type="Resource" id=2]
@@ -8,6 +8,7 @@
 [ext_resource path="res://scenes/arms/go_cannon.tscn" type="PackedScene" id=6]
 [ext_resource path="res://scripts/attire/attire_profile.gd" type="Script" id=7]
 [ext_resource path="res://scripts/attire/attire.gd" type="Script" id=8]
+[ext_resource path="res://scenes/crafts/cockpit.tscn" type="PackedScene" id=9]
 
 [sub_resource type="SphereMesh" id=1]
 radius = 4.0
@@ -16,13 +17,18 @@ height = 8.0
 [sub_resource type="SphereShape" id=2]
 radius = 4.0
 
-[node name="TestFighter" index="0" instance=ExtResource( 1 )]
+[sub_resource type="SpatialMaterial" id=3]
+albedo_color = Color( 1, 0, 0, 1 )
+roughness = 0.0
+
+[node name="TestFighter" instance=ExtResource( 1 )]
 _config = ExtResource( 2 )
 
 [node name="Boid" parent="." index="0"]
 _body = null
 
 [node name="ExtentsLink" parent="." index="1"]
+editor/display_folded = true
 _mesh_path = NodePath("MeshInstance")
 
 [node name="MeshInstance" type="MeshInstance" parent="ExtentsLink" index="0"]
@@ -61,66 +67,97 @@ script = ExtResource( 8 )
 [node name="Shape" type="CollisionShape" parent="Attire/Omni" index="1"]
 shape = SubResource( 2 )
 
-[node name="Mesh" type="CSGCombiner" parent="." index="5"]
-editor/display_folded = true
+[node name="Cockpit" parent="." index="5" instance=ExtResource( 9 )]
+transform = Transform( -1, 0, -8.74228e-008, 0, 1, 0, 8.74228e-008, 0, -1, 0, 0.39, 3.225 )
 
-[node name="CSGSphere" type="CSGSphere" parent="Mesh" index="0"]
+[node name="Mesh" type="CSGCombiner" parent="." index="6"]
 transform = Transform( 4, 0, 0, 0, 4, 0, 0, 0, 4, 0, 0, 0 )
+
+[node name="Cockpit" type="CSGSphere" parent="Mesh" index="0"]
+material = SubResource( 3 )
+
+[node name="CSGTorus" type="CSGTorus" parent="Mesh/Cockpit" index="0"]
+transform = Transform( 0.25, 0, 0, 0, 0.25, 0, 0, 0, 0.25, 0, 0, 0.287358 )
+inner_radius = 2.5
+ring_sides = 8
+
+[node name="CSGBox2" type="CSGBox" parent="Mesh/Cockpit" index="1"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.587809 )
+operation = 1
+width = 0.39
+height = 3.0
+depth = 1.0
+
+[node name="CSGBox3" type="CSGBox" parent="Mesh/Cockpit" index="2"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.000742793, 1, 0.314723 )
+operation = 2
+width = 1.0
+height = 1.0
+depth = 1.0
+
+[node name="CSGBox4" type="CSGBox" parent="Mesh/Cockpit" index="3"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.000742793, -1, 0.314723 )
+operation = 2
+width = 1.0
+height = 1.0
+depth = 1.0
+
+[node name="Chassis" type="CSGSphere" parent="Mesh" index="1"]
+editor/display_folded = true
 radial_segments = 24
 rings = 24
 
-[node name="CSGBox" type="CSGBox" parent="Mesh/CSGSphere" index="0"]
+[node name="Exahusts" type="CSGCombiner" parent="Mesh/Chassis" index="0"]
+editor/display_folded = true
+transform = Transform( 0.25, 0, 0, 0, 0.25, 0, 0, 0, 0.25, 0, 0, 0 )
+operation = 2
+
+[node name="CSGBox2" type="CSGBox" parent="Mesh/Chassis/Exahusts" index="0"]
+transform = Transform( 3, 0, 0, 0, 3, 0, 0, 0, 3, 1.25, 0, -3.75452 )
+width = 0.2
+height = 0.5
+depth = 1.0
+
+[node name="CSGBox4" type="CSGBox" parent="Mesh/Chassis/Exahusts" index="1"]
+transform = Transform( 3, 0, 0, 0, 3, 0, 0, 0, 3, 1.25, -2, -3.75452 )
+width = 0.2
+height = 0.5
+depth = 1.0
+
+[node name="CSGBox3" type="CSGBox" parent="Mesh/Chassis/Exahusts" index="2"]
+transform = Transform( 3, 0, 0, 0, 3, 0, 0, 0, 3, 1.25, 2, -3.75452 )
+width = 0.2
+height = 0.5
+depth = 1.0
+
+[node name="CSGBox5" type="CSGBox" parent="Mesh/Chassis/Exahusts" index="3"]
+transform = Transform( 3, 0, 0, 0, 3, 0, 0, 0, 3, -1.25, -2, -3.75452 )
+width = 0.2
+height = 0.5
+depth = 1.0
+
+[node name="CSGBox6" type="CSGBox" parent="Mesh/Chassis/Exahusts" index="4"]
+transform = Transform( 3, 0, 0, 0, 3, 0, 0, 0, 3, -1.25, 2, -3.75452 )
+width = 0.2
+height = 0.5
+depth = 1.0
+
+[node name="CSGBox7" type="CSGBox" parent="Mesh/Chassis/Exahusts" index="5"]
+transform = Transform( 3, 0, 0, 0, 3, 0, 0, 0, 3, -1.25, 0, -3.75452 )
+width = 0.2
+height = 0.5
+depth = 1.0
+
+[node name="CenteralBox" type="CSGBox" parent="Mesh/Chassis" index="1"]
 operation = 2
 width = 0.4
 depth = 2.4
 
-[node name="CSGBox" type="CSGBox" parent="Mesh/CSGSphere/CSGBox" index="0"]
+[node name="CSGBox" type="CSGBox" parent="Mesh/Chassis/CenteralBox" index="0"]
 operation = 2
 width = 0.4
 height = 1.0
 depth = 1.6
 
-[node name="CSGBox2" type="CSGBox" parent="Mesh" index="1"]
-transform = Transform( 3, 0, 0, 0, 3, 0, 0, 0, 3, 1.25, 0, -3.75452 )
-operation = 2
-width = 0.2
-height = 0.5
-depth = 1.0
-
-[node name="CSGBox4" type="CSGBox" parent="Mesh" index="2"]
-transform = Transform( 3, 0, 0, 0, 3, 0, 0, 0, 3, 1.25, -2, -3.75452 )
-operation = 2
-width = 0.2
-height = 0.5
-depth = 1.0
-
-[node name="CSGBox3" type="CSGBox" parent="Mesh" index="3"]
-transform = Transform( 3, 0, 0, 0, 3, 0, 0, 0, 3, 1.25, 2, -3.75452 )
-operation = 2
-width = 0.2
-height = 0.5
-depth = 1.0
-
-[node name="CSGBox5" type="CSGBox" parent="Mesh" index="4"]
-transform = Transform( 3, 0, 0, 0, 3, 0, 0, 0, 3, -1.25, -2, -3.75452 )
-operation = 2
-width = 0.2
-height = 0.5
-depth = 1.0
-
-[node name="CSGBox6" type="CSGBox" parent="Mesh" index="5"]
-transform = Transform( 3, 0, 0, 0, 3, 0, 0, 0, 3, -1.25, 2, -3.75452 )
-operation = 2
-width = 0.2
-height = 0.5
-depth = 1.0
-
-[node name="CSGBox7" type="CSGBox" parent="Mesh" index="6"]
-transform = Transform( 3, 0, 0, 0, 3, 0, 0, 0, 3, -1.25, 0, -3.75452 )
-operation = 2
-width = 0.2
-height = 0.5
-depth = 1.0
-
-[node name="CollisionShape" type="CollisionShape" parent="." index="6"]
+[node name="CollisionShape" type="CollisionShape" parent="." index="7"]
 shape = SubResource( 2 )
