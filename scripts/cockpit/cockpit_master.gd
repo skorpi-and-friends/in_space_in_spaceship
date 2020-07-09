@@ -3,7 +3,7 @@ extends Spatial
 class_name CockpitMaster
 
 onready var _displays:Array = [
-	$"Main Display/Viewport/CockpitMainDisplay"
+	$"Main Display/Viewport/MainCkpitDsp"
 ];
 
 func set_craft(craft: CraftMaster):

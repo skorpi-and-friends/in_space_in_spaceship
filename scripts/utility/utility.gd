@@ -86,8 +86,47 @@ static func format_vector(
 
 static func format_vector_std(vector: Vector3) -> String:
 #	return format_vector("%+003.5f",vector);
-	return format_vector("%+03.3f",vector);
+#	return format_vector("%+03.3f",vector);
+	return _format_vector_std_special(vector);
 
+
+static func _format_vector_std_special(vector: Vector3) -> String:
+	var x_split :=("%0.3f" % vector.x).split(".");
+	var y_split := ("%0.3f" % vector.y).split(".");
+	var z_split := ("%0.3f" % vector.z).split(".")
+	return "({xw}.{xf}, {yw}.{yf}, {zw}.{zf})".format({
+				"xw" : "%+03d" % int(x_split[0]),
+				"xf" : x_split[1],
+				"yw" : "%+03d" % int(y_split[0]),
+				"yf" : y_split[1],
+				"zw" : "%+03d" % int(z_split[0]),
+				"zf" : z_split[1]
+		});
+
+
+static func format_vector_rich(vector: Vector3, 
+		postive_color = Color.coral,
+		negative_color = Color.firebrick) -> String:
+	return "%s, %s, %s" % [
+			float_str_sign_colored(vector.x, postive_color, negative_color),
+			float_str_sign_colored(vector.y, postive_color, negative_color),
+			float_str_sign_colored(vector.z, postive_color, negative_color)
+		];
+
+static func float_str_sign_colored(number: float, 
+		postive_color: Color = Color.coral,
+		negative_color: Color = Color.firebrick) -> String:
+	var split := ("%+0.3f" % number).split(".");
+	var color := negative_color if sign(number) < 0 else postive_color;
+	return "[color=#{c}]{w}.{f}[/color]".format({
+			"c" : color.to_html(),
+			# we must format again on the int
+			# to enable zero padding as the float formatter
+			# doesn't support that
+			# also use abs to remove any negative signs
+			"w" : "%03d" % abs(int(split[0])),
+			"f" : split[1]
+	});
 
 static func deg2rad_vec3(vector: Vector3) -> Vector3:
 	return Vector3(deg2rad(vector.x), deg2rad(vector.y), deg2rad(vector.z));

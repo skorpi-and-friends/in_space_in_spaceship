@@ -1,8 +1,8 @@
 extends Control
 
 class_name CraftInterface
-
-onready var _player: PlayerMind;
+export var _player_path: NodePath;
+onready var _player := get_node(_player_path) as PlayerMind;
 
 onready var _lvelocity_label := find_node("LinearVelocity") as Label;
 onready var _avelocity_label := find_node("AngularVelocity") as Label;

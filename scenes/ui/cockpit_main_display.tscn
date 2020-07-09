@@ -1,8 +1,17 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=5 format=2]
 
-[ext_resource path="res://scripts/cockpit/main_display.gd" type="Script" id=1]
+[ext_resource path="res://themes/craft_holo_main.tres" type="Theme" id=1]
+[ext_resource path="res://scripts/cockpit/main_display.gd" type="Script" id=2]
 
-[sub_resource type="GDScript" id=1]
+[sub_resource type="StyleBoxFlat" id=3]
+bg_color = Color( 0.329412, 0, 0.694118, 0.12549 )
+border_color = Color( 1, 1, 1, 0.25098 )
+corner_radius_top_left = 50
+corner_radius_top_right = 50
+corner_radius_bottom_right = 50
+corner_radius_bottom_left = 50
+
+[sub_resource type="GDScript" id=4]
 script/source = "extends Label
 
 func _ready():
@@ -11,181 +20,89 @@ func _ready():
 func _process(delta):
 	self.text = 'FPS: ' + str(Engine.get_frames_per_second())"
 
-[node name="CockpitMainDisplay" type="CenterContainer"]
+[node name="MainCkpitDsp" type="Panel"]
 anchor_right = 1.0
 anchor_bottom = 1.0
-script = ExtResource( 1 )
+theme = ExtResource( 1 )
+custom_styles/panel = SubResource( 3 )
+script = ExtResource( 2 )
 
-[node name="VBoxContainer" type="VBoxContainer" parent="."]
-margin_left = 482.0
-margin_top = 191.0
-margin_right = 542.0
-margin_bottom = 408.0
-size_flags_horizontal = 3
-size_flags_vertical = 3
-custom_constants/separation = 15
+[node name="CenterContainer" type="CenterContainer" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
 
-[node name="FPS" type="Label" parent="VBoxContainer"]
-margin_right = 60.0
-margin_bottom = 14.0
-script = SubResource( 1 )
+[node name="StateLabels" type="VBoxContainer" parent="CenterContainer"]
+margin_left = 162.0
+margin_top = 38.0
+margin_right = 862.0
+margin_bottom = 561.0
+custom_constants/separation = 10
 
-[node name="LinearVelocity" type="Label" parent="VBoxContainer"]
-margin_top = 29.0
-margin_right = 60.0
-margin_bottom = 43.0
-text = "1000 m/s"
-uppercase = true
+[node name="FPS" type="Label" parent="CenterContainer/StateLabels"]
+margin_right = 700.0
+margin_bottom = 33.0
+text = "FPS: 60"
+script = SubResource( 4 )
 
-[node name="AngularVelocity" type="Label" parent="VBoxContainer"]
-margin_top = 58.0
-margin_right = 60.0
-margin_bottom = 72.0
-text = "1000 m/s"
-uppercase = true
+[node name="LinearVelocity" type="RichTextLabel" parent="CenterContainer/StateLabels"]
+margin_top = 43.0
+margin_right = 700.0
+margin_bottom = 103.0
+rect_min_size = Vector2( 700, 60 )
+bbcode_enabled = true
+bbcode_text = "[color=aqua][code]SSpd: 000.000, 000.000, 000.000 m/s[/code][/color]"
+text = "SSpd: 000.000, 000.000, 000.000 m/s"
 
-[node name="SetSpeed" type="Label" parent="VBoxContainer"]
-margin_top = 87.0
-margin_right = 60.0
-margin_bottom = 101.0
-text = "1000 m/s"
-uppercase = true
+[node name="AngularVelocity" type="RichTextLabel" parent="CenterContainer/StateLabels"]
+margin_top = 113.0
+margin_right = 700.0
+margin_bottom = 173.0
+rect_min_size = Vector2( 700, 60 )
+bbcode_enabled = true
+bbcode_text = "[color=aqua][code]SSpd: 000.000, 000.000, 000.000 m/s[/code][/color]"
+text = "SSpd: 000.000, 000.000, 000.000 m/s"
 
-[node name="LinearInput" type="Label" parent="VBoxContainer"]
-margin_top = 116.0
-margin_right = 60.0
-margin_bottom = 130.0
-text = "1000 m/s"
-uppercase = true
+[node name="SetSpeed" type="RichTextLabel" parent="CenterContainer/StateLabels"]
+margin_top = 183.0
+margin_right = 700.0
+margin_bottom = 243.0
+rect_min_size = Vector2( 700, 60 )
+bbcode_enabled = true
+bbcode_text = "[color=aqua][code]SSpd: 000.000, 000.000, 000.000 m/s[/code][/color]"
+text = "SSpd: 000.000, 000.000, 000.000 m/s"
 
-[node name="AngularInput" type="Label" parent="VBoxContainer"]
-margin_top = 145.0
-margin_right = 60.0
-margin_bottom = 159.0
-text = "1000 m/s"
-uppercase = true
+[node name="LinearInput" type="RichTextLabel" parent="CenterContainer/StateLabels"]
+margin_top = 253.0
+margin_right = 700.0
+margin_bottom = 313.0
+rect_min_size = Vector2( 700, 60 )
+bbcode_enabled = true
+bbcode_text = "[color=aqua][code]SSpd: 000.000, 000.000, 000.000 m/s[/code][/color]"
+text = "SSpd: 000.000, 000.000, 000.000 m/s"
 
-[node name="LinearFlame" type="Label" parent="VBoxContainer"]
-margin_top = 174.0
-margin_right = 60.0
-margin_bottom = 188.0
-text = "1000 m/s"
-uppercase = true
+[node name="AngularInput" type="RichTextLabel" parent="CenterContainer/StateLabels"]
+margin_top = 323.0
+margin_right = 700.0
+margin_bottom = 383.0
+rect_min_size = Vector2( 700, 60 )
+bbcode_enabled = true
+bbcode_text = "[color=aqua][code]SSpd: 000.000, 000.000, 000.000 m/s[/code][/color]"
+text = "SSpd: 000.000, 000.000, 000.000 m/s"
 
-[node name="AngularFlame" type="Label" parent="VBoxContainer"]
-margin_top = 203.0
-margin_right = 60.0
-margin_bottom = 217.0
-text = "1000 m/s"
-uppercase = true
+[node name="LinearFlame" type="RichTextLabel" parent="CenterContainer/StateLabels"]
+margin_top = 393.0
+margin_right = 700.0
+margin_bottom = 453.0
+rect_min_size = Vector2( 700, 60 )
+bbcode_enabled = true
+bbcode_text = "[color=aqua][code]SSpd: 000.000, 000.000, 000.000 m/s[/code][/color]"
+text = "SSpd: 000.000, 000.000, 000.000 m/s"
 
-[node name="EquisphereDisplay" type="HBoxContainer" parent="."]
-editor/display_folded = true
-visible = false
-margin_left = 497.0
-margin_top = 292.0
-margin_right = 527.0
-margin_bottom = 308.0
-custom_constants/separation = 15
-
-[node name="HBoxContainer" type="VBoxContainer" parent="EquisphereDisplay"]
-margin_right = 331.0
-margin_bottom = 600.0
-size_flags_horizontal = 3
-size_flags_vertical = 3
-
-[node name="Panel" type="Panel" parent="EquisphereDisplay/HBoxContainer"]
-margin_right = 331.0
-margin_bottom = 197.0
-size_flags_horizontal = 3
-size_flags_vertical = 3
-
-[node name="Control" type="Control" parent="EquisphereDisplay/HBoxContainer"]
-margin_top = 201.0
-margin_right = 331.0
-margin_bottom = 398.0
-size_flags_horizontal = 3
-size_flags_vertical = 3
-
-[node name="Panel4" type="Panel" parent="EquisphereDisplay/HBoxContainer"]
-margin_top = 402.0
-margin_right = 331.0
-margin_bottom = 600.0
-size_flags_horizontal = 3
-size_flags_vertical = 3
-
-[node name="HBoxContainer2" type="VBoxContainer" parent="EquisphereDisplay"]
-editor/display_folded = true
-margin_left = 346.0
-margin_right = 677.0
-margin_bottom = 600.0
-size_flags_horizontal = 3
-size_flags_vertical = 3
-
-[node name="VBoxContainer" type="VBoxContainer" parent="EquisphereDisplay/HBoxContainer2"]
-margin_right = 331.0
-margin_bottom = 197.0
-size_flags_horizontal = 3
-size_flags_vertical = 3
-
-[node name="Panel4" type="Panel" parent="EquisphereDisplay/HBoxContainer2/VBoxContainer"]
-margin_right = 331.0
-margin_bottom = 63.0
-size_flags_horizontal = 3
-size_flags_vertical = 3
-
-[node name="Space" type="Control" parent="EquisphereDisplay/HBoxContainer2/VBoxContainer"]
-margin_top = 67.0
-margin_right = 331.0
-margin_bottom = 130.0
-size_flags_horizontal = 3
-size_flags_vertical = 3
-
-[node name="Space2" type="Control" parent="EquisphereDisplay/HBoxContainer2/VBoxContainer"]
-margin_top = 134.0
-margin_right = 331.0
-margin_bottom = 197.0
-size_flags_horizontal = 3
-size_flags_vertical = 3
-
-[node name="Space" type="Control" parent="EquisphereDisplay/HBoxContainer2"]
-margin_top = 201.0
-margin_right = 331.0
-margin_bottom = 398.0
-size_flags_horizontal = 3
-size_flags_vertical = 3
-
-[node name="Space2" type="Control" parent="EquisphereDisplay/HBoxContainer2"]
-margin_top = 402.0
-margin_right = 331.0
-margin_bottom = 600.0
-size_flags_horizontal = 3
-size_flags_vertical = 3
-
-[node name="HBoxContainer3" type="VBoxContainer" parent="EquisphereDisplay"]
-editor/display_folded = true
-margin_left = 692.0
-margin_right = 1024.0
-margin_bottom = 600.0
-size_flags_horizontal = 3
-size_flags_vertical = 3
-
-[node name="Panel" type="Panel" parent="EquisphereDisplay/HBoxContainer3"]
-margin_right = 332.0
-margin_bottom = 197.0
-size_flags_horizontal = 3
-size_flags_vertical = 3
-
-[node name="Control" type="Control" parent="EquisphereDisplay/HBoxContainer3"]
-margin_top = 201.0
-margin_right = 332.0
-margin_bottom = 398.0
-size_flags_horizontal = 3
-size_flags_vertical = 3
-
-[node name="Panel4" type="Panel" parent="EquisphereDisplay/HBoxContainer3"]
-margin_top = 402.0
-margin_right = 332.0
-margin_bottom = 600.0
-size_flags_horizontal = 3
-size_flags_vertical = 3
+[node name="AngularFlame" type="RichTextLabel" parent="CenterContainer/StateLabels"]
+margin_top = 463.0
+margin_right = 700.0
+margin_bottom = 523.0
+rect_min_size = Vector2( 700, 60 )
+bbcode_enabled = true
+bbcode_text = "[color=aqua][code]SSpd: 000.000, 000.000, 000.000 m/s[/code][/color]"
+text = "SSpd: 000.000, 000.000, 000.000 m/s"
