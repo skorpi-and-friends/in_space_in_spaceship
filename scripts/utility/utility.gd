@@ -62,7 +62,7 @@ static func face_direction(tform:Transform, direction: Vector3, up: Vector3) -> 
 	return tform.looking_at((tform.origin - direction), up);
 	
 # FIXME: this horrible hack
-static func get_basis_facing_direction(forward: Vector3, 
+static func get_basis_facing_direction(forward: Vector3,
 		upward: Vector3 = Vector3.UP) -> Basis:
 	# use negeative direction since looking_at align the -Z axis
 	return Transform().looking_at(-forward, upward).basis;
@@ -116,7 +116,6 @@ static func format_vector_rich(vector: Vector3,
 static func float_str_sign_colored(number: float, 
 		postive_color: Color = Color.coral,
 		negative_color: Color = Color.firebrick) -> String:
-	var split := ("%+0.3f" % number).split(".");
 	var color := negative_color if sign(number) < 0 else postive_color;
 	return "[color=#{c}]{w}.{f}[/color]".format({
 			"c" : color.to_html(),
@@ -124,8 +123,8 @@ static func float_str_sign_colored(number: float,
 			# to enable zero padding as the float formatter
 			# doesn't support that
 			# also use abs to remove any negative signs
-			"w" : "%03d" % abs(int(split[0])),
-			"f" : split[1]
+			"w" : "%03d" % abs(number),
+			"f" : ("%+0.3f" % number).split(".")[1]
 	});
 
 static func deg2rad_vec3(vector: Vector3) -> Vector3:

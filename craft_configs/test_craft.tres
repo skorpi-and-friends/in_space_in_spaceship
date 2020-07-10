@@ -5,10 +5,10 @@
 [resource]
 script = ExtResource( 1 )
 set_speed = null
-forward_dampener_on = true
-starfe_dampener_on = true
-angular_dampener_on = true
-acceleration_dampener_on = true
+limit_forward_v = true
+limit_strafe_v = true
+limit_angular_v = true
+limit_acceleration = true
 mass = 15000
 acceleration_limit = Vector3( 6, 6, 6 )
 acceleration_multiplier = 9.81

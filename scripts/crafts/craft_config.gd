@@ -9,17 +9,17 @@ class_name CraftConfig
 # In m/s.
 export var set_speed: Vector3
 
-# Forward dampener state. Whether or not to respect linear_v_limit in the z axis.
-export var forward_dampener_on: bool = true
+# Whether or not to respect linear_v_limit in the z axis.
+export var limit_forward_v: bool = true
 
-# Starfe dampener state. Whether or not to respect linear_v_limit in in the X or Y axis.
-export var starfe_dampener_on: bool = true
+# Whether or not to respect linear_v_limit in in the X or Y axis.
+export var limit_strafe_v: bool = true
 
-# Angular dampener state. Whether or not to respect angular_v_limit.
-export var angular_dampener_on: bool = true
+# Whether or not to respect angular_v_limit.
+export var limit_angular_v: bool = true
 
 # Acceleration dampener state. Whether or not to respect acceleration_limit.
-export var acceleration_dampener_on: bool = true
+export var limit_acceleration: bool = true
 
 # Total mass of the craft.
 # In KG.

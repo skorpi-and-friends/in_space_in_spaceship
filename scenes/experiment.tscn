@@ -1,23 +1,49 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=6 format=2]
 
 [sub_resource type="GDScript" id=1]
 script/source = "extends Spatial
 
 func _process(delta):
 	if Input.is_action_pressed(\"Fire Primary\"):
-		global_transform.basis = Utility.look_direction_basis(
+		global_transform.basis = Utility.get_basis_facing_direction(
 			Vector3.FORWARD
 		);
-		global_transform.origin += Vector3.FORWARD;"
+	global_transform.origin += Vector3.FORWARD;"
 
 [sub_resource type="CylinderMesh" id=2]
 top_radius = 0.001
 
 [sub_resource type="CapsuleShape" id=3]
 
+[sub_resource type="GDScript" id=4]
+script/source = "extends Node
+
+var timer := 0.0
+
+func _process(delta: float) -> void:
+	timer += delta;
+	if timer > 1:
+		print(\"parent alive\");
+		timer -= 1;
+	if Input.is_action_just_pressed(\"Fire Primary\"):
+		set_process(!is_processing());
+		set_process_internal(!is_processing_internal());"
+
+[sub_resource type="GDScript" id=5]
+script/source = "extends Node
+
+var timer := 0.0
+
+func _process(delta: float) -> void:
+	timer += delta;
+	if timer > 1:
+		print(\"child alive\");
+		timer -= 1;"
+
 [node name="Experimenta" type="Node"]
 
 [node name="z-forward" type="RigidBody" parent="."]
+visible = false
 script = SubResource( 1 )
 
 [node name="MeshInstance" type="MeshInstance" parent="z-forward"]
@@ -30,3 +56,9 @@ shape = SubResource( 3 )
 
 [node name="Camera" type="Camera" parent="."]
 transform = Transform( -4.37114e-008, 0.258819, -0.965926, 0, 0.965926, 0.258819, 1, 1.13133e-008, -4.2222e-008, -5, 2, -2.18557e-007 )
+
+[node name="process-disabling" type="Node" parent="."]
+script = SubResource( 4 )
+
+[node name="Child" type="Node" parent="process-disabling"]
+script = SubResource( 5 )

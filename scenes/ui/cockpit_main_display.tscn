@@ -32,77 +32,77 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 
 [node name="StateLabels" type="VBoxContainer" parent="CenterContainer"]
-margin_left = 162.0
-margin_top = 38.0
-margin_right = 862.0
-margin_bottom = 561.0
+margin_left = 142.0
+margin_top = 56.0
+margin_right = 882.0
+margin_bottom = 544.0
 custom_constants/separation = 10
 
 [node name="FPS" type="Label" parent="CenterContainer/StateLabels"]
-margin_right = 700.0
+margin_right = 740.0
 margin_bottom = 33.0
 text = "FPS: 60"
 script = SubResource( 4 )
 
 [node name="LinearVelocity" type="RichTextLabel" parent="CenterContainer/StateLabels"]
 margin_top = 43.0
-margin_right = 700.0
-margin_bottom = 103.0
-rect_min_size = Vector2( 700, 60 )
+margin_right = 740.0
+margin_bottom = 98.0
+rect_min_size = Vector2( 740, 55 )
 bbcode_enabled = true
-bbcode_text = "[color=aqua][code]SSpd: 000.000, 000.000, 000.000 m/s[/code][/color]"
+bbcode_text = "[color=aqua]SSpd: 000.000, 000.000, 000.000 m/s[/color]"
 text = "SSpd: 000.000, 000.000, 000.000 m/s"
 
 [node name="AngularVelocity" type="RichTextLabel" parent="CenterContainer/StateLabels"]
-margin_top = 113.0
-margin_right = 700.0
-margin_bottom = 173.0
-rect_min_size = Vector2( 700, 60 )
+margin_top = 108.0
+margin_right = 740.0
+margin_bottom = 163.0
+rect_min_size = Vector2( 740, 55 )
 bbcode_enabled = true
-bbcode_text = "[color=aqua][code]SSpd: 000.000, 000.000, 000.000 m/s[/code][/color]"
+bbcode_text = "[color=aqua]SSpd: 000.000, 000.000, 000.000 m/s[/color]"
 text = "SSpd: 000.000, 000.000, 000.000 m/s"
 
 [node name="SetSpeed" type="RichTextLabel" parent="CenterContainer/StateLabels"]
-margin_top = 183.0
-margin_right = 700.0
-margin_bottom = 243.0
-rect_min_size = Vector2( 700, 60 )
+margin_top = 173.0
+margin_right = 740.0
+margin_bottom = 228.0
+rect_min_size = Vector2( 740, 55 )
 bbcode_enabled = true
-bbcode_text = "[color=aqua][code]SSpd: 000.000, 000.000, 000.000 m/s[/code][/color]"
+bbcode_text = "[color=aqua]SSpd: 000.000, 000.000, 000.000 m/s[/color]"
 text = "SSpd: 000.000, 000.000, 000.000 m/s"
 
 [node name="LinearInput" type="RichTextLabel" parent="CenterContainer/StateLabels"]
-margin_top = 253.0
-margin_right = 700.0
-margin_bottom = 313.0
-rect_min_size = Vector2( 700, 60 )
+margin_top = 238.0
+margin_right = 740.0
+margin_bottom = 293.0
+rect_min_size = Vector2( 740, 55 )
 bbcode_enabled = true
-bbcode_text = "[color=aqua][code]SSpd: 000.000, 000.000, 000.000 m/s[/code][/color]"
+bbcode_text = "[color=aqua]SSpd: 000.000, 000.000, 000.000 m/s[/color]"
 text = "SSpd: 000.000, 000.000, 000.000 m/s"
 
 [node name="AngularInput" type="RichTextLabel" parent="CenterContainer/StateLabels"]
-margin_top = 323.0
-margin_right = 700.0
-margin_bottom = 383.0
-rect_min_size = Vector2( 700, 60 )
+margin_top = 303.0
+margin_right = 740.0
+margin_bottom = 358.0
+rect_min_size = Vector2( 740, 55 )
 bbcode_enabled = true
-bbcode_text = "[color=aqua][code]SSpd: 000.000, 000.000, 000.000 m/s[/code][/color]"
+bbcode_text = "[color=aqua]SSpd: 000.000, 000.000, 000.000 m/s[/color]"
 text = "SSpd: 000.000, 000.000, 000.000 m/s"
 
 [node name="LinearFlame" type="RichTextLabel" parent="CenterContainer/StateLabels"]
-margin_top = 393.0
-margin_right = 700.0
-margin_bottom = 453.0
-rect_min_size = Vector2( 700, 60 )
+margin_top = 368.0
+margin_right = 740.0
+margin_bottom = 423.0
+rect_min_size = Vector2( 740, 55 )
 bbcode_enabled = true
-bbcode_text = "[color=aqua][code]SSpd: 000.000, 000.000, 000.000 m/s[/code][/color]"
+bbcode_text = "[color=aqua]SSpd: 000.000, 000.000, 000.000 m/s[/color]"
 text = "SSpd: 000.000, 000.000, 000.000 m/s"
 
 [node name="AngularFlame" type="RichTextLabel" parent="CenterContainer/StateLabels"]
-margin_top = 463.0
-margin_right = 700.0
-margin_bottom = 523.0
-rect_min_size = Vector2( 700, 60 )
+margin_top = 433.0
+margin_right = 740.0
+margin_bottom = 488.0
+rect_min_size = Vector2( 740, 55 )
 bbcode_enabled = true
-bbcode_text = "[color=aqua][code]SSpd: 000.000, 000.000, 000.000 m/s[/code][/color]"
+bbcode_text = "[color=aqua]SSpd: 000.000, 000.000, 000.000 m/s[/color]"
 text = "SSpd: 000.000, 000.000, 000.000 m/s"

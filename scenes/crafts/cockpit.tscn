@@ -80,6 +80,7 @@ func _input(event):
 
 [node name="Cockpit" type="Spatial"]
 script = ExtResource( 1 )
+_camera_path = NodePath("Yaw/Camera")
 
 [node name="HUD" type="CenterContainer" parent="."]
 anchor_right = 1.0

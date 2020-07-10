@@ -26,7 +26,7 @@ func _process(delta):
 	_ainput_label.text = "AInp: %s m/s" % Utility.format_vector_std(state.angular_input);
 	_lflame_label.text = "LFlm: %s m/ss" % Utility.format_vector_std(state.linear_flame);
 	_aflame_label.text = "AFlm: %s m/ss" % Utility.format_vector_std(state.angular_flame);
-	var display := _player.craft_master._moment_of_inertia_inv;
+	var display := _player.orbit_camera.facing_direction;
 	_cam_pitch_label.text = "Display: %s" % display;
 	return;
 #	_cam_yaw_label.text = "Yaw: %s" % camera._orbit_angles.y;

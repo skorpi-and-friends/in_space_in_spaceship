@@ -137,7 +137,6 @@ script = ExtResource( 3 )
 [node name="PlayerMind" type="Node" parent="."]
 editor/display_folded = true
 script = ExtResource( 4 )
-camera_free_look = true
 
 [node name="CameraFacingDebug" type="Spatial" parent="PlayerMind"]
 editor/display_folded = true
@@ -162,7 +161,6 @@ visible = false
 far = 8192.0
 script = ExtResource( 7 )
 distance = 15.0
-rotation_speed = 0.5
 
 [node name="CameraLocationDebug" type="Spatial" parent="PlayerMind/Camera"]
 editor/display_folded = true
