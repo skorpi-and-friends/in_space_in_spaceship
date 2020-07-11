@@ -1,0 +1,244 @@
+[gd_scene load_steps=20 format=2]
+
+[ext_resource path="res://enviroments/default_env.tres" type="Environment" id=1]
+[ext_resource path="res://enviroments/daytime_sky.tres" type="Environment" id=2]
+[ext_resource path="res://scripts/cockpit/cockpit_master.gd" type="Script" id=3]
+[ext_resource path="res://textures/crosshair_simple_64.png" type="Texture" id=4]
+[ext_resource path="res://scenes/ui/cockpit_main_display.tscn" type="PackedScene" id=5]
+[ext_resource path="res://scenes/human_prop.tscn" type="PackedScene" id=6]
+
+[sub_resource type="ViewportTexture" id=3]
+viewport_path = NodePath("Viewport")
+
+[sub_resource type="SpatialMaterial" id=4]
+resource_local_to_scene = true
+albedo_texture = SubResource( 3 )
+
+[sub_resource type="PlaneMesh" id=1]
+size = Vector2( 4, 2 )
+
+[sub_resource type="CubeMesh" id=5]
+
+[sub_resource type="World" id=2]
+environment = ExtResource( 1 )
+fallback_environment = ExtResource( 2 )
+
+[sub_resource type="ViewportTexture" id=6]
+viewport_path = NodePath("Main Display/Viewport")
+
+[sub_resource type="SpatialMaterial" id=7]
+resource_local_to_scene = true
+flags_transparent = true
+flags_unshaded = true
+flags_do_not_receive_shadows = true
+flags_disable_ambient_light = true
+params_cull_mode = 2
+albedo_texture = SubResource( 6 )
+
+[sub_resource type="PlaneMesh" id=9]
+size = Vector2( 0.5, 0.25 )
+
+[sub_resource type="GDScript" id=10]
+script/source = "extends Camera
+
+onready var Yaw = get_parent()
+export var x_clamp := 5.0;
+export var y_clamp := 10.0;
+
+func _ready():
+	## Tell Godot that we want to handle input
+	set_process_input(false)
+
+func look_updown_rotation(rotation = 0):
+	\"\"\"
+	Get the new rotation for looking up and down
+	\"\"\"
+	var toReturn := self.get_rotation() + Vector3(rotation, 0, 0)
+	##
+	## We don't want the player to be able to bend over backwards
+	## neither to be able to look under their arse.
+	## Here we'll clamp the vertical look to 90° up and down
+	toReturn.x = clamp(toReturn.x, PI / -2, PI / 2)
+
+	return toReturn
+
+func look_leftright_rotation(rotation = 0):
+	\"\"\"
+	Get the new rotation for looking left and right
+	\"\"\"
+	return Yaw.get_rotation() + Vector3(
+			0, 
+			rotation,
+			0);
+
+func mouse(event):
+	\"\"\"
+	First person camera controls
+	\"\"\"
+	##
+	## We'll use the parent node \"Yaw\" to set our left-right rotation
+	## This prevents us from adding the x-rotation to the y-rotation
+	## which would result in a kind of flight-simulator camera
+	var yaw_rotation = look_leftright_rotation(event.relative.x / -200)
+	yaw_rotation.y = clamp(yaw_rotation.y, -deg2rad(x_clamp), deg2rad(x_clamp))
+	Yaw.set_rotation(yaw_rotation);
+
+	##
+	## Now we can simply set our y-rotation for the camera, and let godot
+	## handle the transformation of both together
+	var pitch_rotation = look_updown_rotation(event.relative.y / -200)
+	pitch_rotation.x = clamp(pitch_rotation.x, -deg2rad(y_clamp), deg2rad(y_clamp))
+	self.set_rotation(pitch_rotation)
+
+func _input(event):
+	##
+	## We'll only process mouse motion events
+	if event is InputEventMouseMotion:
+		return mouse(event)"
+
+[sub_resource type="SphereMesh" id=11]
+flip_faces = true
+radius = 1.5
+height = 3.0
+
+[sub_resource type="SpatialMaterial" id=8]
+resource_local_to_scene = true
+
+[sub_resource type="QuadMesh" id=12]
+size = Vector2( 2, 2 )
+
+[sub_resource type="GDScript" id=13]
+script/source = "extends MeshInstance
+
+func _ready() -> void:
+	var root_viewport :=  $\"/root\" as Viewport;
+	material_override.albedo_texture = root_viewport.get_texture();
+	
+	"
+
+[node name="Scene" type="Spatial"]
+
+[node name="Screen" type="MeshInstance" parent="."]
+material_override = SubResource( 4 )
+mesh = SubResource( 1 )
+material/0 = null
+
+[node name="Screen2" type="MeshInstance" parent="."]
+transform = Transform( 0.744444, 0, 0.667684, 0.390991, 0.810606, -0.435941, -0.541229, 0.585592, 0.603451, 0, -1.22936, -3.05949 )
+mesh = SubResource( 5 )
+material/0 = null
+
+[node name="Viewport" type="Viewport" parent="."]
+size = Vector2( 2048, 1024 )
+own_world = true
+world = SubResource( 2 )
+handle_input_locally = false
+render_target_v_flip = true
+render_target_update_mode = 3
+
+[node name="Cockpit" type="Spatial" parent="Viewport"]
+script = ExtResource( 3 )
+_camera_path = NodePath("Yaw/Camera")
+
+[node name="HUD" type="CenterContainer" parent="Viewport/Cockpit"]
+editor/display_folded = true
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="Crosshair" type="TextureRect" parent="Viewport/Cockpit/HUD"]
+margin_left = 992.0
+margin_top = 480.0
+margin_right = 1056.0
+margin_bottom = 544.0
+texture = ExtResource( 4 )
+
+[node name="Main Display" type="MeshInstance" parent="Viewport/Cockpit"]
+editor/display_folded = true
+transform = Transform( 1, 0, 0, 0, 0.34202, -0.939693, 0, 0.939693, 0.34202, 0, -0.114642, -0.358274 )
+material_override = SubResource( 7 )
+cast_shadow = 0
+mesh = SubResource( 9 )
+material/0 = null
+
+[node name="Viewport" type="Viewport" parent="Viewport/Cockpit/Main Display"]
+size = Vector2( 1024, 512 )
+transparent_bg = true
+hdr = false
+disable_3d = true
+keep_3d_linear = true
+usage = 0
+render_target_v_flip = true
+
+[node name="MainCkpitDsp" parent="Viewport/Cockpit/Main Display/Viewport" instance=ExtResource( 5 )]
+
+[node name="Yaw" type="Spatial" parent="Viewport/Cockpit"]
+
+[node name="Camera" type="Camera" parent="Viewport/Cockpit/Yaw"]
+current = true
+fov = 80.0
+far = 8192.0
+script = SubResource( 10 )
+
+[node name="CSGSphere" type="CSGBox" parent="Viewport/Cockpit"]
+editor/display_folded = true
+invert_faces = true
+width = 1.0
+
+[node name="CSGCombiner2" type="CSGCombiner" parent="Viewport/Cockpit/CSGSphere"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.454641 )
+operation = 1
+
+[node name="CSGBox" type="CSGBox" parent="Viewport/Cockpit/CSGSphere/CSGCombiner2"]
+transform = Transform( 1, 0, 0, 0, 0.939693, 0.34202, 0, -0.34202, 0.939693, 0, -0.555334, 0 )
+width = 1.0
+height = 0.5
+depth = 0.25
+
+[node name="CSGBox2" type="CSGBox" parent="Viewport/Cockpit/CSGSphere/CSGCombiner2"]
+transform = Transform( 1, 0, 0, 0, 0.965926, 0.258819, 0, -0.258819, 0.965926, 0, -0.343984, 0 )
+width = 0.4
+height = 0.5
+depth = 0.25
+
+[node name="CSGCombiner" type="CSGCombiner" parent="Viewport/Cockpit"]
+editor/display_folded = true
+visible = false
+
+[node name="CSGBox" type="CSGBox" parent="Viewport/Cockpit/CSGCombiner"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0 )
+width = 1.5
+height = 1.5
+depth = 1.0
+
+[node name="CSGSphere" type="CSGBox" parent="Viewport/Cockpit/CSGCombiner"]
+transform = Transform( 0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, 0, 0, -0.585199 )
+operation = 2
+width = 1.5
+height = 1.0
+depth = 1.5
+
+[node name="HumanProp" parent="Viewport/Cockpit" instance=ExtResource( 6 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.342663, 0.738443 )
+visible = false
+
+[node name="CockpitRoom" type="MeshInstance" parent="Viewport/Cockpit"]
+mesh = SubResource( 11 )
+material/0 = null
+
+[node name="PrimaryDisplay" type="MeshInstance" parent="Viewport/Cockpit"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.675354 )
+material_override = SubResource( 8 )
+mesh = SubResource( 12 )
+material/0 = null
+script = SubResource( 13 )
+
+[node name="CockpitScreenCam" type="Camera" parent="."]
+transform = Transform( 1, 0, 0, 0, -4.37114e-008, 1, 0, -1, -4.37114e-008, 0, 2, 0 )
+projection = 1
+size = 2.0
+
+[node name="CraftOutCamera" type="Camera" parent="."]
+transform = Transform( 1, 0, 0, 0, 0.620603, 0.784125, 0, -0.784125, 0.620603, 0.00328922, 2.65105, 2.31511 )
+
+[node name="DirectionalLight" type="DirectionalLight" parent="."]
+transform = Transform( 1, 0, 0, 0, -0.790158, 0.612903, 0, -0.612903, -0.790158, 0, 0, 0 )

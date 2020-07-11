@@ -18,8 +18,14 @@ func _ready():
 func report_child_damage(child_weapon: Weapon, node: Node, damage_done: float):
 	emit_signal("damage_done", child_weapon, node, damage_done);
 
+func _process(delta: float) -> void:
+	active = false;
+	for weapon in children:
+		active = active || weapon.active;
+
 func _activate():
 	# TODO: cache this stuff
+	active = false;
 	for weapon in children:
 		weapon._activate();
 		damage += weapon.damage;

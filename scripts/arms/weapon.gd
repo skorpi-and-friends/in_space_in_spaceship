@@ -8,8 +8,15 @@ export var damage: float;
 export(Damage.Type) var damage_type := Damage.Type.DEFAULT;
 export var active := false;
 
+var _default_holo_display := preload("res://scenes/ui/weapon_holos/default.tscn");
+
 func _activate():
 	pass
+
+func _get_holo_display() -> Control: #WeaponHolo
+	var holo := _default_holo_display.instance() as Control;
+	holo.weapon = self;
+	return holo;
 
 
 func get_weapon() -> Weapon:

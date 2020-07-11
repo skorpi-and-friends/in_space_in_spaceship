@@ -3,7 +3,7 @@
 [ext_resource path="res://themes/craft_holo_main.tres" type="Theme" id=1]
 [ext_resource path="res://scripts/cockpit/main_display.gd" type="Script" id=2]
 
-[sub_resource type="StyleBoxFlat" id=3]
+[sub_resource type="StyleBoxFlat" id=1]
 bg_color = Color( 0.329412, 0, 0.694118, 0.12549 )
 border_color = Color( 1, 1, 1, 0.25098 )
 corner_radius_top_left = 50
@@ -11,7 +11,7 @@ corner_radius_top_right = 50
 corner_radius_bottom_right = 50
 corner_radius_bottom_left = 50
 
-[sub_resource type="GDScript" id=4]
+[sub_resource type="GDScript" id=2]
 script/source = "extends Label
 
 func _ready():
@@ -24,7 +24,7 @@ func _process(delta):
 anchor_right = 1.0
 anchor_bottom = 1.0
 theme = ExtResource( 1 )
-custom_styles/panel = SubResource( 3 )
+custom_styles/panel = SubResource( 1 )
 script = ExtResource( 2 )
 
 [node name="CenterContainer" type="CenterContainer" parent="."]
@@ -33,75 +33,75 @@ anchor_bottom = 1.0
 
 [node name="StateLabels" type="VBoxContainer" parent="CenterContainer"]
 margin_left = 142.0
-margin_top = 56.0
+margin_top = 53.0
 margin_right = 882.0
-margin_bottom = 544.0
+margin_bottom = 547.0
 custom_constants/separation = 10
 
 [node name="FPS" type="Label" parent="CenterContainer/StateLabels"]
 margin_right = 740.0
-margin_bottom = 33.0
+margin_bottom = 39.0
 text = "FPS: 60"
-script = SubResource( 4 )
+script = SubResource( 2 )
 
 [node name="LinearVelocity" type="RichTextLabel" parent="CenterContainer/StateLabels"]
-margin_top = 43.0
+margin_top = 49.0
 margin_right = 740.0
-margin_bottom = 98.0
+margin_bottom = 104.0
 rect_min_size = Vector2( 740, 55 )
 bbcode_enabled = true
 bbcode_text = "[color=aqua]SSpd: 000.000, 000.000, 000.000 m/s[/color]"
 text = "SSpd: 000.000, 000.000, 000.000 m/s"
 
 [node name="AngularVelocity" type="RichTextLabel" parent="CenterContainer/StateLabels"]
-margin_top = 108.0
+margin_top = 114.0
 margin_right = 740.0
-margin_bottom = 163.0
+margin_bottom = 169.0
 rect_min_size = Vector2( 740, 55 )
 bbcode_enabled = true
 bbcode_text = "[color=aqua]SSpd: 000.000, 000.000, 000.000 m/s[/color]"
 text = "SSpd: 000.000, 000.000, 000.000 m/s"
 
 [node name="SetSpeed" type="RichTextLabel" parent="CenterContainer/StateLabels"]
-margin_top = 173.0
+margin_top = 179.0
 margin_right = 740.0
-margin_bottom = 228.0
+margin_bottom = 234.0
 rect_min_size = Vector2( 740, 55 )
 bbcode_enabled = true
 bbcode_text = "[color=aqua]SSpd: 000.000, 000.000, 000.000 m/s[/color]"
 text = "SSpd: 000.000, 000.000, 000.000 m/s"
 
 [node name="LinearInput" type="RichTextLabel" parent="CenterContainer/StateLabels"]
-margin_top = 238.0
+margin_top = 244.0
 margin_right = 740.0
-margin_bottom = 293.0
+margin_bottom = 299.0
 rect_min_size = Vector2( 740, 55 )
 bbcode_enabled = true
 bbcode_text = "[color=aqua]SSpd: 000.000, 000.000, 000.000 m/s[/color]"
 text = "SSpd: 000.000, 000.000, 000.000 m/s"
 
 [node name="AngularInput" type="RichTextLabel" parent="CenterContainer/StateLabels"]
-margin_top = 303.0
+margin_top = 309.0
 margin_right = 740.0
-margin_bottom = 358.0
+margin_bottom = 364.0
 rect_min_size = Vector2( 740, 55 )
 bbcode_enabled = true
 bbcode_text = "[color=aqua]SSpd: 000.000, 000.000, 000.000 m/s[/color]"
 text = "SSpd: 000.000, 000.000, 000.000 m/s"
 
 [node name="LinearFlame" type="RichTextLabel" parent="CenterContainer/StateLabels"]
-margin_top = 368.0
+margin_top = 374.0
 margin_right = 740.0
-margin_bottom = 423.0
+margin_bottom = 429.0
 rect_min_size = Vector2( 740, 55 )
 bbcode_enabled = true
 bbcode_text = "[color=aqua]SSpd: 000.000, 000.000, 000.000 m/s[/color]"
 text = "SSpd: 000.000, 000.000, 000.000 m/s"
 
 [node name="AngularFlame" type="RichTextLabel" parent="CenterContainer/StateLabels"]
-margin_top = 433.0
+margin_top = 439.0
 margin_right = 740.0
-margin_bottom = 488.0
+margin_bottom = 494.0
 rect_min_size = Vector2( 740, 55 )
 bbcode_enabled = true
 bbcode_text = "[color=aqua]SSpd: 000.000, 000.000, 000.000 m/s[/color]"

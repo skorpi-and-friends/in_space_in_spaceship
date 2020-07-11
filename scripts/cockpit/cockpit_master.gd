@@ -3,7 +3,8 @@ extends Spatial
 class_name CockpitMaster
 
 onready var _displays:Array = [
-	$"Main Display/Viewport/MainCkpitDsp"
+	$"MainDisplay/Viewport/MainCkpitDsp",
+	$"ArmsDisplay/Viewport/ArmsCkpitDsp",
 ];
 
 export var _camera_path: NodePath;
@@ -20,6 +21,7 @@ func set_craft(craft: CraftMaster):
 		var ckpit_display := display as CockpitDisplay;
 		assert(ckpit_display);
 		ckpit_display.craft = craft;
+		ckpit_display._ready_display();
 
 func enable_cockpit():
 	if enabled:

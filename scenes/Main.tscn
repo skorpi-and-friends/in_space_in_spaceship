@@ -135,7 +135,6 @@ shadow_enabled = true
 script = ExtResource( 3 )
 
 [node name="PlayerMind" type="Node" parent="."]
-editor/display_folded = true
 script = ExtResource( 4 )
 
 [node name="CameraFacingDebug" type="Spatial" parent="PlayerMind"]
@@ -182,7 +181,6 @@ mesh = SubResource( 10 )
 material/0 = null
 
 [node name="GroupMind" type="Node" parent="."]
-editor/display_folded = true
 script = ExtResource( 8 )
 
 [node name="FollowWaypoint" type="Node" parent="GroupMind"]

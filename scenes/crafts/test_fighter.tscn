@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=2]
+[gd_scene load_steps=15 format=2]
 
 [ext_resource path="res://scenes/crafts/craft_template.tscn" type="PackedScene" id=1]
 [ext_resource path="res://craft_configs/test_craft.tres" type="Resource" id=2]
@@ -9,6 +9,7 @@
 [ext_resource path="res://scripts/attire/attire_profile.gd" type="Script" id=7]
 [ext_resource path="res://scripts/attire/attire.gd" type="Script" id=8]
 [ext_resource path="res://scenes/crafts/cockpit.tscn" type="PackedScene" id=9]
+[ext_resource path="res://mesh/ball_fighter.dae" type="PackedScene" id=10]
 
 [sub_resource type="SphereMesh" id=1]
 radius = 4.0
@@ -20,6 +21,15 @@ radius = 4.0
 [sub_resource type="SpatialMaterial" id=3]
 albedo_color = Color( 1, 0, 0, 1 )
 roughness = 0.0
+
+[sub_resource type="SpatialMaterial" id=4]
+albedo_color = Color( 0.878431, 0.843137, 0, 0.145098 )
+metallic = 0.5
+emission_enabled = true
+emission = Color( 0.513726, 0.133333, 0, 1 )
+emission_energy = 2.68
+emission_operator = 0
+emission_on_uv2 = false
 
 [node name="TestFighter" instance=ExtResource( 1 )]
 _config = ExtResource( 2 )
@@ -50,10 +60,10 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2 )
 script = ExtResource( 5 )
 
 [node name="GOCannon" parent="Arms/Primary" index="0" instance=ExtResource( 6 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0, 1 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 2.25, 0, 1 )
 
 [node name="GOCannon2" parent="Arms/Primary" index="1" instance=ExtResource( 6 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, 1 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -2.25, 0, 1 )
 
 [node name="Attire" parent="." index="4"]
 editor/display_folded = true
@@ -68,11 +78,12 @@ script = ExtResource( 8 )
 shape = SubResource( 2 )
 
 [node name="Cockpit" parent="." index="5" instance=ExtResource( 9 )]
-transform = Transform( -1, 0, -8.74228e-008, 0, 1, 0, 8.74228e-008, 0, -1, 0, 0.39, 3.225 )
+transform = Transform( -1, 0, -8.74228e-008, 0, 1, 0, 8.74228e-008, 0, -1, -5.1086e-008, 0.39, 2.64064 )
 
 [node name="Mesh" type="CSGCombiner" parent="." index="6"]
 editor/display_folded = true
 transform = Transform( 4, 0, 0, 0, 4, 0, 0, 0, 4, 0, 0, 0 )
+visible = false
 
 [node name="Cockpit" type="CSGSphere" parent="Mesh" index="0"]
 material = SubResource( 3 )
@@ -162,3 +173,13 @@ depth = 1.6
 
 [node name="CollisionShape" type="CollisionShape" parent="." index="7"]
 shape = SubResource( 2 )
+
+[node name="Mesh2" parent="." index="8" instance=ExtResource( 10 )]
+
+[node name="ExhaustGridMainVertical001" parent="Mesh2" index="0"]
+material_override = SubResource( 4 )
+
+[node name="ExhaustGrid Secondary001" parent="Mesh2" index="1"]
+material_override = SubResource( 4 )
+
+[editable path="Mesh2"]
