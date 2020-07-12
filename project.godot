@@ -9,6 +9,11 @@
 config_version=4
 
 _global_script_classes=[ {
+"base": "NameLabelHolo",
+"class": "AmmoCounterHolo",
+"language": "GDScript",
+"path": "res://scripts/cockpit/arm_holos/ammo_counter_holo.gd"
+}, {
 "base": "Spatial",
 "class": "ArmamentMaster",
 "language": "GDScript",
@@ -42,7 +47,12 @@ _global_script_classes=[ {
 "base": "CockpitDisplay",
 "class": "CkpitArms",
 "language": "GDScript",
-"path": "res://scripts/ui/arms_display.gd"
+"path": "res://scripts/cockpit/arms_display.gd"
+}, {
+"base": "CockpitDisplay",
+"class": "CkpitAttire",
+"language": "GDScript",
+"path": "res://scripts/cockpit/attire_display.gd"
 }, {
 "base": "CockpitDisplay",
 "class": "CkpitMain",
@@ -92,7 +102,7 @@ _global_script_classes=[ {
 "base": "Control",
 "class": "CraftInterface",
 "language": "GDScript",
-"path": "res://scripts/craft_interface.gd"
+"path": "res://scripts/ui/craft_interface.gd"
 }, {
 "base": "RigidBody",
 "class": "CraftMaster",
@@ -128,6 +138,11 @@ _global_script_classes=[ {
 "class": "MasterMind",
 "language": "GDScript",
 "path": "res://scripts/ai/master_mind.gd"
+}, {
+"base": "WeaponHolo",
+"class": "NameLabelHolo",
+"language": "GDScript",
+"path": "res://scripts/cockpit/arm_holos/name_label_holo.gd"
 }, {
 "base": "Node",
 "class": "PIDControllerVector",
@@ -177,9 +192,10 @@ _global_script_classes=[ {
 "base": "Control",
 "class": "WeaponHolo",
 "language": "GDScript",
-"path": "res://scripts/ui/weapon_holo.gd"
+"path": "res://scripts/cockpit/arm_holos/weapon_holo.gd"
 } ]
 _global_script_class_icons={
+"AmmoCounterHolo": "",
 "ArmamentMaster": "",
 "Attire": "",
 "AttireMaster": "",
@@ -187,6 +203,7 @@ _global_script_class_icons={
 "BehaviorNode": "",
 "Boid": "",
 "CkpitArms": "",
+"CkpitAttire": "",
 "CkpitMain": "",
 "CockpitDisplay": "",
 "CockpitMaster": "",
@@ -204,6 +221,7 @@ _global_script_class_icons={
 "Damage": "",
 "GroupMind": "",
 "MasterMind": "",
+"NameLabelHolo": "",
 "PIDControllerVector": "",
 "PlayerMind": "",
 "ScanPresence": "",
@@ -225,6 +243,10 @@ config/icon="res://icon.png"
 [autoload]
 
 Globals="*res://scripts/isis_globals.gd"
+
+[display]
+
+window/size/always_on_top=true
 
 [input]
 
@@ -338,5 +360,5 @@ Thrust={
 
 [rendering]
 
-quality/driver/fallback_to_gles2=true
+threads/thread_model=2
 environment/default_environment="res://enviroments/daytime_sky.tres"

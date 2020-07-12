@@ -1,0 +1,113 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://themes/craft_holo_main.tres" type="Theme" id=1]
+[ext_resource path="res://scripts/cockpit/attire_display.gd" type="Script" id=2]
+
+[sub_resource type="StyleBoxFlat" id=1]
+bg_color = Color( 0.145098, 0.423529, 0.623529, 1 )
+border_width_left = 21
+border_width_top = 21
+border_width_right = 21
+border_width_bottom = 21
+border_color = Color( 0.8, 0.8, 0.8, 0 )
+
+[sub_resource type="StyleBoxFlat" id=2]
+draw_center = false
+border_width_left = 21
+border_width_top = 21
+border_width_right = 21
+border_width_bottom = 21
+border_color = Color( 0.8, 0.8, 0.8, 0.423529 )
+
+[node name="AttireCkpitDisplay" type="GridContainer"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme = ExtResource( 1 )
+columns = 3
+script = ExtResource( 2 )
+
+[node name="Space" type="Control" parent="."]
+margin_right = 338.0
+margin_bottom = 197.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Bow" type="ProgressBar" parent="."]
+margin_left = 342.0
+margin_right = 680.0
+margin_bottom = 197.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+custom_styles/fg = SubResource( 1 )
+custom_styles/bg = SubResource( 2 )
+value = 50.0
+percent_visible = false
+
+[node name="Space3" type="Control" parent="."]
+margin_left = 684.0
+margin_right = 1022.0
+margin_bottom = 197.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Port" type="ProgressBar" parent="."]
+margin_top = 201.0
+margin_right = 338.0
+margin_bottom = 398.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+custom_styles/fg = SubResource( 1 )
+custom_styles/bg = SubResource( 2 )
+value = 50.0
+percent_visible = false
+
+[node name="Omni" type="ProgressBar" parent="."]
+margin_left = 342.0
+margin_top = 201.0
+margin_right = 680.0
+margin_bottom = 398.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+custom_styles/fg = SubResource( 1 )
+custom_styles/bg = SubResource( 2 )
+value = 50.0
+percent_visible = false
+
+[node name="Starboard" type="ProgressBar" parent="."]
+margin_left = 684.0
+margin_top = 201.0
+margin_right = 1022.0
+margin_bottom = 398.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+custom_styles/fg = SubResource( 1 )
+custom_styles/bg = SubResource( 2 )
+value = 50.0
+percent_visible = false
+
+[node name="Space7" type="Control" parent="."]
+margin_top = 402.0
+margin_right = 338.0
+margin_bottom = 599.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Stern" type="ProgressBar" parent="."]
+margin_left = 342.0
+margin_top = 402.0
+margin_right = 680.0
+margin_bottom = 599.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+custom_styles/fg = SubResource( 1 )
+custom_styles/bg = SubResource( 2 )
+value = 50.0
+percent_visible = false
+
+[node name="Space9" type="Control" parent="."]
+margin_left = 684.0
+margin_top = 402.0
+margin_right = 1022.0
+margin_bottom = 599.0
+size_flags_horizontal = 3
+size_flags_vertical = 3

@@ -10,6 +10,10 @@
 - [ ] attire
   - [ ] collision damage detection
     - [ ] contact reporting
+ - [ ] cockpit
+	- [ ] engine display
+	- [ ] arms display
+	- [ ] attire display
 - [ ] ai
 
 ## design-doc

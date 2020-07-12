@@ -3,8 +3,9 @@ extends Spatial
 class_name CockpitMaster
 
 onready var _displays:Array = [
-	$"MainDisplay/Viewport/MainCkpitDsp",
-	$"ArmsDisplay/Viewport/ArmsCkpitDsp",
+	find_node("MainCkpitDsp", true),
+	find_node("ArmsCkpitDsp", true),
+	find_node("AttireCkpitDisplay", true),
 ];
 
 export var _camera_path: NodePath;
