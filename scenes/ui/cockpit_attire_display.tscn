@@ -1,23 +1,40 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://themes/craft_holo_main.tres" type="Theme" id=1]
 [ext_resource path="res://scripts/cockpit/attire_display.gd" type="Script" id=2]
+[ext_resource path="res://scripts/cockpit/attire_profile_display.gd" type="Script" id=3]
 
 [sub_resource type="StyleBoxFlat" id=1]
-bg_color = Color( 0.145098, 0.423529, 0.623529, 1 )
-border_width_left = 21
-border_width_top = 21
-border_width_right = 21
-border_width_bottom = 21
+bg_color = Color( 0.7, 0.13, 0.13, 1 )
+border_width_left = 10
+border_width_top = 10
+border_width_right = 10
+border_width_bottom = 10
 border_color = Color( 0.8, 0.8, 0.8, 0 )
 
 [sub_resource type="StyleBoxFlat" id=2]
 draw_center = false
-border_width_left = 21
-border_width_top = 21
-border_width_right = 21
-border_width_bottom = 21
+border_width_left = 10
+border_width_top = 10
+border_width_right = 10
+border_width_bottom = 10
 border_color = Color( 0.8, 0.8, 0.8, 0.423529 )
+
+[sub_resource type="StyleBoxFlat" id=3]
+bg_color = Color( 1, 0.5, 0.31, 1 )
+border_width_left = 10
+border_width_top = 10
+border_width_right = 10
+border_width_bottom = 10
+border_color = Color( 0.8, 0.8, 0.8, 0 )
+
+[sub_resource type="StyleBoxFlat" id=4]
+bg_color = Color( 0.145098, 0.423529, 0.623529, 1 )
+border_width_left = 10
+border_width_top = 10
+border_width_right = 10
+border_width_bottom = 10
+border_color = Color( 0.8, 0.8, 0.8, 0 )
 
 [node name="AttireCkpitDisplay" type="GridContainer"]
 anchor_right = 1.0
@@ -32,13 +49,40 @@ margin_bottom = 197.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="Bow" type="ProgressBar" parent="."]
+[node name="Bow" type="MarginContainer" parent="."]
 margin_left = 342.0
 margin_right = 680.0
 margin_bottom = 197.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
+script = ExtResource( 3 )
+
+[node name="Hull" type="ProgressBar" parent="Bow"]
+margin_right = 338.0
+margin_bottom = 197.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
 custom_styles/fg = SubResource( 1 )
+custom_styles/bg = SubResource( 2 )
+value = 100.0
+percent_visible = false
+
+[node name="Armour" type="ProgressBar" parent="Bow"]
+margin_right = 338.0
+margin_bottom = 197.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+custom_styles/fg = SubResource( 3 )
+custom_styles/bg = SubResource( 2 )
+value = 75.0
+percent_visible = false
+
+[node name="Shield" type="ProgressBar" parent="Bow"]
+margin_right = 338.0
+margin_bottom = 197.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+custom_styles/fg = SubResource( 4 )
 custom_styles/bg = SubResource( 2 )
 value = 50.0
 percent_visible = false
@@ -50,10 +94,18 @@ margin_bottom = 197.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="Port" type="ProgressBar" parent="."]
+[node name="Port" type="MarginContainer" parent="."]
+editor/display_folded = true
 margin_top = 201.0
 margin_right = 338.0
 margin_bottom = 398.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource( 3 )
+
+[node name="Hull" type="ProgressBar" parent="Port"]
+margin_right = 338.0
+margin_bottom = 197.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 custom_styles/fg = SubResource( 1 )
@@ -61,28 +113,104 @@ custom_styles/bg = SubResource( 2 )
 value = 50.0
 percent_visible = false
 
-[node name="Omni" type="ProgressBar" parent="."]
+[node name="Armour" type="ProgressBar" parent="Port"]
+margin_right = 338.0
+margin_bottom = 197.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+custom_styles/fg = SubResource( 3 )
+custom_styles/bg = SubResource( 2 )
+value = 50.0
+percent_visible = false
+
+[node name="Shield" type="ProgressBar" parent="Port"]
+margin_right = 338.0
+margin_bottom = 197.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+custom_styles/fg = SubResource( 4 )
+custom_styles/bg = SubResource( 2 )
+value = 61.85
+percent_visible = false
+
+[node name="Omni" type="MarginContainer" parent="."]
+editor/display_folded = true
 margin_left = 342.0
 margin_top = 201.0
 margin_right = 680.0
 margin_bottom = 398.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
+script = ExtResource( 3 )
+
+[node name="Hull" type="ProgressBar" parent="Omni"]
+margin_right = 338.0
+margin_bottom = 197.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
 custom_styles/fg = SubResource( 1 )
 custom_styles/bg = SubResource( 2 )
 value = 50.0
 percent_visible = false
 
-[node name="Starboard" type="ProgressBar" parent="."]
+[node name="Armour" type="ProgressBar" parent="Omni"]
+margin_right = 338.0
+margin_bottom = 197.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+custom_styles/fg = SubResource( 3 )
+custom_styles/bg = SubResource( 2 )
+value = 50.0
+percent_visible = false
+
+[node name="Shield" type="ProgressBar" parent="Omni"]
+margin_right = 338.0
+margin_bottom = 197.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+custom_styles/fg = SubResource( 4 )
+custom_styles/bg = SubResource( 2 )
+value = 61.85
+percent_visible = false
+
+[node name="Starboard" type="MarginContainer" parent="."]
+editor/display_folded = true
 margin_left = 684.0
 margin_top = 201.0
 margin_right = 1022.0
 margin_bottom = 398.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
+script = ExtResource( 3 )
+
+[node name="Hull" type="ProgressBar" parent="Starboard"]
+margin_right = 338.0
+margin_bottom = 197.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
 custom_styles/fg = SubResource( 1 )
 custom_styles/bg = SubResource( 2 )
 value = 50.0
+percent_visible = false
+
+[node name="Armour" type="ProgressBar" parent="Starboard"]
+margin_right = 338.0
+margin_bottom = 197.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+custom_styles/fg = SubResource( 3 )
+custom_styles/bg = SubResource( 2 )
+value = 50.0
+percent_visible = false
+
+[node name="Shield" type="ProgressBar" parent="Starboard"]
+margin_right = 338.0
+margin_bottom = 197.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+custom_styles/fg = SubResource( 4 )
+custom_styles/bg = SubResource( 2 )
+value = 61.85
 percent_visible = false
 
 [node name="Space7" type="Control" parent="."]
@@ -92,16 +220,44 @@ margin_bottom = 599.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="Stern" type="ProgressBar" parent="."]
+[node name="Stern" type="MarginContainer" parent="."]
+editor/display_folded = true
 margin_left = 342.0
 margin_top = 402.0
 margin_right = 680.0
 margin_bottom = 599.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
+script = ExtResource( 3 )
+
+[node name="Hull" type="ProgressBar" parent="Stern"]
+margin_right = 338.0
+margin_bottom = 197.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
 custom_styles/fg = SubResource( 1 )
 custom_styles/bg = SubResource( 2 )
 value = 50.0
+percent_visible = false
+
+[node name="Armour" type="ProgressBar" parent="Stern"]
+margin_right = 338.0
+margin_bottom = 197.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+custom_styles/fg = SubResource( 3 )
+custom_styles/bg = SubResource( 2 )
+value = 50.0
+percent_visible = false
+
+[node name="Shield" type="ProgressBar" parent="Stern"]
+margin_right = 338.0
+margin_bottom = 197.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+custom_styles/fg = SubResource( 4 )
+custom_styles/bg = SubResource( 2 )
+value = 61.85
 percent_visible = false
 
 [node name="Space9" type="Control" parent="."]

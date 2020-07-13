@@ -1,31 +1,15 @@
 extends CraftDriver
 
-var _linear_pid: PIDControllerVector;
-var _angular_pid: PIDControllerVector;
+var _linear_pid :=  PIDControllerVector.new();
+var _angular_pid := PIDControllerVector.new();
 
 
 func _init_from_config(config: CraftConfig):
 	# call method on base class
 	._init_from_config(config);
 	
-#	if $LinearPID:
-#		_linear_pid = $LinearPID;
-#	else:
-#		_linear_pid = PIDControllerVector.new()
-#		add_child(_linear_pid, false);
-#
-#	if $AngularPID:
-#		_linear_pid = $AngularPID;
-#	else:
-#		_angular_pid = PIDControllerVector.new()
-#		add_child(_angular_pid, false);
 	_angular_input_multiplier = config.angular_input_multiplier;
 	_linear_input_multiplier = config.linear_input_multiplier;
-
-	# look for pid childern. Only usefull for viewing the pid state at runtime i.e.
-	# we don't need to add new children if not found.
-	_linear_pid = ($LinearPID as PIDControllerVector) if has_node("LinearPID") else PIDControllerVector.new();
-	_angular_pid = ($AngularPID as PIDControllerVector) if has_node("AngularPID") else PIDControllerVector.new();
 	
 	# init linear pid state
 	_linear_pid.integrat_max = Vector3.ONE * config.linear_integrat_max;
@@ -64,7 +48,7 @@ func _moi_changed(state: CraftState):
 
 func _update_flames(state: CraftState):
 	state.linear_input *= _linear_input_multiplier;
-	state.angular_flame *= _angular_input_multiplier;
+	state.angular_input *= _angular_input_multiplier;
 	update_linear_flames(state);
 	update_angular_flames(state);
 
@@ -106,7 +90,7 @@ func update_linear_flames(state: CraftState):
 	
 	# step the driver to calcuate the flame
 	var linear_flame_vector := pid.update(
-		linear_input,
+		state.linear_velocity,
 		linear_input - state.linear_velocity, # error
 		1
 	);
@@ -148,7 +132,7 @@ func update_angular_flames(state: CraftState):
 	
 	# step the driver to calcuate the flame
 	var angular_flame_vector := pid.update(
-		angular_input,
+		state.angular_velocity,
 		angular_input - state.angular_velocity, # error
 		1
 	);

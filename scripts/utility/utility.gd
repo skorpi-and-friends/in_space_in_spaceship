@@ -136,17 +136,21 @@ static func deg2rad_ve2c(vector: Vector2) -> Vector2:
 
 
 static func delta_angle_deg(a: float, b: float) -> float:
-	var lpea_a := lowest_pos_equivalent_angle(a);
-	var lpea_b := lowest_pos_equivalent_angle(b);
+	var lpea_a := smallest_postive_equivalent_angle_deg(a);
+	var lpea_b := smallest_postive_equivalent_angle_deg(b);
 	var result := abs(lpea_a - lpea_b);
-	if result < 0.00001 && (lpea_a == 180 || lpea_b == 180):
-		return 180.0;
-	return result;
+	return result - 360 if result > 180 else result;
+#	return abs(result - 360) if result > 180 else result;
+
 
 static func delta_angle_rad(a: float, b: float) -> float:
-	return delta_angle_deg(rad2deg(a), rad2deg(b)) * DEG2RAD;
+	var lpea_a := smallest_postive_equivalent_angle_rad(a);
+	var lpea_b := smallest_postive_equivalent_angle_rad(b);
+	var result := abs(lpea_a - lpea_b);
+	return abs(result - TAU) if result > PI else result;
 
-static func lowest_equivalent_angle(angle: float) -> float:
+
+static func smallest_equivalent_angle_deg(angle: float) -> float:
 	angle = fmod(angle, 360.0);
 	if angle > 180:
 		angle -= 360;
@@ -155,10 +159,26 @@ static func lowest_equivalent_angle(angle: float) -> float:
 	return angle;
 
 
-static func lowest_pos_equivalent_angle(angle: float) -> float:
+static func smallest_equivalent_angle_rad(angle: float) -> float:
+	angle = fmod(angle, TAU);
+	if angle <= -PI:
+		angle += TAU;
+	elif angle > PI:
+		angle -= TAU;
+	return angle;
+
+
+static func smallest_postive_equivalent_angle_deg(angle: float) -> float:
 	angle = fmod(angle, 360.0);
 	if angle < 0:
 		return 360 + angle;
+	return angle;
+
+
+static func smallest_postive_equivalent_angle_rad(angle: float) -> float:
+	angle = fmod(angle, TAU);
+	if angle < 0:
+		return angle + TAU;
 	return angle;
 
 

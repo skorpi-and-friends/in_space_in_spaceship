@@ -12,8 +12,8 @@ onready var _ainput_label := find_node("AngularInput") as Label;
 onready var _lflame_label := find_node("LinearFlame") as Label;
 onready var _aflame_label := find_node("AngularFlame") as Label;
 
-onready var _cam_pitch_label := find_node("Pitch") as Label;
-onready var _cam_yaw_label := find_node("Yaw") as Label;
+onready var _any_display_label := find_node("Any") as Label;
+onready var time_graph := find_node("Graph") as TimeGraph;
 
 func _process(delta):
 	if !_player:
@@ -27,6 +27,5 @@ func _process(delta):
 	_lflame_label.text = "LFlm: %s m/ss" % Utility.format_vector_std(state.linear_flame);
 	_aflame_label.text = "AFlm: %s m/ss" % Utility.format_vector_std(state.angular_flame);
 	var display := _player.orbit_camera.facing_direction;
-	_cam_pitch_label.text = "Display: %s" % display;
-	return;
-#	_cam_yaw_label.text = "Yaw: %s" % camera._orbit_angles.y;
+	_any_display_label.text = "Display: %s" %_player.graph_value# display;
+	time_graph.push_point(_player.graph_value);

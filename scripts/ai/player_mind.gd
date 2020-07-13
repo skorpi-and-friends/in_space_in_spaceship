@@ -12,6 +12,8 @@ export var _camera_free_look := false;
 onready var craft_master: CraftMaster;
 onready var orbit_camera := $Camera as CraftCamera;
 
+onready var _rotation_pid := PIDControllerVector.new();
+
 # gets switched to COCKPIT in ready
 export(InterfaceMode) var i_mode := InterfaceMode.ORBIT; 
 
@@ -26,8 +28,10 @@ func _ready():
 	# use the function to properly set COCKPIT mode
 	switch_interface_mode();
 
+
 func _process(delta):
 	updatecraft_master_input(delta);
+
 
 func _input(event: InputEvent):
 	if event.is_action_pressed("Fire Primary"):
@@ -108,8 +112,49 @@ func updatecraft_master_input(delta):
 	elif !state.limit_forward_v:
 		linear_input.z = INF;
 	
+	"""
 	state.linear_input = linear_input;
+	var rotation_command := Vector3();
+	if Input.is_action_pressed("Roll Right"):
+		rotation_command.z += 90
+	if Input.is_action_pressed("Roll Left"):
+		rotation_command.z -= 90
+	if Input.is_action_pressed("Pitch Up"):
+		rotation_command.x -= 90
+	if Input.is_action_pressed("Pitch Down"):
+		rotation_command.x += 90
+	if Input.is_action_pressed("Yaw Left"):
+		rotation_command.y += 90
+	if Input.is_action_pressed("Yaw Right"):
+		rotation_command.y -= 90
 	
+	var current_rotaion = craft_master.rotation * Utility.RAD2DEG;
+	rotation_command += current_rotaion;
+	var angular_input := (_rotation_pid.update(
+			Vector3( # state
+				Utility.smallest_postive_equivalent_angle_deg(current_rotaion.x), 
+				Utility.smallest_postive_equivalent_angle_deg(current_rotaion.y), 
+				Utility.smallest_postive_equivalent_angle_deg(current_rotaion.z)
+				),
+			Vector3( # error
+				Utility.delta_angle_deg(current_rotaion.x, rotation_command.x), 
+				Utility.delta_angle_deg(current_rotaion.y, rotation_command.y), 
+				Utility.delta_angle_deg(current_rotaion.z, rotation_command.z)
+				),
+			delta));
+	state.angular_input = angular_input * Utility.DEG2RAD;
+	
+	if i_mode == InterfaceMode.ORBIT:
+		
+		if !_camera_free_look: # we're using the mouse for movement
+			angular_input += face_dir_angular_input(
+					orbit_camera.facing_direction, craft_master.global_transform); 
+			graph_value = angular_input.y;
+		
+	
+	
+	"""
+	state.linear_input = linear_input;
 	var angular_input := Vector3();
 	if Input.is_action_pressed("Roll Right"):
 		angular_input.z += 1
@@ -126,14 +171,17 @@ func updatecraft_master_input(delta):
 	angular_input *= state.angular_v_limit;
 	
 	if i_mode == InterfaceMode.ORBIT:
-		if !_camera_free_look:
+		if !_camera_free_look: # we're using the mouse for movement
 			angular_input += face_dir_angular_input(
 					orbit_camera.facing_direction, craft_master.global_transform); 
+			graph_value = angular_input.y;
 #	angular_input *= state.angular_v_limit;
 #	angular_input *= delta;
-	
 	state.angular_input = angular_input;
 
+
+
+var graph_value: float
 
 func switch_interface_mode():
 	var cockpit := craft_master.cockpit as CockpitMaster;

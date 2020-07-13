@@ -78,6 +78,7 @@ func _input(event):
 	if !mouse_event:
 		return;
 	
+	# negate the motion
 	var mouse_motion := -mouse_event.relative;
 	
 	mouse_motion *= (rotation_speed * 0.2 *get_process_delta_time());
@@ -95,6 +96,7 @@ func _input(event):
 	# check if abs(direction_transformed_by_target.y) == 1
 	if 1 - abs(_target_rotation.xform(new_dir+facing_offset).y) < 0.05: 
 		return;
+	
 	facing_direction = new_dir;
 	
 	# disables auto align so that the manual align

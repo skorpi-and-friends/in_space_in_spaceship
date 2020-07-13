@@ -34,6 +34,11 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://scripts/attire/attire_profile.gd"
 }, {
+"base": "MarginContainer",
+"class": "AttireProfileDisplay",
+"language": "GDScript",
+"path": "res://scripts/cockpit/attire_profile_display.gd"
+}, {
 "base": "Node",
 "class": "BehaviorNode",
 "language": "GDScript",
@@ -82,7 +87,7 @@ _global_script_classes=[ {
 "base": "Camera",
 "class": "CraftCameraAngle",
 "language": "GDScript",
-"path": "res://scripts/craft_camera_vec.gd"
+"path": "res://scripts/craft_camera_angle.gd"
 }, {
 "base": "Resource",
 "class": "CraftConfig",
@@ -174,6 +179,11 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://scripts/ai/steering_behaviors.gd"
 }, {
+"base": "MarginContainer",
+"class": "TimeGraph",
+"language": "GDScript",
+"path": "res://scripts/ui/time_graph.gd"
+}, {
 "base": "Object",
 "class": "Utility",
 "language": "GDScript",
@@ -200,6 +210,7 @@ _global_script_class_icons={
 "Attire": "",
 "AttireMaster": "",
 "AttireProfile": "",
+"AttireProfileDisplay": "",
 "BehaviorNode": "",
 "Boid": "",
 "CkpitArms": "",
@@ -228,6 +239,7 @@ _global_script_class_icons={
 "Shell": "",
 "SimpleMotorAcceleration": "",
 "SteerBhvrs": "",
+"TimeGraph": "",
 "Utility": "",
 "Weapon": "",
 "WeaponCombiner": "",

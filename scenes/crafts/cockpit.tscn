@@ -8,6 +8,7 @@
 [ext_resource path="res://scenes/ui/cockpit_attire_display.tscn" type="PackedScene" id=6]
 [ext_resource path="res://scenes/human_prop.tscn" type="PackedScene" id=7]
 
+
 [sub_resource type="ViewportTexture" id=1]
 viewport_path = NodePath("MainDisplay/Viewport")
 

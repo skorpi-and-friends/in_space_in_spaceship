@@ -11,6 +11,7 @@
 [ext_resource path="res://scenes/crafts/test_corvette.tscn" type="PackedScene" id=9]
 [ext_resource path="res://scenes/human_prop.tscn" type="PackedScene" id=10]
 
+
 [sub_resource type="CapsuleMesh" id=1]
 
 [sub_resource type="CapsuleShape" id=2]
@@ -156,7 +157,6 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 0.999999, 0, 0, 85.892 )
 [node name="Camera" type="Camera" parent="PlayerMind"]
 editor/display_folded = true
 transform = Transform( -1, -7.04996e-009, -1.1443e-007, -8.00021e-008, 0.757834, 0.652447, 8.21191e-008, 0.652447, -0.757834, 15.6678, 24.5213, 34.1868 )
-visible = false
 far = 8192.0
 script = ExtResource( 7 )
 distance = 15.0
