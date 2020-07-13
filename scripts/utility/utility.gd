@@ -62,7 +62,7 @@ static func face_direction(tform:Transform, direction: Vector3, up: Vector3) -> 
 	return tform.looking_at((tform.origin - direction), up);
 	
 # FIXME: this horrible hack
-static func get_basis_facing_direction(forward: Vector3, 
+static func get_basis_facing_direction(forward: Vector3,
 		upward: Vector3 = Vector3.UP) -> Basis:
 	# use negeative direction since looking_at align the -Z axis
 	return Transform().looking_at(-forward, upward).basis;
@@ -86,8 +86,46 @@ static func format_vector(
 
 static func format_vector_std(vector: Vector3) -> String:
 #	return format_vector("%+003.5f",vector);
-	return format_vector("%+03.3f",vector);
+#	return format_vector("%+03.3f",vector);
+	return _format_vector_std_special(vector);
 
+
+static func _format_vector_std_special(vector: Vector3) -> String:
+	var x_split :=("%0.3f" % vector.x).split(".");
+	var y_split := ("%0.3f" % vector.y).split(".");
+	var z_split := ("%0.3f" % vector.z).split(".")
+	return "({xw}.{xf}, {yw}.{yf}, {zw}.{zf})".format({
+				"xw" : "%+03d" % int(x_split[0]),
+				"xf" : x_split[1],
+				"yw" : "%+03d" % int(y_split[0]),
+				"yf" : y_split[1],
+				"zw" : "%+03d" % int(z_split[0]),
+				"zf" : z_split[1]
+		});
+
+
+static func format_vector_rich(vector: Vector3, 
+		postive_color = Color.coral,
+		negative_color = Color.firebrick) -> String:
+	return "%s, %s, %s" % [
+			float_str_sign_colored(vector.x, postive_color, negative_color),
+			float_str_sign_colored(vector.y, postive_color, negative_color),
+			float_str_sign_colored(vector.z, postive_color, negative_color)
+		];
+
+static func float_str_sign_colored(number: float, 
+		postive_color: Color = Color.coral,
+		negative_color: Color = Color.firebrick) -> String:
+	var color := negative_color if sign(number) < 0 else postive_color;
+	return "[color=#{c}]{w}.{f}[/color]".format({
+			"c" : color.to_html(),
+			# we must format again on the int
+			# to enable zero padding as the float formatter
+			# doesn't support that
+			# also use abs to remove any negative signs
+			"w" : "%03d" % abs(number),
+			"f" : ("%+0.3f" % number).split(".")[1]
+	});
 
 static func deg2rad_vec3(vector: Vector3) -> Vector3:
 	return Vector3(deg2rad(vector.x), deg2rad(vector.y), deg2rad(vector.z));
@@ -98,17 +136,21 @@ static func deg2rad_ve2c(vector: Vector2) -> Vector2:
 
 
 static func delta_angle_deg(a: float, b: float) -> float:
-	var lpea_a := lowest_pos_equivalent_angle(a);
-	var lpea_b := lowest_pos_equivalent_angle(b);
+	var lpea_a := smallest_postive_equivalent_angle_deg(a);
+	var lpea_b := smallest_postive_equivalent_angle_deg(b);
 	var result := abs(lpea_a - lpea_b);
-	if result < 0.00001 && (lpea_a == 180 || lpea_b == 180):
-		return 180.0;
-	return result;
+	return result - 360 if result > 180 else result;
+#	return abs(result - 360) if result > 180 else result;
+
 
 static func delta_angle_rad(a: float, b: float) -> float:
-	return delta_angle_deg(rad2deg(a), rad2deg(b)) * DEG2RAD;
+	var lpea_a := smallest_postive_equivalent_angle_rad(a);
+	var lpea_b := smallest_postive_equivalent_angle_rad(b);
+	var result := abs(lpea_a - lpea_b);
+	return abs(result - TAU) if result > PI else result;
 
-static func lowest_equivalent_angle(angle: float) -> float:
+
+static func smallest_equivalent_angle_deg(angle: float) -> float:
 	angle = fmod(angle, 360.0);
 	if angle > 180:
 		angle -= 360;
@@ -117,10 +159,26 @@ static func lowest_equivalent_angle(angle: float) -> float:
 	return angle;
 
 
-static func lowest_pos_equivalent_angle(angle: float) -> float:
+static func smallest_equivalent_angle_rad(angle: float) -> float:
+	angle = fmod(angle, TAU);
+	if angle <= -PI:
+		angle += TAU;
+	elif angle > PI:
+		angle -= TAU;
+	return angle;
+
+
+static func smallest_postive_equivalent_angle_deg(angle: float) -> float:
 	angle = fmod(angle, 360.0);
 	if angle < 0:
 		return 360 + angle;
+	return angle;
+
+
+static func smallest_postive_equivalent_angle_rad(angle: float) -> float:
+	angle = fmod(angle, TAU);
+	if angle < 0:
+		return angle + TAU;
 	return angle;
 
 

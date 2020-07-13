@@ -9,6 +9,11 @@
 config_version=4
 
 _global_script_classes=[ {
+"base": "NameLabelHolo",
+"class": "AmmoCounterHolo",
+"language": "GDScript",
+"path": "res://scripts/cockpit/arm_holos/ammo_counter_holo.gd"
+}, {
 "base": "Spatial",
 "class": "ArmamentMaster",
 "language": "GDScript",
@@ -29,6 +34,11 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://scripts/attire/attire_profile.gd"
 }, {
+"base": "MarginContainer",
+"class": "AttireProfileDisplay",
+"language": "GDScript",
+"path": "res://scripts/cockpit/attire_profile_display.gd"
+}, {
 "base": "Node",
 "class": "BehaviorNode",
 "language": "GDScript",
@@ -38,6 +48,31 @@ _global_script_classes=[ {
 "class": "Boid",
 "language": "GDScript",
 "path": "res://scripts/ai/contacts/boid.gd"
+}, {
+"base": "CockpitDisplay",
+"class": "CkpitArms",
+"language": "GDScript",
+"path": "res://scripts/cockpit/arms_display.gd"
+}, {
+"base": "CockpitDisplay",
+"class": "CkpitAttire",
+"language": "GDScript",
+"path": "res://scripts/cockpit/attire_display.gd"
+}, {
+"base": "CockpitDisplay",
+"class": "CkpitMain",
+"language": "GDScript",
+"path": "res://scripts/cockpit/main_display.gd"
+}, {
+"base": "Control",
+"class": "CockpitDisplay",
+"language": "GDScript",
+"path": "res://scripts/cockpit/cockpit_display.gd"
+}, {
+"base": "Spatial",
+"class": "CockpitMaster",
+"language": "GDScript",
+"path": "res://scripts/cockpit/cockpit_master.gd"
 }, {
 "base": "BehaviorNode",
 "class": "CompositeNode",
@@ -52,7 +87,7 @@ _global_script_classes=[ {
 "base": "Camera",
 "class": "CraftCameraAngle",
 "language": "GDScript",
-"path": "res://scripts/craft_camera_vec.gd"
+"path": "res://scripts/craft_camera_angle.gd"
 }, {
 "base": "Resource",
 "class": "CraftConfig",
@@ -69,10 +104,10 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://scripts/crafts/craft_engine.gd"
 }, {
-"base": "MarginContainer",
+"base": "Control",
 "class": "CraftInterface",
 "language": "GDScript",
-"path": "res://scripts/craft_interface.gd"
+"path": "res://scripts/ui/craft_interface.gd"
 }, {
 "base": "RigidBody",
 "class": "CraftMaster",
@@ -109,6 +144,11 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://scripts/ai/master_mind.gd"
 }, {
+"base": "WeaponHolo",
+"class": "NameLabelHolo",
+"language": "GDScript",
+"path": "res://scripts/cockpit/arm_holos/name_label_holo.gd"
+}, {
 "base": "Node",
 "class": "PIDControllerVector",
 "language": "GDScript",
@@ -139,6 +179,11 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://scripts/ai/steering_behaviors.gd"
 }, {
+"base": "MarginContainer",
+"class": "TimeGraph",
+"language": "GDScript",
+"path": "res://scripts/ui/time_graph.gd"
+}, {
 "base": "Object",
 "class": "Utility",
 "language": "GDScript",
@@ -153,14 +198,26 @@ _global_script_classes=[ {
 "class": "WeaponCombiner",
 "language": "GDScript",
 "path": "res://scripts/arms/weapon_combiner.gd"
+}, {
+"base": "Control",
+"class": "WeaponHolo",
+"language": "GDScript",
+"path": "res://scripts/cockpit/arm_holos/weapon_holo.gd"
 } ]
 _global_script_class_icons={
+"AmmoCounterHolo": "",
 "ArmamentMaster": "",
 "Attire": "",
 "AttireMaster": "",
 "AttireProfile": "",
+"AttireProfileDisplay": "",
 "BehaviorNode": "",
 "Boid": "",
+"CkpitArms": "",
+"CkpitAttire": "",
+"CkpitMain": "",
+"CockpitDisplay": "",
+"CockpitMaster": "",
 "CompositeNode": "",
 "CraftCamera": "",
 "CraftCameraAngle": "",
@@ -175,15 +232,18 @@ _global_script_class_icons={
 "Damage": "",
 "GroupMind": "",
 "MasterMind": "",
+"NameLabelHolo": "",
 "PIDControllerVector": "",
 "PlayerMind": "",
 "ScanPresence": "",
 "Shell": "",
 "SimpleMotorAcceleration": "",
 "SteerBhvrs": "",
+"TimeGraph": "",
 "Utility": "",
 "Weapon": "",
-"WeaponCombiner": ""
+"WeaponCombiner": "",
+"WeaponHolo": ""
 }
 
 [application]
@@ -195,6 +255,10 @@ config/icon="res://icon.png"
 [autoload]
 
 Globals="*res://scripts/isis_globals.gd"
+
+[display]
+
+window/size/always_on_top=true
 
 [input]
 
@@ -275,12 +339,12 @@ Thrust={
 }
 "Camera Free Look"={
 "deadzone": 0.5,
-"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":true,"control":false,"meta":false,"command":false,"pressed":false,"scancode":96,"unicode":0,"echo":false,"script":null)
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":96,"unicode":0,"echo":false,"script":null)
  ]
 }
 "Toggle Camera Free Look"={
 "deadzone": 0.5,
-"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":96,"unicode":0,"echo":false,"script":null)
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":90,"unicode":0,"echo":false,"script":null)
  ]
 }
 "Increase Camera Distance"={
@@ -293,6 +357,11 @@ Thrust={
 "events": [ Object(InputEventMouseButton,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"button_mask":0,"position":Vector2( 0, 0 ),"global_position":Vector2( 0, 0 ),"factor":1.0,"button_index":5,"pressed":false,"doubleclick":false,"script":null)
  ]
 }
+"Switch Interface Mode"={
+"deadzone": 0.5,
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":67,"unicode":0,"echo":false,"script":null)
+ ]
+}
 
 [physics]
 
@@ -303,5 +372,5 @@ Thrust={
 
 [rendering]
 
-quality/driver/fallback_to_gles2=true
+threads/thread_model=2
 environment/default_environment="res://enviroments/daytime_sky.tres"

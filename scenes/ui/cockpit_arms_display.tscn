@@ -1,0 +1,17 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://themes/craft_holo_main.tres" type="Theme" id=1]
+[ext_resource path="res://scripts/cockpit/arms_display.gd" type="Script" id=2]
+
+[node name="ArmsCkpitDsp" type="CenterContainer"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme = ExtResource( 1 )
+script = ExtResource( 2 )
+
+[node name="HoloRack" type="VBoxContainer" parent="."]
+margin_left = 512.0
+margin_top = 300.0
+margin_right = 512.0
+margin_bottom = 300.0
+custom_constants/separation = 20

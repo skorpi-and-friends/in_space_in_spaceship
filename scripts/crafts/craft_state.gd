@@ -42,17 +42,17 @@ export var angular_acceleration_limit: Vector3
 # In m/s.
 export var set_speed: Vector3
 
-# Forward dampener state. Whether or not to respect linear_v_limit in the z axis.
-export var forward_dampener_on: bool = true
+# Whether or not to respect linear_v_limit in the z axis.
+export var limit_forward_v: bool = true
 
-# Starfe dampener state. Whether or not to respect linear_v_limit in in the X or Y axis.
-export var starfe_dampener_on: bool = true
+# Whether or not to respect linear_v_limit in in the X or Y axis.
+export var limit_strafe_v: bool = true
 
-# Angular dampener state. Whether or not to respect angular_v_limit.
-export var angular_dampener_on: bool = true
+# Whether or not to respect angular_v_limit.
+export var limit_angular_v: bool = true
 
-# Acceleration dampener state. Whether or not to respect acceleration_limit.
-export var acceleration_dampener_on: bool = true
+# Whether or not to respect acceleration_limit.
+export var limit_acceleration: bool = true
 
 # Total mass of the craft.
 # In KG.
@@ -87,10 +87,10 @@ export var angular_thruster_force: Vector3 = Vector3(1, 1, 1)
 
 func _init_from_config(config: CraftConfig):
 	set_speed = config.set_speed;
-	forward_dampener_on = config.forward_dampener_on;
-	starfe_dampener_on = config.starfe_dampener_on;
-	angular_dampener_on = config.angular_dampener_on;
-	acceleration_dampener_on = config.acceleration_dampener_on;
+	limit_forward_v = config.limit_forward_v;
+	limit_strafe_v = config.limit_strafe_v;
+	limit_angular_v = config.limit_angular_v;
+	limit_acceleration = config.limit_acceleration;
 	acceleration_limit = config.acceleration_limit;
 	linear_v_limit = config.linear_v_limit;
 	angular_v_limit = config.angular_v_limit;

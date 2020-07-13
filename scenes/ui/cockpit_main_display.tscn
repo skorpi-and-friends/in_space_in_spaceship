@@ -1,0 +1,95 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://themes/craft_holo_main.tres" type="Theme" id=1]
+[ext_resource path="res://scripts/cockpit/main_display.gd" type="Script" id=2]
+
+[sub_resource type="GDScript" id=1]
+script/source = "extends Label
+
+func _ready():
+	set_process(true)
+	
+func _process(delta):
+	self.text = 'FPS: ' + str(Engine.get_frames_per_second())"
+
+[node name="MainCkpitDsp" type="CenterContainer"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme = ExtResource( 1 )
+script = ExtResource( 2 )
+
+[node name="StateLabels" type="VBoxContainer" parent="."]
+margin_left = 142.0
+margin_top = 53.0
+margin_right = 882.0
+margin_bottom = 547.0
+custom_constants/separation = 10
+
+[node name="FPS" type="Label" parent="StateLabels"]
+margin_right = 740.0
+margin_bottom = 39.0
+text = "FPS: 60"
+script = SubResource( 1 )
+
+[node name="LinearVelocity" type="RichTextLabel" parent="StateLabels"]
+margin_top = 49.0
+margin_right = 740.0
+margin_bottom = 104.0
+rect_min_size = Vector2( 740, 55 )
+bbcode_enabled = true
+bbcode_text = "[color=aqua]SSpd: 000.000, 000.000, 000.000 m/s[/color]"
+text = "SSpd: 000.000, 000.000, 000.000 m/s"
+
+[node name="AngularVelocity" type="RichTextLabel" parent="StateLabels"]
+margin_top = 114.0
+margin_right = 740.0
+margin_bottom = 169.0
+rect_min_size = Vector2( 740, 55 )
+bbcode_enabled = true
+bbcode_text = "[color=aqua]SSpd: 000.000, 000.000, 000.000 m/s[/color]"
+text = "SSpd: 000.000, 000.000, 000.000 m/s"
+
+[node name="SetSpeed" type="RichTextLabel" parent="StateLabels"]
+margin_top = 179.0
+margin_right = 740.0
+margin_bottom = 234.0
+rect_min_size = Vector2( 740, 55 )
+bbcode_enabled = true
+bbcode_text = "[color=aqua]SSpd: 000.000, 000.000, 000.000 m/s[/color]"
+text = "SSpd: 000.000, 000.000, 000.000 m/s"
+
+[node name="LinearInput" type="RichTextLabel" parent="StateLabels"]
+margin_top = 244.0
+margin_right = 740.0
+margin_bottom = 299.0
+rect_min_size = Vector2( 740, 55 )
+bbcode_enabled = true
+bbcode_text = "[color=aqua]SSpd: 000.000, 000.000, 000.000 m/s[/color]"
+text = "SSpd: 000.000, 000.000, 000.000 m/s"
+
+[node name="AngularInput" type="RichTextLabel" parent="StateLabels"]
+margin_top = 309.0
+margin_right = 740.0
+margin_bottom = 364.0
+rect_min_size = Vector2( 740, 55 )
+bbcode_enabled = true
+bbcode_text = "[color=aqua]SSpd: 000.000, 000.000, 000.000 m/s[/color]"
+text = "SSpd: 000.000, 000.000, 000.000 m/s"
+
+[node name="LinearFlame" type="RichTextLabel" parent="StateLabels"]
+margin_top = 374.0
+margin_right = 740.0
+margin_bottom = 429.0
+rect_min_size = Vector2( 740, 55 )
+bbcode_enabled = true
+bbcode_text = "[color=aqua]SSpd: 000.000, 000.000, 000.000 m/s[/color]"
+text = "SSpd: 000.000, 000.000, 000.000 m/s"
+
+[node name="AngularFlame" type="RichTextLabel" parent="StateLabels"]
+margin_top = 439.0
+margin_right = 740.0
+margin_bottom = 494.0
+rect_min_size = Vector2( 740, 55 )
+bbcode_enabled = true
+bbcode_text = "[color=aqua]SSpd: 000.000, 000.000, 000.000 m/s[/color]"
+text = "SSpd: 000.000, 000.000, 000.000 m/s"

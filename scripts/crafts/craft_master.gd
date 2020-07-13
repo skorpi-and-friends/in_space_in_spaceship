@@ -9,6 +9,7 @@ export var _config: Resource;
 onready var engine := $Engine as CraftEngine;
 onready var arms := $Arms as ArmamentMaster;
 onready var attires := $Attire as AttireMaster;
+onready var cockpit := $Cockpit# as CockpitMaster;
 
 var _moment_of_inertia_inv := Vector3();
 
@@ -21,6 +22,9 @@ func _ready():
 		arms.primary_weapon.connect("damage_done", self, "did_damage");
 	if arms.secondary_weapon:
 		arms.secondary_weapon.connect("damage_done", self, "did_damage");
+	# cockpit is optional
+	if cockpit:
+		cockpit.set_craft(self);
 
 
 func recieved_damage(profile: AttireProfile, weapon: Weapon, damage_recieved: float):

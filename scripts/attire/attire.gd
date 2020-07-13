@@ -2,7 +2,7 @@ extends Node
 
 class_name Attire
 
-enum Type {HULL, ARMOURL, SHIELD};
+enum Type {HULL, ARMOUR, SHIELD};
 
 export(Type) var type:= Type.HULL;
 export var remaining_integrityPPH:= 1.0;
@@ -18,7 +18,7 @@ func _process(delta):
 	remaining_integrityPPH = remaining_integrity / factory_integrity;
 	if recovery_rate > 0:
 		if remaining_integrity < factory_integrity:
-			remaining_integrity += remaining_integrity * delta;
+			remaining_integrity += factory_integrity * recovery_rate * delta;
 		else:
 			remaining_integrity = factory_integrity;
 

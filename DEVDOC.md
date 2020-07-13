@@ -10,6 +10,10 @@
 - [ ] attire
   - [ ] collision damage detection
     - [ ] contact reporting
+ - [ ] cockpit
+	- [ ] engine display
+	- [ ] arms display
+	- [ ] attire display
 - [ ] ai
 
 ## design-doc
@@ -32,4 +36,11 @@ I beleive I've finally found the issue. Godot's editor has a limit to how many d
 
 ### Godot's forward direction
 
-Looking at the docs, the Vector3.FORWARD const is facing in the negative Z. The look_at methods on the transforms face towards -Z as well. Even though that's very official  The official documentation did not mention this at all! I've worked on the assumption that it's otherwise and the thought of -ve velocites for forward motion isn't very comfortable. Chances are, all the craft_configs will have to have negative values for z
+Looking at the docs, the Vector3.FORWARD const is facing in the negative Z. The look_at methods on the transforms face towards -Z as well. Even though that's very official  The official documentation did not mention this at all! I've worked on the assumption that it's otherwise and the thought of -ve velocites for forward motion isn't very comfortable. Chances are, all the craft_configs will have to have negative values for z.
+
+Happend upon this in the docs:
+
+> Because the camera is rotated by -180 degrees, we have to flip the Z directional
+vector. Normally forward would be the positive Z axis, so using
+basis.z.normalized() would work, but we are using -basis.z.normalized() because
+our camera’s Z axis faces backwards in relation to the rest of the player.

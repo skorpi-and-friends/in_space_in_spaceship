@@ -1,31 +1,15 @@
 extends CraftDriver
 
-var _linear_pid: PIDControllerVector;
-var _angular_pid: PIDControllerVector;
+var _linear_pid :=  PIDControllerVector.new();
+var _angular_pid := PIDControllerVector.new();
 
 
 func _init_from_config(config: CraftConfig):
 	# call method on base class
 	._init_from_config(config);
 	
-#	if $LinearPID:
-#		_linear_pid = $LinearPID;
-#	else:
-#		_linear_pid = PIDControllerVector.new()
-#		add_child(_linear_pid, false);
-#
-#	if $AngularPID:
-#		_linear_pid = $AngularPID;
-#	else:
-#		_angular_pid = PIDControllerVector.new()
-#		add_child(_angular_pid, false);
 	_angular_input_multiplier = config.angular_input_multiplier;
 	_linear_input_multiplier = config.linear_input_multiplier;
-
-	# look for pid childern. Only usefull for viewing the pid state at runtime i.e.
-	# we don't need to add new children if not found.
-	_linear_pid = ($LinearPID as PIDControllerVector) if has_node("LinearPID") else PIDControllerVector.new();
-	_angular_pid = ($AngularPID as PIDControllerVector) if has_node("AngularPID") else PIDControllerVector.new();
 	
 	# init linear pid state
 	_linear_pid.integrat_max = Vector3.ONE * config.linear_integrat_max;
@@ -64,7 +48,7 @@ func _moi_changed(state: CraftState):
 
 func _update_flames(state: CraftState):
 	state.linear_input *= _linear_input_multiplier;
-	state.angular_flame *= _angular_input_multiplier;
+	state.angular_input *= _angular_input_multiplier;
 	update_linear_flames(state);
 	update_angular_flames(state);
 
@@ -78,15 +62,15 @@ func update_linear_flames(state: CraftState):
 	var is_moving_forward := linear_input.z > 0;
 
 	var v_limit := state.linear_v_limit;
-	
-	# if forward dampener is off, 
-	if !state.forward_dampener_on:
-		# eliminate V limit in the Z.
-		v_limit.z = INF;
 
-	if state.starfe_dampener_on:
+	if state.limit_strafe_v:
 		# if dampeners are on, clamp the input to the limit
 		linear_input = Utility.clamp_vector_components(linear_input,-v_limit, v_limit);
+	
+	# if forward dampener is off, 
+	if !state.limit_forward_v:
+		# restore the clamped input by the z
+		v_limit.z = state.linear_input.z;
 
 	var max_force := state.linear_thruster_force * state.force_multiplier;
 
@@ -96,8 +80,7 @@ func update_linear_flames(state: CraftState):
 	# calculate the max acceleration the available force allows us
 	var acceleration_limit := max_force / state.mass;
 
-
-	if state.acceleration_dampener_on:
+	if state.limit_acceleration:
 		var manual_acceleration_limit := state.acceleration_limit * state.acceleration_multiplier;
 		# clamp the acceleration according to the limit
 		acceleration_limit = Utility.clamp_vector_components(
@@ -107,7 +90,7 @@ func update_linear_flames(state: CraftState):
 	
 	# step the driver to calcuate the flame
 	var linear_flame_vector := pid.update(
-		linear_input,
+		state.linear_velocity,
 		linear_input - state.linear_velocity, # error
 		1
 	);
@@ -126,7 +109,7 @@ func update_angular_flames(state: CraftState):
 	
 	var angular_input := state.angular_input;
 	
-	if state.angular_dampener_on:
+	if state.limit_angular_v:
 		angular_input = Utility.clamp_vector_components(
 				angular_input,
 				-state.angular_v_limit, 
@@ -137,7 +120,7 @@ func update_angular_flames(state: CraftState):
 	# difference here in how we calculate max available acceleration allows to us
 	var acceleration_limit := max_torque / state.moment_of_inertia;
 
-	if state.acceleration_dampener_on:
+	if state.limit_acceleration:
 		# no need to use the acceleration multiplier: it's already
 		# been used when converting from the linear_accel_limet 
 		var manual_acceleration_limit := state.angular_acceleration_limit;
@@ -149,7 +132,7 @@ func update_angular_flames(state: CraftState):
 	
 	# step the driver to calcuate the flame
 	var angular_flame_vector := pid.update(
-		angular_input,
+		state.angular_velocity,
 		angular_input - state.angular_velocity, # error
 		1
 	);
