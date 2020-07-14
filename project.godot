@@ -60,11 +60,16 @@ _global_script_classes=[ {
 "path": "res://scripts/cockpit/attire_display.gd"
 }, {
 "base": "CockpitDisplay",
-"class": "CkpitMain",
+"class": "CkpitEngine",
 "language": "GDScript",
-"path": "res://scripts/cockpit/main_display.gd"
+"path": "res://scripts/cockpit/engine_display.gd"
 }, {
-"base": "Control",
+"base": "CockpitDisplay",
+"class": "CkpitPrimary",
+"language": "GDScript",
+"path": "res://scripts/cockpit/primary_display.gd"
+}, {
+"base": "Node",
 "class": "CockpitDisplay",
 "language": "GDScript",
 "path": "res://scripts/cockpit/cockpit_display.gd"
@@ -189,6 +194,11 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://scripts/utility/utility.gd"
 }, {
+"base": "Node",
+"class": "ViewportMaster",
+"language": "GDScript",
+"path": "res://scripts/viewport_master.gd"
+}, {
 "base": "Spatial",
 "class": "Weapon",
 "language": "GDScript",
@@ -215,7 +225,8 @@ _global_script_class_icons={
 "Boid": "",
 "CkpitArms": "",
 "CkpitAttire": "",
-"CkpitMain": "",
+"CkpitEngine": "",
+"CkpitPrimary": "",
 "CockpitDisplay": "",
 "CockpitMaster": "",
 "CompositeNode": "",
@@ -241,6 +252,7 @@ _global_script_class_icons={
 "SteerBhvrs": "",
 "TimeGraph": "",
 "Utility": "",
+"ViewportMaster": "",
 "Weapon": "",
 "WeaponCombiner": "",
 "WeaponHolo": ""
@@ -256,8 +268,14 @@ config/icon="res://icon.png"
 
 Globals="*res://scripts/isis_globals.gd"
 
+[debug]
+
+gdscript/completion/autocomplete_setters_and_getters=true
+gdscript/warnings/unused_class_variable=false
+
 [display]
 
+window/size/width=1066
 window/size/always_on_top=true
 
 [input]
@@ -365,7 +383,6 @@ Thrust={
 
 [physics]
 
-3d/physics_engine="Bullet"
 3d/default_gravity=0.0
 3d/default_linear_damp=0.0
 3d/default_angular_damp=0.0

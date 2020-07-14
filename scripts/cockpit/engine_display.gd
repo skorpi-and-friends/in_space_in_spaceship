@@ -1,6 +1,6 @@
 extends CockpitDisplay
 
-class_name CkpitMain
+class_name CkpitEngine
 
 onready var _lvelocity_label := find_node("LinearVelocity") as RichTextLabel;
 onready var _avelocity_label := find_node("AngularVelocity") as RichTextLabel;

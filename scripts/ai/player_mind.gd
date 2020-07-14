@@ -11,11 +11,16 @@ export var _camera_free_look := false;
 
 onready var craft_master: CraftMaster;
 onready var orbit_camera := $Camera as CraftCamera;
+onready var cockpit: CockpitMaster;
+var _current_craft_has_cockpit := false;
 
 onready var _rotation_pid := PIDControllerVector.new();
 
 # gets switched to COCKPIT in ready
 export(InterfaceMode) var i_mode := InterfaceMode.ORBIT; 
+
+func _enter_tree() -> void:
+	Globals.player_mind = self;
 
 func _ready():
 	for child in get_children():
@@ -24,10 +29,21 @@ func _ready():
 			craft_master = craft;
 			orbit_camera.target_path = craft_master.get_path();
 			break;
+	#setup cockpit later as CockpitMaster might not be ready at this point
+	call_deferred("_setup_cockpit");
+
+
+func _setup_cockpit():
+	cockpit = Globals.cockpit_master;
+	# cockpit is optional
+	if cockpit:
+		# we can only use cockpits if the craft is setup for it
+		_current_craft_has_cockpit = cockpit.set_craft(craft_master);
+		
 	switch_free_look(false);
 	# use the function to properly set COCKPIT mode
 	switch_interface_mode();
-
+	
 
 func _process(delta):
 	updatecraft_master_input(delta);
@@ -180,18 +196,20 @@ func updatecraft_master_input(delta):
 	state.angular_input = angular_input;
 
 
-
 var graph_value: float
 
+
 func switch_interface_mode():
-	var cockpit := craft_master.cockpit as CockpitMaster;
-	if i_mode == InterfaceMode.ORBIT:
+	# default to orbit if no cockpit found
+	if _current_craft_has_cockpit && i_mode == InterfaceMode.ORBIT:
 		cockpit.camera.make_current();
 		cockpit.enable_cockpit();
+		Globals.viewport_master.switch_to_cockpit_screen();
 		i_mode = InterfaceMode.COCKPIT;
 	elif i_mode == InterfaceMode.COCKPIT:
 		orbit_camera.make_current();
 		cockpit.disable_cockpit();
+		Globals.viewport_master.switch_to_game_screen();
 		align_orbit_camera_to_craft();
 		i_mode = InterfaceMode.ORBIT;
 

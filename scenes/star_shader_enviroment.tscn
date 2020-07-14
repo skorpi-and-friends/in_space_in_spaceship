@@ -1,20 +1,19 @@
 [gd_scene load_steps=3 format=2]
 
-[ext_resource path="res://enviroments/realistic_orbit.tres" type="Environment" id=1]
-[ext_resource path="res://materials/skybox.tres" type="Material" id=2]
+[ext_resource path="res://scenes/star_shader_render.tscn" type="PackedScene" id=1]
+[ext_resource path="res://enviroments/realistic_orbit.tres" type="Environment" id=2]
 
-[node name="WorldEnvironment" type="WorldEnvironment"]
-environment = ExtResource( 1 )
+[node name="Spatial" type="Spatial"]
 
 [node name="Skybox" type="Viewport" parent="."]
-size = Vector2( 4096, 2048 )
-transparent_bg = true
+size = Vector2( 1024, 512 )
 hdr = false
 disable_3d = true
 usage = 0
 
-[node name="ColorRect" type="ColorRect" parent="Skybox"]
-visible = false
-material = ExtResource( 2 )
-anchor_right = 1.0
-anchor_bottom = 1.0
+[node name="ColorRect" parent="Skybox" instance=ExtResource( 1 )]
+material = null
+color = Color( 0.662745, 0.0470588, 0.0470588, 1 )
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = ExtResource( 2 )
