@@ -1,6 +1,6 @@
 extends Spatial
 
-export var _camera_path: NodePath;
+export var _camera_path := @"../OrbitCamera";
 onready var _camera := get_node(_camera_path) as CraftCamera;
 
 export var direction := Vector3.LEFT;

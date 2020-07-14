@@ -1,30 +1,25 @@
-[gd_scene load_steps=18 format=2]
+[gd_scene load_steps=21 format=2]
 
 [ext_resource path="res://scripts/cockpit/cockpit_master.gd" type="Script" id=1]
 [ext_resource path="res://textures/crosshair_simple_64.png" type="Texture" id=2]
-[ext_resource path="res://themes/craft_holo_main.tres" type="Theme" id=3]
-[ext_resource path="res://scenes/ui/cockpit_main_display.tscn" type="PackedScene" id=4]
-[ext_resource path="res://scenes/ui/cockpit_arms_display.tscn" type="PackedScene" id=5]
-[ext_resource path="res://scenes/ui/cockpit_attire_display.tscn" type="PackedScene" id=6]
-[ext_resource path="res://scenes/human_prop.tscn" type="PackedScene" id=7]
+[ext_resource path="res://scripts/utility/material_viewport_albedo_helper.gd" type="Script" id=3]
+[ext_resource path="res://themes/craft_holo_main.tres" type="Theme" id=4]
+[ext_resource path="res://scenes/ui/cockpit_engine_display.tscn" type="PackedScene" id=5]
+[ext_resource path="res://scenes/ui/cockpit_arms_display.tscn" type="PackedScene" id=6]
+[ext_resource path="res://scenes/ui/cockpit_attire_display.tscn" type="PackedScene" id=7]
+[ext_resource path="res://scripts/cockpit/primary_display.gd" type="Script" id=8]
+[ext_resource path="res://scenes/human_prop.tscn" type="PackedScene" id=9]
 
-
-[sub_resource type="ViewportTexture" id=1]
-viewport_path = NodePath("MainDisplay/Viewport")
-
-[sub_resource type="SpatialMaterial" id=2]
+[sub_resource type="SpatialMaterial" id=1]
 resource_local_to_scene = true
 flags_transparent = true
 flags_unshaded = true
-flags_do_not_receive_shadows = true
-flags_disable_ambient_light = true
 params_cull_mode = 2
-albedo_texture = SubResource( 1 )
 
-[sub_resource type="PlaneMesh" id=3]
+[sub_resource type="PlaneMesh" id=2]
 size = Vector2( 0.5, 0.25 )
 
-[sub_resource type="StyleBoxFlat" id=4]
+[sub_resource type="StyleBoxFlat" id=3]
 bg_color = Color( 0.329412, 0, 0.694118, 0.12549 )
 border_color = Color( 1, 1, 1, 0.25098 )
 corner_radius_top_left = 50
@@ -32,8 +27,16 @@ corner_radius_top_right = 50
 corner_radius_bottom_right = 50
 corner_radius_bottom_left = 50
 
-[sub_resource type="ViewportTexture" id=5]
-viewport_path = NodePath("ArmsDisplay/Viewport")
+[sub_resource type="SpatialMaterial" id=4]
+resource_local_to_scene = true
+flags_transparent = true
+flags_unshaded = true
+flags_do_not_receive_shadows = true
+flags_disable_ambient_light = true
+params_cull_mode = 2
+
+[sub_resource type="QuadMesh" id=5]
+size = Vector2( 0.1, 0.2 )
 
 [sub_resource type="SpatialMaterial" id=6]
 resource_local_to_scene = true
@@ -42,24 +45,8 @@ flags_unshaded = true
 flags_do_not_receive_shadows = true
 flags_disable_ambient_light = true
 params_cull_mode = 2
-albedo_texture = SubResource( 5 )
 
-[sub_resource type="QuadMesh" id=7]
-size = Vector2( 0.1, 0.2 )
-
-[sub_resource type="ViewportTexture" id=8]
-viewport_path = NodePath("AttireDisplay/Viewport")
-
-[sub_resource type="SpatialMaterial" id=9]
-resource_local_to_scene = true
-flags_transparent = true
-flags_unshaded = true
-flags_do_not_receive_shadows = true
-flags_disable_ambient_light = true
-params_cull_mode = 2
-albedo_texture = SubResource( 8 )
-
-[sub_resource type="GDScript" id=10]
+[sub_resource type="GDScript" id=7]
 script/source = "extends Camera
 
 onready var Yaw = get_parent()
@@ -117,30 +104,51 @@ func _input(event):
 	if event is InputEventMouseMotion:
 		return mouse(event)"
 
+[sub_resource type="ViewportTexture" id=8]
+viewport_path = NodePath("EngineDisplay/Viewport")
+
+[sub_resource type="SpatialMaterial" id=9]
+resource_local_to_scene = true
+flags_transparent = true
+flags_unshaded = true
+params_cull_mode = 2
+albedo_texture = SubResource( 8 )
+
+[sub_resource type="QuadMesh" id=10]
+size = Vector2( 1.53, 0.9 )
+
+[sub_resource type="CubeMesh" id=11]
+flip_faces = true
+
 [node name="Cockpit" type="Spatial"]
 script = ExtResource( 1 )
-_camera_path = NodePath("Yaw/Camera")
+_camera_path = NodePath("Core/CameraPivot/Camera")
 
-[node name="HUD" type="CenterContainer" parent="."]
+[node name="Core" type="Spatial" parent="."]
+
+[node name="HUD" type="CenterContainer" parent="Core"]
+editor/display_folded = true
 anchor_right = 1.0
 anchor_bottom = 1.0
 
-[node name="Crosshair" type="TextureRect" parent="HUD"]
-margin_left = 480.0
+[node name="Crosshair" type="TextureRect" parent="Core/HUD"]
+margin_left = 501.0
 margin_top = 268.0
-margin_right = 544.0
+margin_right = 565.0
 margin_bottom = 332.0
 texture = ExtResource( 2 )
 
-[node name="MainDisplay" type="MeshInstance" parent="."]
+[node name="EngineDisplay" type="MeshInstance" parent="Core"]
 editor/display_folded = true
 transform = Transform( 1, 0, 0, 0, 0.34202, -0.939693, 0, 0.939693, 0.34202, 0, -0.114642, -0.358274 )
-material_override = SubResource( 2 )
+material_override = SubResource( 1 )
 cast_shadow = 0
-mesh = SubResource( 3 )
+mesh = SubResource( 2 )
 material/0 = null
+script = ExtResource( 3 )
 
-[node name="Viewport" type="Viewport" parent="MainDisplay"]
+[node name="Viewport" type="Viewport" parent="Core/EngineDisplay"]
+editor/display_folded = true
 size = Vector2( 1024, 512 )
 transparent_bg = true
 hdr = false
@@ -149,22 +157,50 @@ keep_3d_linear = true
 usage = 0
 render_target_v_flip = true
 
-[node name="BackPanel" type="Panel" parent="MainDisplay/Viewport"]
+[node name="BackPanel" type="Panel" parent="Core/EngineDisplay/Viewport"]
 anchor_right = 1.0
 anchor_bottom = 1.0
-theme = ExtResource( 3 )
-custom_styles/panel = SubResource( 4 )
+theme = ExtResource( 4 )
+custom_styles/panel = SubResource( 3 )
 
-[node name="MainCkpitDsp" parent="MainDisplay/Viewport/BackPanel" instance=ExtResource( 4 )]
+[node name="EngineCkpitDisplay" parent="Core/EngineDisplay/Viewport/BackPanel" instance=ExtResource( 5 )]
 
-[node name="ArmsDisplay" type="MeshInstance" parent="."]
+[node name="ArmsDisplay" type="MeshInstance" parent="Core"]
+editor/display_folded = true
 transform = Transform( 0.967335, 0, 0.2535, 0, 1, 0, -0.2535, 0, 0.967336, -0.260079, -0.124277, -0.269886 )
+material_override = SubResource( 4 )
+cast_shadow = 0
+mesh = SubResource( 5 )
+material/0 = null
+script = ExtResource( 3 )
+
+[node name="Viewport" type="Viewport" parent="Core/ArmsDisplay"]
+size = Vector2( 256, 512 )
+transparent_bg = true
+hdr = false
+disable_3d = true
+keep_3d_linear = true
+usage = 0
+render_target_v_flip = true
+
+[node name="BackPanel" type="Panel" parent="Core/ArmsDisplay/Viewport"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme = ExtResource( 4 )
+custom_styles/panel = SubResource( 3 )
+
+[node name="ArmsCkpitDisplay" parent="Core/ArmsDisplay/Viewport/BackPanel" instance=ExtResource( 6 )]
+
+[node name="AttireDisplay" type="MeshInstance" parent="Core"]
+editor/display_folded = true
+transform = Transform( 0.967334, 0, -0.253505, 0, 1, 0, 0.253505, 0, 0.967335, 0.26, -0.124, -0.27 )
 material_override = SubResource( 6 )
 cast_shadow = 0
-mesh = SubResource( 7 )
+mesh = SubResource( 5 )
 material/0 = null
+script = ExtResource( 3 )
 
-[node name="Viewport" type="Viewport" parent="ArmsDisplay"]
+[node name="Viewport" type="Viewport" parent="Core/AttireDisplay"]
 size = Vector2( 256, 512 )
 transparent_bg = true
 hdr = false
@@ -173,83 +209,96 @@ keep_3d_linear = true
 usage = 0
 render_target_v_flip = true
 
-[node name="BackPanel" type="Panel" parent="ArmsDisplay/Viewport"]
+[node name="BackPanel" type="Panel" parent="Core/AttireDisplay/Viewport"]
 anchor_right = 1.0
 anchor_bottom = 1.0
-theme = ExtResource( 3 )
-custom_styles/panel = SubResource( 4 )
+theme = ExtResource( 4 )
+custom_styles/panel = SubResource( 3 )
 
-[node name="ArmsCkpitDsp" parent="ArmsDisplay/Viewport/BackPanel" instance=ExtResource( 5 )]
+[node name="AttireCkpitDisplay" parent="Core/AttireDisplay/Viewport/BackPanel" instance=ExtResource( 7 )]
 
-[node name="AttireDisplay" type="MeshInstance" parent="."]
-transform = Transform( 0.967334, 0, -0.253505, 0, 1, 0, 0.253505, 0, 0.967335, 0.26, -0.124, -0.27 )
-material_override = SubResource( 9 )
-cast_shadow = 0
-mesh = SubResource( 7 )
-material/0 = null
+[node name="CameraPivot" type="Spatial" parent="Core"]
 
-[node name="Viewport" type="Viewport" parent="AttireDisplay"]
-size = Vector2( 256, 512 )
-transparent_bg = true
-hdr = false
-disable_3d = true
-keep_3d_linear = true
-usage = 0
-render_target_v_flip = true
-
-[node name="BackPanel" type="Panel" parent="AttireDisplay/Viewport"]
-anchor_right = 1.0
-anchor_bottom = 1.0
-theme = ExtResource( 3 )
-custom_styles/panel = SubResource( 4 )
-
-[node name="AttireCkpitDisplay" parent="AttireDisplay/Viewport/BackPanel" instance=ExtResource( 6 )]
-
-[node name="Yaw" type="Spatial" parent="."]
-
-[node name="Camera" type="Camera" parent="Yaw"]
+[node name="Camera" type="Camera" parent="Core/CameraPivot"]
+cull_mask = 1048573
 fov = 80.0
 far = 8192.0
-script = SubResource( 10 )
+script = SubResource( 7 )
 
-[node name="CSGSphere" type="CSGBox" parent="."]
+[node name="CSGSphere" type="CSGBox" parent="Core"]
 editor/display_folded = true
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.000767946, -0.00106956, -0.000511825 )
 invert_faces = true
 width = 1.0
 
-[node name="CSGCombiner2" type="CSGCombiner" parent="CSGSphere"]
+[node name="CSGCombiner2" type="CSGCombiner" parent="Core/CSGSphere"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.454641 )
 operation = 1
 
-[node name="CSGBox" type="CSGBox" parent="CSGSphere/CSGCombiner2"]
+[node name="CSGBox" type="CSGBox" parent="Core/CSGSphere/CSGCombiner2"]
 transform = Transform( 1, 0, 0, 0, 0.939693, 0.34202, 0, -0.34202, 0.939693, 0, -0.555334, 0 )
 width = 1.0
 height = 0.5
 depth = 0.25
 
-[node name="CSGBox2" type="CSGBox" parent="CSGSphere/CSGCombiner2"]
+[node name="CSGBox2" type="CSGBox" parent="Core/CSGSphere/CSGCombiner2"]
 transform = Transform( 1, 0, 0, 0, 0.965926, 0.258819, 0, -0.258819, 0.965926, 0, -0.343984, 0 )
 width = 0.4
 height = 0.5
 depth = 0.25
 
-[node name="CSGCombiner" type="CSGCombiner" parent="."]
+[node name="CSGCombiner" type="CSGCombiner" parent="Core"]
 editor/display_folded = true
 visible = false
 
-[node name="CSGBox" type="CSGBox" parent="CSGCombiner"]
+[node name="CSGBox" type="CSGBox" parent="Core/CSGCombiner"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0 )
 width = 1.5
 height = 1.5
 depth = 1.0
 
-[node name="CSGSphere" type="CSGBox" parent="CSGCombiner"]
+[node name="CSGSphere" type="CSGBox" parent="Core/CSGCombiner"]
 transform = Transform( 0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, 0, 0, -0.585199 )
 operation = 2
 width = 1.5
 height = 1.0
 depth = 1.5
 
-[node name="HumanProp" parent="." instance=ExtResource( 7 )]
+[node name="World" type="Spatial" parent="."]
+editor/display_folded = true
+
+[node name="PrimaryDisplay" type="Spatial" parent="World"]
+editor/display_folded = true
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.675 )
+script = ExtResource( 8 )
+
+[node name="Screen" type="MeshInstance" parent="World/PrimaryDisplay"]
+material_override = SubResource( 9 )
+use_in_baked_light = true
+mesh = SubResource( 10 )
+material/0 = null
+
+[node name="Screen2" type="MeshInstance" parent="World/PrimaryDisplay"]
+visible = false
+material_override = SubResource( 9 )
+use_in_baked_light = true
+mesh = SubResource( 10 )
+material/0 = null
+
+[node name="HumanProp" parent="World" instance=ExtResource( 9 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.342663, 0.738443 )
 visible = false
+
+[node name="CockpitRoom" type="MeshInstance" parent="World"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.144485, 0 )
+use_in_baked_light = true
+mesh = SubResource( 11 )
+material/0 = null
+
+[node name="OmniLight" type="OmniLight" parent="World"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00234532, 1.07661, -0.00588173 )
+light_color = Color( 1, 0, 0, 1 )
+light_energy = 0.1
+light_indirect_energy = 6.76
+omni_range = 2.0
+omni_attenuation = 0.34151
