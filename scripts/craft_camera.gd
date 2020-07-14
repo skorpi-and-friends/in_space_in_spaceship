@@ -3,7 +3,7 @@ extends Camera
 class_name CraftCamera
 
 export var default_facing := Vector3(0, 0, 1);
-export var facing_offset := Vector3(0, -0.166, 0);
+export var facing_offset := Vector3(0, -0.266, 0);
 export var position_offset := Vector3(0, 1, 0);
 
 export var target_path: NodePath;

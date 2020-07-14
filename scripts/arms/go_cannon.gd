@@ -22,7 +22,10 @@ func _activate():
 	if !active: return;
 	#fire shell
 	var clone := shell_scene.instance() as Shell;
-	var scene_root := get_tree().root.get_children()[0] as Node;
+#	var scene_root := get_tree().root.get_children()[0] as Node;
+	# use the viweport to make sure shell gets instatntiated int
+	# the world that holds the gun
+	var scene_root := get_viewport();
 	scene_root.add_child(clone)
 	
 	clone.global_transform = self.global_transform.translated(_instanitate_offset);

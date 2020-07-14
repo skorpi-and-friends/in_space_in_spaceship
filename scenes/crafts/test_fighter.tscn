@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=2]
+[gd_scene load_steps=15 format=2]
 
 [ext_resource path="res://scenes/crafts/craft_template.tscn" type="PackedScene" id=1]
 [ext_resource path="res://craft_configs/test_craft.tres" type="Resource" id=2]
@@ -30,6 +30,9 @@ emission_energy = 2.68
 emission_operator = 0
 emission_on_uv2 = false
 
+[sub_resource type="CubeMesh" id=5]
+size = Vector3( 4, 4, 1 )
+
 [node name="TestFighter" instance=ExtResource( 1 )]
 _config = ExtResource( 2 )
 
@@ -52,7 +55,6 @@ script = ExtResource( 3 )
 script = ExtResource( 4 )
 
 [node name="Arms" parent="." index="3"]
-editor/display_folded = true
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2 )
 
 [node name="Primary" type="Spatial" parent="Arms" index="0"]
@@ -188,8 +190,16 @@ material_override = SubResource( 4 )
 material_override = SubResource( 4 )
 
 [node name="FrontCamera" type="Camera" parent="." index="8"]
-transform = Transform( -1, 0, -1.50996e-007, 0, 1, 0, 1.50996e-007, 0, -1, 0, 0, 1.803 )
+transform = Transform( -1, 0, -8.74228e-008, 0, 1, 0, 8.74228e-008, 0, -1, 0, 0, 1.803 )
 fov = 64.4
 far = 8192.0
+
+[node name="ImmersiveCockpitMarker" type="Position3D" parent="." index="9"]
+transform = Transform( -1, 0, -8.74228e-008, 0, 1, 0, 8.74228e-008, 0, -1, 5.33912e-008, 0, 2.38289 )
+
+[node name="BackUmbrella" type="MeshInstance" parent="ImmersiveCockpitMarker" index="0"]
+transform = Transform( -1, 0, -8.74228e-008, 0, 1, 0, 8.74228e-008, 0, -1, -8.11969e-008, 0, 1.45678 )
+mesh = SubResource( 5 )
+material/0 = null
 
 [editable path="Mesh2"]

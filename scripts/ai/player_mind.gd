@@ -10,7 +10,7 @@ enum InterfaceMode {
 export var _camera_free_look := false;
 
 onready var craft_master: CraftMaster;
-onready var orbit_camera := $Camera as CraftCamera;
+onready var orbit_camera := $OrbitCamera as CraftCamera;
 onready var cockpit: CockpitMaster;
 var _current_craft_has_cockpit := false;
 
@@ -61,6 +61,11 @@ func _input(event: InputEvent):
 		Input.set_mouse_mode(new_mouse_mode);
 	if event.is_action_pressed("Switch Interface Mode"):
 		switch_interface_mode();
+	
+	if i_mode == InterfaceMode.COCKPIT:
+		if event.is_action_pressed("Toggle Immersive Cockpit"):
+			cockpit.toggle_immersive_cockpit();
+		
 	if i_mode == InterfaceMode.ORBIT:
 		if event.is_action_pressed("Toggle Camera Free Look"):
 			switch_free_look();
@@ -202,17 +207,12 @@ var graph_value: float
 func switch_interface_mode():
 	# default to orbit if no cockpit found
 	if _current_craft_has_cockpit && i_mode == InterfaceMode.ORBIT:
-		cockpit.camera.make_current();
 		cockpit.enable_cockpit();
-		Globals.viewport_master.switch_to_cockpit_screen();
 		i_mode = InterfaceMode.COCKPIT;
 	elif i_mode == InterfaceMode.COCKPIT:
-		orbit_camera.make_current();
 		cockpit.disable_cockpit();
-		Globals.viewport_master.switch_to_game_screen();
-		align_orbit_camera_to_craft();
+		orbit_camera.make_current();
+		#align_orbit_camera_to_craft
+		orbit_camera.facing_direction = craft_master.global_transform.basis.z;
 		i_mode = InterfaceMode.ORBIT;
 
-
-func align_orbit_camera_to_craft():
-	orbit_camera.facing_direction = craft_master.global_transform.basis.z;

@@ -40,7 +40,12 @@ Looking at the docs, the Vector3.FORWARD const is facing in the negative Z. The 
 
 Happend upon this in the docs:
 
-> Because the camera is rotated by -180 degrees, we have to flip the Z directional
-vector. Normally forward would be the positive Z axis, so using
-basis.z.normalized() would work, but we are using -basis.z.normalized() because
-our camera’s Z axis faces backwards in relation to the rest of the player.
+> Because the camera is rotated by -180 degrees, we have to flip the Z directional vector. Normally forward would be the positive Z axis, so using basis.z.normalized() would work, but we are using -basis.z.normalized() because our camera’s Z axis faces backwards in relation to the rest of the player.
+
+### Viweports and flipped input
+
+While working on the cockpit world, which requires having one viewport/world for the game world and one for the cockpit world, I found out that V-Flip option, required so that the image is appropriatley flippped also flips the a lot the mouse input. Makes absolute sense. But then, I had to also flip the facing offset on the CraftCamera, which is rather strange since that in in world space, not screen space. Something's not being understood...
+
+Found out the altitiude raise direction is flipped as well...hmmm.
+
+It turns out using V-Flip is only useful when rendering on a suraface.
