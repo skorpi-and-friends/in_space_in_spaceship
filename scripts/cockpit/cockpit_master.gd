@@ -75,6 +75,7 @@ func disable_cockpit():
 	enabled = false;
 #	set_process_internal(!is_processing_internal());"
 
+
 func immersive_cockpit_availaible() -> bool:
 	return _immersive_cockpit_marker != null;
 

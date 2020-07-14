@@ -4,6 +4,7 @@ class_name PlayerMind
 
 enum InterfaceMode {
 	COCKPIT,
+	COCKPIT_IR,
 	ORBIT
 }
 
@@ -61,10 +62,6 @@ func _input(event: InputEvent):
 		Input.set_mouse_mode(new_mouse_mode);
 	if event.is_action_pressed("Switch Interface Mode"):
 		switch_interface_mode();
-	
-	if i_mode == InterfaceMode.COCKPIT:
-		if event.is_action_pressed("Toggle Immersive Cockpit"):
-			cockpit.toggle_immersive_cockpit();
 		
 	if i_mode == InterfaceMode.ORBIT:
 		if event.is_action_pressed("Toggle Camera Free Look"):
@@ -209,7 +206,10 @@ func switch_interface_mode():
 	if _current_craft_has_cockpit && i_mode == InterfaceMode.ORBIT:
 		cockpit.enable_cockpit();
 		i_mode = InterfaceMode.COCKPIT;
-	elif i_mode == InterfaceMode.COCKPIT:
+	elif _current_craft_has_cockpit && i_mode == InterfaceMode.COCKPIT && cockpit.immersive_cockpit_availaible():
+		cockpit.toggle_immersive_cockpit();
+		i_mode = InterfaceMode.COCKPIT_IR;
+	else:
 		cockpit.disable_cockpit();
 		orbit_camera.make_current();
 		#align_orbit_camera_to_craft

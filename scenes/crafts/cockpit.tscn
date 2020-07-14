@@ -55,7 +55,7 @@ export var y_clamp := 10.0;
 
 func _ready():
 	## Tell Godot that we want to handle input
-	set_process_input(true)
+	set_process_input(false)
 
 func look_updown_rotation(rotation = 0):
 	\"\"\"
