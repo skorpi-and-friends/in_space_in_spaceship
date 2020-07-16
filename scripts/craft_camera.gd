@@ -94,8 +94,10 @@ func _input(event):
 	
 	# clamp manual motion to the poles
 	# check if abs(direction_transformed_by_target.y) == 1
-	if 1 - abs(_target_rotation.xform(new_dir+facing_offset).y) < 0.05: 
-		return;
+	var temp := new_dir + facing_offset;
+	temp.y = abs(new_dir.y)+abs(facing_offset.y);
+	if 1 - _target_rotation.xform(temp).y < 0.05: 
+		new_dir.y = facing_direction.y;
 	
 	facing_direction = new_dir;
 	

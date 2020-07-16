@@ -1,9 +1,11 @@
 [gd_scene load_steps=7 format=2]
 
 [sub_resource type="ViewportTexture" id=1]
+flags = 5
 viewport_path = NodePath("Viewport")
 
 [sub_resource type="ViewportTexture" id=2]
+flags = 4
 viewport_path = NodePath("Viewport")
 
 [sub_resource type="SpatialMaterial" id=3]
