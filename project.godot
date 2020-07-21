@@ -202,7 +202,7 @@ _global_script_classes=[ {
 "base": "CraftDriver2D",
 "class": "PIDDriver2D",
 "language": "GDScript",
-"path": "res://scripts/crafts_2D/pid_driver_2D.gd"
+"path": "res://scripts/crafts_2D/drivers/pid_driver_2D.gd"
 }, {
 "base": "CraftMind",
 "class": "PlayerMind",
@@ -232,7 +232,7 @@ _global_script_classes=[ {
 "base": "CraftMotor2D",
 "class": "SimpleMotorAcceleration2D",
 "language": "GDScript",
-"path": "res://scripts/crafts_2D/simple_motor_acceleration_2D.gd"
+"path": "res://scripts/crafts_2D/motors/simple_motor_acceleration_2D.gd"
 }, {
 "base": "Object",
 "class": "SteerBhvrs",

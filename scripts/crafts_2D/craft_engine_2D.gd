@@ -3,7 +3,7 @@ extends Node
 class_name CraftEngine2D
 
 #export var _root_rigidbody: NodePath;
-export var _craft_extents: Rect2;
+export var _craft_extents: Vector2;
 
 var _rigidbody: RigidBody2D
 
@@ -54,7 +54,7 @@ func caclulate_torque():
 		state.angular_acceleration_limit = accel_limit.length();
 		return;
 
-	state.angular_thruster_torque = thruster_force * _craft_extents.size.length();
+	state.angular_thruster_torque = thruster_force * _craft_extents.length();
 
 	state.angular_acceleration_limit = INF;
 
