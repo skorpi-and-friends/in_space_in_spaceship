@@ -3,7 +3,7 @@ extends Node
 class_name CraftEngine
 
 #export var _root_rigidbody: NodePath;
-export var _ship_extents: Vector3;
+export var _craft_extents: Vector3;
 
 var _rigidbody: RigidBody
 
@@ -55,16 +55,16 @@ func moi_changed(inertia_inv: Vector3):
 func caclulate_torque():
 	var thruster_force = state.angular_thruster_force;
 	var accel_limit = state.acceleration_limit * state.acceleration_multiplier;
-	if !_ship_extents:
-		printerr("_ship_extents not set on craft engine");
+	if !_craft_extents:
+		printerr("_craft_extents not set on craft engine");
 		state.angular_thrusters_torque = thruster_force;
 		state.angular_acceleration_limit = accel_limit;
 		return;
 	
 	var axes_diameter := Vector3(
-		Vector2(_ship_extents.y, _ship_extents.z).length(),
-		Vector2(_ship_extents.x, _ship_extents.z).length(),
-		Vector2(_ship_extents.x, _ship_extents.y).length()
+		Vector2(_craft_extents.y, _craft_extents.z).length(),
+		Vector2(_craft_extents.x, _craft_extents.z).length(),
+		Vector2(_craft_extents.x, _craft_extents.y).length()
 	);
 	
 #	state.angular_thruster_torque = axes_diameter.cross(thruster_force);

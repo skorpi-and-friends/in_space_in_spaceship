@@ -1,5 +1,7 @@
 extends CraftDriver
 
+class_name PIDDriver
+
 var _linear_pid :=  PIDControllerVector.new();
 var _angular_pid := PIDControllerVector.new();
 
@@ -88,7 +90,7 @@ func update_linear_flames(state: CraftState):
 				-manual_acceleration_limit,
 				manual_acceleration_limit);
 	
-	# step the driver to calcuate the flame
+	# step the controller to calcuate the flame
 	var linear_flame_vector := pid.update(
 		state.linear_velocity,
 		linear_input - state.linear_velocity, # error

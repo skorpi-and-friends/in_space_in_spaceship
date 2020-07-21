@@ -2,6 +2,7 @@ extends Object
 
 class_name Utility
 
+# FIXME: these are inveted wtf
 const RAD2DEG := 57.29578;
 const DEG2RAD := 1.0/RAD2DEG;
 
@@ -14,6 +15,17 @@ static func clamp_vector_components(
 		clamp(value.x, minimum.x, maximum.x),
 		clamp(value.y, minimum.y, maximum.y),
 		clamp(value.z, minimum.z, maximum.z)
+	);
+
+
+static func clamp_vector_components_2D(
+	value: Vector2, 
+	minimum: Vector2, 
+	maximum: Vector2
+) -> Vector2:
+	return Vector2(
+		clamp(value.x, minimum.x, maximum.x),
+		clamp(value.y, minimum.y, maximum.y)
 	);
 
 
