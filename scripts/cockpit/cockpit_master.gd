@@ -20,7 +20,7 @@ onready var _craft_front_camera := get_node(_camera_path) as Camera;
 export var _hud_path:= @"Core/HUD";
 onready var _hud := get_node(_hud_path) as Control;
 
-export var enabled := true;
+export var enabled := false;
 var _immersive_cockpit_marker: Position3D;
 var immersive_mode_enabled := false;
 
@@ -47,6 +47,9 @@ func set_craft(craft: CraftMaster) -> bool:
 		assert(ckpit_display);
 		ckpit_display.craft = craft;
 		ckpit_display._ready_display();
+	# enable only if explicitly enabled
+	# disable in case craft is being switched
+	enabled = false;
 	return true;
 
 
@@ -97,5 +100,3 @@ func toggle_immersive_cockpit():
 		immersive_mode_enabled = false;
 
 
-	
-	

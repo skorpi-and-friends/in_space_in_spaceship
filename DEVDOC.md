@@ -48,8 +48,12 @@ While working on the cockpit world, which requires having one viewport/world for
 
 Found out the altitiude raise direction is flipped as well...hmmm.
 
-It turns out using V-Flip is only useful when rendering on a mesh suraface. I was alternating between rendering on a surface and rendering through a ViewportContainer, which I suppose isn't the same and thus the issue.
+It turns out using V-Flip is only useful when rendering on a mesh suraface. I was alternating between rendering on a surface and rendering through a ViewportContainer, which I suppose isn't the same and thus the issue. Switching the setting on/off appropriatley fixes the problem; a very subtle problem as it got it's wires crossed and flipped it horizontally which isn't as obvious.
 
 ### Rigidbody2D and the applied_force/torque properties
 
 What would you assume was the purpose of such properties when you see them on the Rigidbody2D object with the doc vaguely describing them as "The body's total applied force."? Let's say you were also aware of a method called apply_centeral_force(Vector2) on the same object? I assumed they displayed the force that was applied during the **last** frame. You might assume, more closer to the mark, that the afforementioned method is just a helper function to adjust your force vector for centeral alignment and that the properties hold what force is **to be** applied the next frame. Chances are, if you assumed that, you've had not worked with the 3D counterpart of the Rigidbody, which doesn't have such properties (only the methods). The reason I'm writing down all this is that I spent the last few hours horribly confused as I had no idea that you had to clear the properties every frame or else they would retain the applied force from the last frame. Which is unlike anything I've worked before.
+
+### BUG: acceleration limiter
+
+The acceleration limit seems to be errenous on the larger craft but works observably right on the test fighter. Could that editor range limit on a Rigidbody's mass be actually a thing? I had worked assuming it's there for a reason (using multipliers and stuff) for a while but after retrieveing the mass in code noticing it wasn't clamped, I decided it was a helpful guide or a bug. Limiting mass doesn't make sense anyhow. But this enigmatic bug makes me wonder. But say, even massive crafts under the "mass limit" are exhibiting the limit; I might have typed this all down for no reason.

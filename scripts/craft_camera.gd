@@ -6,8 +6,6 @@ export var default_facing := Vector3(0, 0, 1);
 export var facing_offset := Vector3(0, -0.266, 0);
 export var position_offset := Vector3(0, 1, 0);
 
-export var target_path: NodePath;
-
 export var distance := 30.0;
 
 export var facing_direction := Vector3(0.0, 0.0, 1.0);
@@ -22,13 +20,13 @@ var _focus_point: Vector3;
 var _previous_focus_point: Vector3;
 
 #var _rotation_changed_manually := false;
-var _target: Spatial;
+var target: Spatial;
 
 var _target_rotation: Basis;
 #var _x_manual_motion_flipped := false; 
 
 func _process(delta: float):
-	if !target_path:
+	if !target:
 		return;
 	update_state(delta);
 	var target_up := _target_rotation.y.normalized();
@@ -62,13 +60,12 @@ func _process(delta: float):
 
 
 func update_state(delta: float):
-	_target = get_node(target_path) as Spatial;
 	_last_manual_rotation_time += delta;
 	
 	_previous_focus_point = _focus_point;
-	_focus_point = _target.global_transform.origin;
+	_focus_point = target.global_transform.origin;
 	
-	_target_rotation = _target.global_transform.basis;
+	_target_rotation = target.global_transform.basis;
 	
 	facing_direction = facing_direction.normalized();
 
@@ -93,7 +90,7 @@ func _input(event):
 			global_transform.basis.x, mouse_motion.y);
 	
 	# clamp manual motion to the poles
-	# check if abs(direction_transformed_by_target.y) == 1
+	# check if abs(direction_transformed_bytarget.y) == 1
 	var temp := new_dir + facing_offset;
 	temp.y = abs(new_dir.y)+abs(facing_offset.y);
 	if 1 - _target_rotation.xform(temp).y < 0.05: 

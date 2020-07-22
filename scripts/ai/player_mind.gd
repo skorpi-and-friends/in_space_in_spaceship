@@ -28,29 +28,23 @@ func _ready():
 		var craft := child as CraftMaster;
 		if craft:
 			craft_master = craft;
-			orbit_camera.target_path = craft_master.get_path();
 			break;
+	assert(craft_master);
 	#setup cockpit later as CockpitMaster might not be ready at this point
+	switch_free_look(false);
 	call_deferred("_setup_cockpit");
+	call_deferred("take_control_of_craft", craft_master);
 
 
 func _setup_cockpit():
 	cockpit = Globals.cockpit_master;
-	# cockpit is optional
-	if cockpit:
-		# we can only use cockpits if the craft is setup for it
-		_current_craft_has_cockpit = cockpit.set_craft(craft_master);
-		
-	switch_free_look(false);
-	# use the function to properly set COCKPIT mode
-	switch_interface_mode();
 	
 
 func _process(delta):
 	updatecraft_master_input(delta);
 
 
-func _input(event: InputEvent):
+func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("Fire Primary"):
 		craft_master.arms.activate_primary();
 	if event.is_action_pressed("Fire Secondary"):
@@ -64,31 +58,17 @@ func _input(event: InputEvent):
 		switch_interface_mode();
 		
 	if i_mode == InterfaceMode.ORBIT:
-		if event.is_action_pressed("Toggle Camera Free Look"):
-			switch_free_look();
-		if event.is_action_pressed("Camera Free Look"):
-			_camera_free_look = true;
-		if event.is_action_pressed("Camera Free Look"):
-			_camera_free_look = false;
-		if event.is_action_pressed("Increase Camera Distance"):
-			orbit_camera.distance += 1;
-		if event.is_action_pressed("Decrease Camera Distance"):
-			orbit_camera.distance -= 1;
 		if Input.is_action_just_pressed("Camera Free Look"):
 			switch_free_look(true);
 		if Input.is_action_just_released("Camera Free Look"):
 			switch_free_look(false);
+		if event.is_action_pressed("Toggle Camera Free Look"):
+			switch_free_look();
+		if event.is_action_pressed("Increase Camera Distance"):
+			orbit_camera.distance += 1;
+		if event.is_action_pressed("Decrease Camera Distance"):
+			orbit_camera.distance -= 1;
 
-
-# toggles if no args passed
-func switch_free_look(on := !_camera_free_look):
-	if on:
-		_camera_free_look = true;
-		orbit_camera.auto_align = true;
-	else:
-		_camera_free_look = false;
-		orbit_camera.auto_align = false;
-		
 
 # we handle craft input separte from the event pipeline
 # to simulate idle craft behavior
@@ -130,48 +110,6 @@ func updatecraft_master_input(delta):
 	elif !state.limit_forward_v:
 		linear_input.z = INF;
 	
-	"""
-	state.linear_input = linear_input;
-	var rotation_command := Vector3();
-	if Input.is_action_pressed("Roll Right"):
-		rotation_command.z += 90
-	if Input.is_action_pressed("Roll Left"):
-		rotation_command.z -= 90
-	if Input.is_action_pressed("Pitch Up"):
-		rotation_command.x -= 90
-	if Input.is_action_pressed("Pitch Down"):
-		rotation_command.x += 90
-	if Input.is_action_pressed("Yaw Left"):
-		rotation_command.y += 90
-	if Input.is_action_pressed("Yaw Right"):
-		rotation_command.y -= 90
-	
-	var current_rotaion = craft_master.rotation * Utility.RAD2DEG;
-	rotation_command += current_rotaion;
-	var angular_input := (_rotation_pid.update(
-			Vector3( # state
-				Utility.smallest_postive_equivalent_angle_deg(current_rotaion.x), 
-				Utility.smallest_postive_equivalent_angle_deg(current_rotaion.y), 
-				Utility.smallest_postive_equivalent_angle_deg(current_rotaion.z)
-				),
-			Vector3( # error
-				Utility.delta_angle_deg(current_rotaion.x, rotation_command.x), 
-				Utility.delta_angle_deg(current_rotaion.y, rotation_command.y), 
-				Utility.delta_angle_deg(current_rotaion.z, rotation_command.z)
-				),
-			delta));
-	state.angular_input = angular_input * Utility.DEG2RAD;
-	
-	if i_mode == InterfaceMode.ORBIT:
-		
-		if !_camera_free_look: # we're using the mouse for movement
-			angular_input += face_dir_angular_input(
-					orbit_camera.facing_direction, craft_master.global_transform); 
-			graph_value = angular_input.y;
-		
-	
-	
-	"""
 	state.linear_input = linear_input;
 	var angular_input := Vector3();
 	if Input.is_action_pressed("Roll Right"):
@@ -209,10 +147,30 @@ func switch_interface_mode():
 	elif _current_craft_has_cockpit && i_mode == InterfaceMode.COCKPIT && cockpit.immersive_cockpit_availaible():
 		cockpit.toggle_immersive_cockpit();
 		i_mode = InterfaceMode.COCKPIT_IR;
-	else:
+	else: # reset the orbit camera otherwise 
 		cockpit.disable_cockpit();
+		orbit_camera.target = craft_master;
 		orbit_camera.make_current();
-		#align_orbit_camera_to_craft
+		# align_orbit_camera_to_craft
 		orbit_camera.facing_direction = craft_master.global_transform.basis.z;
 		i_mode = InterfaceMode.ORBIT;
 
+
+# toggles if no args passed
+func switch_free_look(on := !_camera_free_look):
+	if on:
+		_camera_free_look = true;
+		orbit_camera.auto_align = true;
+	else:
+		_camera_free_look = false;
+		orbit_camera.auto_align = false;
+
+
+func take_control_of_craft(craft: CraftMaster) -> void:
+	craft_master = craft;
+	# cockpit is optional
+	if cockpit:
+		# we can only use cockpits if the craft is setup for it
+		_current_craft_has_cockpit = cockpit.set_craft(craft_master);
+	i_mode = InterfaceMode.ORBIT
+	switch_interface_mode();
