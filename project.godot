@@ -327,7 +327,7 @@ _global_script_class_icons={
 [application]
 
 config/name="IN SPACE IN SPACESHIP"
-run/main_scene="res://scenes/test_world_map.tscn"
+run/main_scene="res://scenes/Main.tscn"
 config/icon="res://icon.png"
 
 [autoload]

@@ -13,6 +13,7 @@ func _ready():
 		active = active || weapon.active;
 		weapon.connect("damage_done", self, "report_child_damage");
 		children.append(weapon);
+	assert(len(children) > 0);
 	damage /= len(children);
 
 func report_child_damage(child_weapon: Weapon, node: Node, damage_done: float):
