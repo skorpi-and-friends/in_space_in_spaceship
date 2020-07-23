@@ -6,10 +6,11 @@ signal moment_of_inertia_changed(inc_inertia);
 
 export var _config: Resource;
 
+#var powered_on := true;
+
 onready var engine := $Engine as CraftEngine;
 onready var arms := $Arms as ArmamentMaster;
 onready var attires := $Attire as AttireMaster;
-onready var side_craft := $SideCraft;# as SideCraft;
 
 var _moment_of_inertia_inv := Vector3();
 
@@ -43,17 +44,3 @@ func _integrate_forces(state: PhysicsDirectBodyState):
 	if inv_inertia != _moment_of_inertia_inv:
 		_moment_of_inertia_inv = inv_inertia;
 		emit_signal("moment_of_inertia_changed", inv_inertia);
-
-
-func was_attached(to) -> void:
-	mode = RigidBody.MODE_STATIC;
-	call_deferred("remove_child", engine);
-	call_deferred("remove_child", attires);
-	call_deferred("remove_child", arms);
-
-
-func was_detached(from) -> void:
-	mode = RigidBody.MODE_RIGID;
-	add_child(engine);
-	add_child(attires);
-	add_child(arms);
