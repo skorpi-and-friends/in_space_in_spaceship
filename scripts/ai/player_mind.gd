@@ -148,7 +148,8 @@ func switch_interface_mode():
 		cockpit.toggle_immersive_cockpit();
 		i_mode = InterfaceMode.COCKPIT_IR;
 	else: # reset the orbit camera otherwise 
-		cockpit.disable_cockpit();
+		if cockpit:
+			cockpit.disable_cockpit();
 		orbit_camera.target = craft_master;
 		orbit_camera.make_current();
 		# align_orbit_camera_to_craft

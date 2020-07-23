@@ -119,6 +119,7 @@ anchor_bottom = 1.0
 [node name="DirectionalLight" type="DirectionalLight" parent="Enviroment"]
 transform = Transform( -0.670572, -0.305636, -0.675958, 0.0818995, -0.936117, 0.34202, -0.73731, 0.173989, 0.652765, 13.4328, 2.39977, -5.06032 )
 shadow_enabled = true
+shadow_bias = 1.0
 directional_shadow_split_1 = 0.071
 directional_shadow_depth_range = 1
 
@@ -132,14 +133,12 @@ script = ExtResource( 2 )
 script = ExtResource( 3 )
 
 [node name="OrbitCamera" type="Camera" parent="PlayerPackMind"]
-editor/display_folded = true
 transform = Transform( -1, -7.04996e-009, -1.1443e-007, -8.00021e-008, 0.757834, 0.652447, 8.21191e-008, 0.652447, -0.757834, 15.6678, 24.5213, 34.1868 )
 far = 8192.0
 script = ExtResource( 4 )
 distance = 15.0
 
 [node name="CameraLocationDebug" type="Spatial" parent="PlayerPackMind/OrbitCamera"]
-editor/display_folded = true
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1.90735e-006, 0, 5.51025 )
 
 [node name="MeshInstance4" type="MeshInstance" parent="PlayerPackMind/OrbitCamera/CameraLocationDebug"]
@@ -171,16 +170,13 @@ mesh = SubResource( 11 )
 material/0 = null
 
 [node name="Artery" parent="PlayerPackMind" instance=ExtResource( 6 )]
-transform = Transform( -4.37114e-008, 0, -1, 0, 1, 0, 1, 0, -4.37114e-008, -53.777, 0, 73.3256 )
+transform = Transform( -4.37114e-008, 0, -1, 0, 1, 0, 1, 0, -4.37114e-008, -55.5283, 0, 73.3256 )
 
-[node name="TestFighter" parent="PlayerPackMind" instance=ExtResource( 7 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 0.999999, 0, 0, 85.892 )
+[node name="TestFighter" parent="PlayerPackMind/Artery" instance=ExtResource( 7 )]
+transform = Transform( 1.94707e-007, 0, -0.999999, 0, 1, 0, 1, 0, 1.94707e-007, 9.01538, 0, 1.26004 )
 
 [node name="GroupMind" type="Node" parent="."]
-editor/display_folded = true
 script = ExtResource( 8 )
-
-[node name="FollowWaypoint" type="Node" parent="GroupMind"]
 
 [node name="TestCrvt" parent="GroupMind" instance=ExtResource( 9 )]
 

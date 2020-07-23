@@ -229,6 +229,11 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://scripts/arms/shell.gd"
 }, {
+"base": "Spatial",
+"class": "SideCraft",
+"language": "GDScript",
+"path": "res://scripts/side_craft.gd"
+}, {
 "base": "CraftMotor",
 "class": "SimpleMotorAcceleration",
 "language": "GDScript",
@@ -319,6 +324,7 @@ _global_script_class_icons={
 "PlayerPackMind": "",
 "ScanPresence": "",
 "Shell": "",
+"SideCraft": "",
 "SimpleMotorAcceleration": "",
 "SimpleMotorAcceleration2D": "",
 "SteerBhvrs": "",
