@@ -6,6 +6,8 @@ signal moment_of_inertia_changed(inc_inertia);
 
 export var _config: Resource;
 
+#var powered_on := true;
+
 onready var engine := $Engine as CraftEngine;
 onready var arms := $Arms as ArmamentMaster;
 onready var attires := $Attire as AttireMaster;

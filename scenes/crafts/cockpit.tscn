@@ -166,7 +166,6 @@ custom_styles/panel = SubResource( 3 )
 [node name="EngineCkpitDisplay" parent="Core/EngineDisplay/Viewport/BackPanel" instance=ExtResource( 5 )]
 
 [node name="ArmsDisplay" type="MeshInstance" parent="Core"]
-editor/display_folded = true
 transform = Transform( 0.967335, 0, 0.2535, 0, 1, 0, -0.2535, 0, 0.967336, -0.260079, -0.124277, -0.269886 )
 material_override = SubResource( 4 )
 cast_shadow = 0

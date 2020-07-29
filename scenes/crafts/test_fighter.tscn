@@ -1,10 +1,10 @@
 [gd_scene load_steps=15 format=2]
 
 [ext_resource path="res://scenes/crafts/craft_template.tscn" type="PackedScene" id=1]
-[ext_resource path="res://craft_configs/test_craft.tres" type="Resource" id=2]
-[ext_resource path="res://scripts/crafts/drivers/pid_driver.gd" type="Script" id=3]
-[ext_resource path="res://scripts/crafts/motors/simple_motor_acceleration.gd" type="Script" id=4]
-[ext_resource path="res://scripts/arms/weapon_combiner.gd" type="Script" id=5]
+[ext_resource path="res://scripts/crafts/craft_master_child.gd" type="Script" id=2]
+[ext_resource path="res://craft_configs/test_craft.tres" type="Resource" id=3]
+[ext_resource path="res://scripts/crafts/drivers/pid_driver.gd" type="Script" id=4]
+[ext_resource path="res://scripts/crafts/motors/simple_motor_acceleration.gd" type="Script" id=5]
 [ext_resource path="res://scenes/arms/go_cannon.tscn" type="PackedScene" id=6]
 [ext_resource path="res://scripts/attire/attire_profile.gd" type="Script" id=7]
 [ext_resource path="res://scripts/attire/attire.gd" type="Script" id=8]
@@ -34,7 +34,8 @@ emission_on_uv2 = false
 size = Vector3( 4, 4, 1 )
 
 [node name="TestFighter" instance=ExtResource( 1 )]
-_config = ExtResource( 2 )
+script = ExtResource( 2 )
+_config = ExtResource( 3 )
 
 [node name="Boid" parent="." index="0"]
 _body = null
@@ -49,16 +50,13 @@ mesh = SubResource( 1 )
 material/0 = null
 
 [node name="Driver" parent="Engine" index="0"]
-script = ExtResource( 3 )
+script = ExtResource( 4 )
 
 [node name="Motor" parent="Engine" index="1"]
-script = ExtResource( 4 )
+script = ExtResource( 5 )
 
 [node name="Arms" parent="." index="3"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2 )
-
-[node name="Primary" type="Spatial" parent="Arms" index="0"]
-script = ExtResource( 5 )
 
 [node name="GOCannon" parent="Arms/Primary" index="0" instance=ExtResource( 6 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 2.25, 0, 1 )

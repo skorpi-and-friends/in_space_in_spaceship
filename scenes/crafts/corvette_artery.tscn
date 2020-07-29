@@ -1,0 +1,215 @@
+[gd_scene load_steps=24 format=2]
+
+[ext_resource path="res://scenes/crafts/craft_template_advanced.tscn" type="PackedScene" id=1]
+[ext_resource path="res://scripts/crafts/craft_master_mother.gd" type="Script" id=2]
+[ext_resource path="res://craft_configs/corvette_artery.tres" type="Resource" id=3]
+[ext_resource path="res://scenes/arms/go_cannon.tscn" type="PackedScene" id=4]
+[ext_resource path="res://scripts/sire_craft.gd" type="Script" id=5]
+[ext_resource path="res://scripts/attire/attire_profile.gd" type="Script" id=6]
+[ext_resource path="res://scripts/attire/attire.gd" type="Script" id=7]
+[ext_resource path="res://mesh/artery.dae" type="PackedScene" id=8]
+
+[sub_resource type="BoxShape" id=1]
+extents = Vector3( 5, 16, 5 )
+
+[sub_resource type="CubeMesh" id=2]
+size = Vector3( 10, 32, 10 )
+
+[sub_resource type="Animation" id=3]
+resource_name = "ClampGrab"
+tracks/0/type = "value"
+tracks/0/path = NodePath("../../Mesh/TopClamp:transform")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 1 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Transform( 0, 0, -1, 0, 1, 0, 1, 0, 0, 4.26135, 6.85585, -2.80868 ), Transform( 0, -0.996195, -0.0871558, 0, 0.0871558, -0.996195, 1, 0, 0, 4.352, 3.66088, -2.80868 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("../../Mesh/TopClampArmThumb:transform")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 1 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Transform( 0, 0, -1, 0, 1, 0, 1, 0, 0, 4.25, 6.4008, -4.76837e-007 ), Transform( 0, -0.996195, -0.0871558, 0, 0.0871558, -0.996195, 1, 0, 0, 4.80432, 3.60991, -4.76837e-007 ) ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("../../Mesh/TopClampArm01:transform")
+tracks/2/interp = 2
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0, 1 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Transform( 0, 0, -1, 0, 1, 0, 1, 0, 0, 4.3814, 7.00235, -1.50716 ), Transform( 0, -0.996195, -0.0871558, 0, 0.0871558, -0.996195, 1, 0, 0, 4.21652, 3.79324, -1.50716 ) ]
+}
+tracks/3/type = "value"
+tracks/3/path = NodePath("../../Mesh/TopClampArm02:transform")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"times": PoolRealArray( 0, 1 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Transform( 0, 0, -1, 0, 1, 0, 1, 0, 0, 4.3814, 6.70235, -1.50716 ), Transform( 0, -0.996195, -0.0871558, 0, 0.0871558, -0.996195, 1, 0, 0, 4.51538, 3.7671, -1.50716 ) ]
+}
+
+[sub_resource type="AnimationNodeAnimation" id=4]
+animation = "ClampGrab"
+
+[sub_resource type="AnimationNodeTimeScale" id=5]
+
+[sub_resource type="AnimationNodeBlendTree" id=6]
+graph_offset = Vector2( -369.705, 71.5 )
+nodes/Animation/node = SubResource( 4 )
+nodes/Animation/position = Vector2( -200, 100 )
+nodes/TimeScale/node = SubResource( 5 )
+nodes/TimeScale/position = Vector2( 180, 60 )
+nodes/output/position = Vector2( 200, 220 )
+
+[sub_resource type="AnimationNodeAnimation" id=7]
+animation = "ClampGrab"
+
+[sub_resource type="AnimationNodeBlendTree" id=8]
+nodes/Animation/node = SubResource( 7 )
+nodes/Animation/position = Vector2( 180, 80 )
+nodes/output/position = Vector2( 540, 100 )
+node_connections = [ "output", 0, "Animation" ]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id=9]
+
+[sub_resource type="AnimationNodeStateMachine" id=10]
+states/BlendTree/node = SubResource( 8 )
+states/BlendTree/position = Vector2( 269, 34.6667 )
+"states/BlendTree 2/node" = SubResource( 6 )
+"states/BlendTree 2/position" = Vector2( 516, 34.6667 )
+transitions = [ "BlendTree", "BlendTree 2", SubResource( 9 ) ]
+start_node = "BlendTree 2"
+graph_offset = Vector2( 0, -45.3333 )
+
+[sub_resource type="AnimationNodeStateMachinePlayback" id=11]
+
+[sub_resource type="BoxShape" id=12]
+extents = Vector3( 5, 16, 6 )
+
+[sub_resource type="PlaneMesh" id=13]
+size = Vector2( 4, 4 )
+
+[sub_resource type="SpatialMaterial" id=14]
+albedo_color = Color( 1, 0.513726, 0, 1 )
+metallic = 0.5
+
+[sub_resource type="SpatialMaterial" id=15]
+albedo_color = Color( 0.662745, 0.662745, 0.662745, 1 )
+metallic = 1.0
+roughness = 0.65
+
+[node name="ArteryCorvette" instance=ExtResource( 1 )]
+script = ExtResource( 2 )
+_config = ExtResource( 3 )
+
+[node name="Boid" parent="." index="0"]
+_body = NodePath("..")
+
+[node name="Collider-Box" type="CollisionShape" parent="." index="1"]
+shape = SubResource( 1 )
+
+[node name="ExtentsLink" parent="." index="2"]
+_mesh_path = NodePath("Extents")
+_engine_path = NodePath("../Engine")
+
+[node name="Extents" type="MeshInstance" parent="ExtentsLink" index="0"]
+visible = false
+mesh = SubResource( 2 )
+material/0 = null
+
+[node name="Engine" parent="." index="3"]
+editor/display_folded = true
+
+[node name="Arms" parent="." index="4"]
+editor/display_folded = true
+
+[node name="GOCannon" parent="Arms/Primary" index="0" instance=ExtResource( 4 )]
+transform = Transform( 2, 0, 0, 0, 2, 0, 0, 0, 1, 0, 0, 6.89185 )
+
+[node name="SireCraft" type="Spatial" parent="." index="5"]
+script = ExtResource( 5 )
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="SireCraft" index="0"]
+anims/ClampGrab = SubResource( 3 )
+
+[node name="AnimationTree" type="AnimationTree" parent="SireCraft" index="1"]
+tree_root = SubResource( 10 )
+anim_player = NodePath("../AnimationPlayer")
+active = true
+parameters/playback = SubResource( 11 )
+"parameters/BlendTree 2/TimeScale/scale" = 0.0
+
+[node name="Attire" parent="." index="6"]
+editor/display_folded = true
+
+[node name="Omni" type="Area" parent="Attire" index="0"]
+script = ExtResource( 6 )
+
+[node name="Hul" type="Node" parent="Attire/Omni" index="0"]
+script = ExtResource( 7 )
+
+[node name="Collider-Box2" type="CollisionShape" parent="Attire/Omni" index="1"]
+shape = SubResource( 12 )
+
+[node name="ImmersiveCockpitMarker" parent="." index="7"]
+editor/display_folded = true
+transform = Transform( -1, 0, -8.74228e-008, 0, 1, 0, 8.74228e-008, 0, -1, 0, 4.5, 3.5 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ImmersiveCockpitMarker" index="0"]
+transform = Transform( -1, 8.74228e-008, -3.82137e-015, 0, -4.37114e-008, -1, -8.74228e-008, -1, 4.37114e-008, 8.74228e-008, 4.621, 2.5 )
+mesh = SubResource( 13 )
+material/0 = null
+
+[node name="FrontCamera" parent="." index="8"]
+transform = Transform( -1, 0, -8.74228e-008, 0, 1, 0, 8.74228e-008, 0, -1, 0, 4.5, 3.5 )
+
+[node name="Mesh" parent="." index="9" instance=ExtResource( 8 )]
+editor/display_folded = true
+
+[node name="BottomClamp" parent="Mesh" index="0"]
+material_override = SubResource( 14 )
+
+[node name="BottomClampArm02" parent="Mesh" index="1"]
+material_override = SubResource( 15 )
+
+[node name="BottomClampArm01" parent="Mesh" index="2"]
+material_override = SubResource( 15 )
+
+[node name="TopClampArm02" parent="Mesh" index="3"]
+transform = Transform( 0, 0, -1, 0, 1, 0, 1, 0, 0, 4.3814, 6.70235, -1.50716 )
+material_override = SubResource( 15 )
+
+[node name="BottomClampThumb" parent="Mesh" index="4"]
+material_override = SubResource( 14 )
+
+[node name="TopClampArm01" parent="Mesh" index="5"]
+transform = Transform( 0, 0, -1, 0, 1, 0, 1, 0, 0, 4.3814, 7.00235, -1.50716 )
+material_override = SubResource( 15 )
+
+[node name="TopClampArmThumb" parent="Mesh" index="6"]
+transform = Transform( 0, 0, -1, 0, 1, 0, 1, 0, 0, 4.25, 6.4008, -4.76837e-007 )
+material_override = SubResource( 14 )
+
+[node name="TopClamp" parent="Mesh" index="7"]
+transform = Transform( 0, 0, -1, 0, 1, 0, 1, 0, 0, 4.26135, 6.85585, -2.80868 )
+material_override = SubResource( 14 )
+
+[editable path="Mesh"]

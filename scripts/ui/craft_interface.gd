@@ -25,6 +25,7 @@ func _process(delta):
 	_ainput_label.text = "AInp: %s m/s" % Utility.format_vector_std(state.angular_input);
 	_lflame_label.text = "LFlm: %s m/ss" % Utility.format_vector_std(state.linear_flame);
 	_aflame_label.text = "AFlm: %s m/ss" % Utility.format_vector_std(state.angular_flame);
-	var display := player.orbit_camera.facing_direction;
+	return;
+	var display = player.orbit_camera.facing_direction;
 	_any_display_label.text = "Display: %s" %player.graph_value# display;
 	time_graph.push_point(player.graph_value);

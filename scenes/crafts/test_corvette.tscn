@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=2]
+[gd_scene load_steps=13 format=2]
 
 [ext_resource path="res://scenes/crafts/craft_template.tscn" type="PackedScene" id=1]
 [ext_resource path="res://craft_configs/test_corvette.tres" type="Resource" id=2]
@@ -16,7 +16,10 @@ size = Vector3( 30, 33, 100 )
 [sub_resource type="BoxShape" id=2]
 extents = Vector3( 7.5, 7.5, 50 )
 
-[node name="TestCrvt" index="0" instance=ExtResource( 1 )]
+[sub_resource type="BoxShape" id=3]
+extents = Vector3( 15, 11, 50 )
+
+[node name="TestCrvt" instance=ExtResource( 1 )]
 _config = ExtResource( 2 )
 
 [node name="ExtentsLink" parent="." index="1"]
@@ -37,12 +40,6 @@ script = ExtResource( 4 )
 
 [node name="Motor" parent="Engine" index="1"]
 script = ExtResource( 5 )
-
-[node name="Arms" parent="." index="3"]
-editor/display_folded = true
-
-[node name="Primary" type="Spatial" parent="Arms" index="0"]
-script = ExtResource( 6 )
 
 [node name="PortBank" type="Spatial" parent="Arms/Primary" index="0"]
 script = ExtResource( 6 )
@@ -90,19 +87,24 @@ transform = Transform( 5, 0, 0, 0, 5, 0, 0, 0, 10, 0, -13, 39.2325 )
 _instanitate_offset = Vector3( 0, 0, 4.3 )
 _rounds_per_second = 1.0
 
-[node name="Attire" parent="." index="4"]
-editor/display_folded = true
-
 [node name="Omni" type="Area" parent="Attire" index="0"]
 script = ExtResource( 8 )
 
 [node name="Hull" type="Node" parent="Attire/Omni" index="0"]
 script = ExtResource( 9 )
 
-[node name="CollisionShape2" type="CollisionShape" parent="Attire/Omni" index="1"]
+[node name="BottomDiamond2" type="CollisionShape" parent="Attire/Omni" index="1"]
+transform = Transform( 0.707107, -0.707107, 0, 0.707107, 0.707107, 0, 0, 0, 1, 0, -11, 0 )
 shape = SubResource( 2 )
 
+[node name="CollisionShape2" type="CollisionShape" parent="Attire/Omni" index="2"]
+shape = SubResource( 3 )
+
 [node name="Mesh" type="Spatial" parent="." index="5"]
+editor/display_folded = true
+__meta__ = {
+"_edit_lock_": true
+}
 
 [node name="CSGCombiner" type="CSGCombiner" parent="Mesh" index="0"]
 operation = 2
@@ -110,7 +112,6 @@ operation = 2
 [node name="Mesh" type="CSGCombiner" parent="Mesh/CSGCombiner" index="0"]
 
 [node name="CSGBox" type="CSGBox" parent="Mesh/CSGCombiner/Mesh" index="0"]
-editor/display_folded = true
 width = 30.0
 height = 24.0
 depth = 100.0
@@ -180,7 +181,7 @@ depth = 10.0
 
 [node name="MainBox" type="CollisionShape" parent="." index="6"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0 )
-shape = SubResource( 2 )
+shape = SubResource( 3 )
 
 [node name="BottomDiamond" type="CollisionShape" parent="." index="7"]
 transform = Transform( 0.707107, -0.707107, 0, 0.707107, 0.707107, 0, 0, 0, 1, 0, -11, 0 )
