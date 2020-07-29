@@ -57,3 +57,7 @@ What would you assume was the purpose of such properties when you see them on th
 ### BUG: acceleration limiter
 
 The acceleration limit seems to be errenous on the larger craft but works observably right on the test fighter. Could that editor range limit on a Rigidbody's mass be actually a thing? I had worked assuming it's there for a reason (using multipliers and stuff) for a while but after retrieveing the mass in code noticing it wasn't clamped, I decided it was a helpful guide or a bug. Limiting mass doesn't make sense anyhow. But this enigmatic bug makes me wonder. But say, even massive crafts under the "mass limit" are exhibiting the limit; I might have typed this all down for no reason.
+
+### Underscore prefixes on private gdscript functions
+
+Only just noticed this style guide. Damn.

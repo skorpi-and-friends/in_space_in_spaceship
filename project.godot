@@ -385,7 +385,6 @@ Globals="*res://scripts/isis_globals.gd"
 [debug]
 
 gdscript/completion/autocomplete_setters_and_getters=true
-gdscript/warnings/unused_class_variable=false
 
 [display]
 

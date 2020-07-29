@@ -199,7 +199,7 @@ static func lerp_angle(from: float, to: float, weight: float) -> float:
 
 
 static func move_towards_angle(from: float, to: float, max_delta: float) -> float:
-	return to if abs(max_delta) > delta_angle(from, to) else from + max_delta;
+	return to if abs(max_delta) > delta_angle_rad(from, to) else from + max_delta;
 
 
 static func min_vec_componentwise(a: Vector3, b: Vector3) -> Vector3:
