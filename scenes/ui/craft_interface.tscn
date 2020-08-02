@@ -10,8 +10,9 @@ script/source = "extends Label
 func _ready():
 	set_process(true)
 	
-func _process(delta):
-	self.text = 'FPS: ' + str(Engine.get_frames_per_second())"
+func _process(_delta):
+	self.text = 'FPS: ' + str(Engine.get_frames_per_second())
+"
 
 [sub_resource type="World" id=2]
 
@@ -28,12 +29,11 @@ script = ExtResource( 2 )
 [node name="Columns" type="HBoxContainer" parent="."]
 margin_left = 10.0
 margin_top = 10.0
-margin_right = 1014.0
+margin_right = 1056.0
 margin_bottom = 590.0
 custom_constants/separation = 20
 
 [node name="StateLabels" type="VBoxContainer" parent="Columns"]
-editor/display_folded = true
 margin_right = 72.0
 margin_bottom = 580.0
 custom_constants/separation = 10
@@ -88,7 +88,7 @@ uppercase = true
 
 [node name="Space" type="Control" parent="Columns"]
 margin_left = 92.0
-margin_right = 728.0
+margin_right = 770.0
 margin_bottom = 580.0
 grow_horizontal = 2
 grow_vertical = 2
@@ -96,8 +96,8 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="DebugDisplay" type="VBoxContainer" parent="Columns"]
-margin_left = 748.0
-margin_right = 1004.0
+margin_left = 790.0
+margin_right = 1046.0
 margin_bottom = 580.0
 custom_constants/separation = 10
 

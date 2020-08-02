@@ -10,7 +10,7 @@ onready var _ainput_label := find_node("AngularInput") as RichTextLabel;
 onready var _lflame_label := find_node("LinearFlame") as RichTextLabel;
 onready var _aflame_label := find_node("AngularFlame") as RichTextLabel;
 
-func _process(delta):
+func _process(_delta: float) -> void:
 	if !craft:
 		return;
 	var state := craft.engine.state;

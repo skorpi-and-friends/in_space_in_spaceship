@@ -24,7 +24,7 @@ func _ready():
 	call_deferred("_setup_cockpit");
 
 
-func _process(delta) -> void:
+func _process(_delta: float) -> void:
 	var state := craft_master.engine.state;
 	
 	if i_mode == InterfaceMode.ORBIT:

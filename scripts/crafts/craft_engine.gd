@@ -26,7 +26,7 @@ func _init_from_config(config: CraftConfig, craft_master):
 	caclulate_torque();
 
 
-func _physics_process(delta):
+func _physics_process(_delta: float) -> void:
 	update_readings();
 	driver._update_flames(state);
 	motor._apply_flames(state, _rigidbody);

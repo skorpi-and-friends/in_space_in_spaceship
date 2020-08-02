@@ -1,0 +1,112 @@
+using Godot;
+
+namespace ISIS {
+
+    public static class Static {
+
+        public const float DegreeToRadian = 57.29578f;
+        public const float RadianToDegree = 1.0f / DegreeToRadian;
+        public static float DeltaAngleDegrees(float a, float b) {
+            var speaA = SmallestPositveEquivalentAngleDegree(a);
+            var speaB = SmallestPositveEquivalentAngleDegree(b);
+            var result = Mathf.Abs(speaA - speaB);
+            return result > 180f ? result - 360f : result;
+        }
+
+        public static float SmallestPositveEquivalentAngleDegree(float angle) {
+            angle = angle % 360f;
+            if (angle < 0f)
+                return angle + 360f;
+            return angle;
+        }
+
+        public static float DeltaAngleRadians(float a, float b) {
+            var speaA = SmallestPositveEquivalentAngleRadians(a);
+            var speaB = SmallestPositveEquivalentAngleRadians(b);
+            var result = Mathf.Abs(speaA - speaB);
+            return result > Mathf.Pi ? result - Mathf.Pi : result;
+        }
+
+        public static float SmallestPositveEquivalentAngleRadians(float angle) {
+            angle = angle % Mathf.Tau;
+            if (angle < 0f)
+                return angle + Mathf.Tau;
+            return angle;
+        }
+
+        public static float SmallestEquivalentAngleRadians(float angle) {
+            angle = angle % Mathf.Tau;
+            if (angle > Mathf.Pi)
+                angle -= Mathf.Tau;
+            else if (angle < -Mathf.Pi)
+                angle += Mathf.Tau;
+            return angle;
+        }
+
+        public static float SmallestEquivalentAngleDegree(float angle) {
+            angle = angle % Mathf.Tau;
+            if (angle > Mathf.Pi)
+                angle -= Mathf.Tau;
+            else if (angle < -Mathf.Pi)
+                angle += Mathf.Tau;
+            return angle;
+        }
+
+        public static Basis BasisFacingDirection(Vector3 forward) => BasisFacingDirection(forward, Vector3.Up);
+
+        public static Basis BasisFacingDirection(Vector3 forward, Vector3 up) {
+            return new Transform().LookingAt(-forward, up).basis;
+            var z = forward.Normalized();
+            var x = up.Cross(z).Normalized();
+            var y = z.Cross(x).Normalized();
+            return new Basis(
+                new Vector3(x.x, y.x, z.x),
+                new Vector3(x.y, y.y, z.y),
+                new Vector3(x.z, y.z, z.z)
+            );
+        }
+
+        public static bool IsInstanceOfGDScript(Godot.Object godotObject, Godot.Script script) {
+            var instanceScript = (Godot.Script) godotObject.GetScript();
+            while (instanceScript != null) {
+                if (instanceScript == script)
+                    return true;
+                instanceScript = instanceScript.GetBaseScript();
+            }
+            return false;
+        }
+
+        public static float Sign(this float value) => Mathf.Sign(value);
+        public static float Abs(this float value) => Mathf.Abs(value);
+    }
+
+    public static class Vector3Utilities {
+
+        public static Godot.Vector3 Min(this Godot.Vector3 value, Godot.Vector3 other) =>
+            value < other ? value : other;
+
+        public static Vector3 Max(this Vector3 value, Vector3 other) =>
+            value > other ? value : other;
+
+        public static Vector3 ClampVector(this Vector3 value,
+                Vector3 min,
+                Vector3 max) =>
+            value.Max(min).Min(max);
+
+        public static Vector3 ClampVectorComponents(this Vector3 value,
+                Vector3 min,
+                Vector3 max) =>
+            new Godot.Vector3(
+                Mathf.Clamp(value.x, min.x, max.x),
+                Mathf.Clamp(value.y, min.y, max.y),
+                Mathf.Clamp(value.z, min.z, max.z)
+            );
+        public static Vector3 ClampVectorComponents(this Vector3 value, Vector3 clamp) =>
+            new Vector3(
+                Mathf.Clamp(value.x, -clamp.x, clamp.x),
+                Mathf.Clamp(value.y, -clamp.y, clamp.y),
+                Mathf.Clamp(value.z, -clamp.z, clamp.z)
+            );
+
+    }
+}

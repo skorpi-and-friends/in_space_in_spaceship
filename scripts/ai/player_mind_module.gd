@@ -9,5 +9,5 @@ func _craft_changed(craft: CraftMaster) -> void:
 	craft_master = craft;
 
 
-func _update_engine_input(state: CraftState) -> void:
+func _update_engine_input(_state: CraftState) -> void:
 	pass

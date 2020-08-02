@@ -14,7 +14,7 @@ func _enter_tree() -> void:
 			modules.append(module);
 			module.player_mind = self;
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	var state = craft_master.engine.state;
 	state.linear_input = Vector3();
 	state.angular_input = Vector3();
