@@ -4,6 +4,8 @@ using static ISIS.Static;
 namespace ISIS {
     public partial class CraftMind : Node {
 
+        protected static Vector3 FacePositionAngularInput(Vector3 position, Transform currentTransform) =>
+            FaceLocalDirectionAngularInput(currentTransform.basis.XformInv(position - currentTransform.origin));
         protected static Vector3 FaceDirectionAngularInput(Vector3 direction, Transform currentTransform) =>
             FaceLocalDirectionAngularInput(currentTransform.basis.XformInv(direction));
 
@@ -44,6 +46,10 @@ namespace ISIS {
             SetLinearInput(state, input.Item1);
             SetAngularInput(state, input.Item2);
         }
+
+        public static void FirePrimaryWeapons(Godot.Object craft) {
+            ((Godot.Object)craft.Get("arms")).Call("activate_primary");
+        }
     }
 
     public delegate(Vector3 linearInput, Vector3 angularInput) SteeringRoutine(Transform currentTransform,
@@ -60,7 +66,7 @@ namespace ISIS {
                     SteeringBehaviors.InterceptObject(
                         currentTransform.origin, linearVLimit.z, quarryRigidbody) :
                     SteeringBehaviors.SeekPosition(
-                        currentTransform.origin, quarry.Translation);
+                        currentTransform.origin, quarry.GlobalTransform.origin);
 
                 return (
                     currentTransform.TransformVectorInv(steerVector) * linearVLimit,

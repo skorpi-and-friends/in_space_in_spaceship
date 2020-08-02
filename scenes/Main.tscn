@@ -44,7 +44,6 @@ stretch = true
 size = Vector2( 1066, 600 )
 world = SubResource( 4 )
 handle_input_locally = false
-hdr = false
 render_target_update_mode = 3
 audio_listener_enable_3d = true
 physics_object_picking = true

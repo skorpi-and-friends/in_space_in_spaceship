@@ -20,7 +20,7 @@ namespace ISIS {
 			Vector3 currentPosition,
 			float travelSpeed,
 			RigidBody objectRigidBody
-		) => InterceptObject(currentPosition, travelSpeed, objectRigidBody.Translation, objectRigidBody.LinearVelocity);
+		) => InterceptObject(currentPosition, travelSpeed, objectRigidBody.GlobalTransform.origin, objectRigidBody.LinearVelocity);
 
 		public static Vector3 InterceptObject(
 			Vector3 currentPosition,
@@ -35,7 +35,7 @@ namespace ISIS {
 			Vector3 currentPosition,
 			float travelSpeed,
 			RigidBody targetRigidBody
-		) => FindInterceptionPosition(currentPosition, travelSpeed, targetRigidBody.Translation, targetRigidBody.LinearVelocity);
+		) => FindInterceptionPosition(currentPosition, travelSpeed, targetRigidBody.GlobalTransform.origin, targetRigidBody.LinearVelocity);
 
 		public static Vector3 FindInterceptionPosition(
 			Vector3 currentPosition,

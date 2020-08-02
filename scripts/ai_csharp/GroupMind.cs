@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Godot;
 using GreenBehaviors;
 using GreenBehaviors.Composite;
@@ -9,13 +10,12 @@ namespace ISIS {
 
 	public class GroupMind : CraftMind {
 
-		private List<ScanPresence> _hostileContacts = new List<ScanPresence>();
-		private Dictionary<string, RigidBody> _members = new Dictionary<string, RigidBody>();
-
-		private Dictionary<string, SteeringRoutine> _memberSteeringRoutines = new Dictionary<string, SteeringRoutine>();
-
-		private Dictionary<string, ScanPresence> _memberTargets = new Dictionary<string, ScanPresence>();
 		private MasterMind _masterMind;
+		private List<ScanPresence> _hostileContacts = new List<ScanPresence>();
+
+		private Dictionary<string, RigidBody> _members = new Dictionary<string, RigidBody>();
+		private Dictionary<string, SteeringRoutine> _memberSteeringRoutines = new Dictionary<string, SteeringRoutine>();
+		private Dictionary<string, ScanPresence> _memberTargets = new Dictionary<string, ScanPresence>();
 
 		private GreenBehaviors.Node _mainBehaviorTree;
 
@@ -56,7 +56,7 @@ namespace ISIS {
 				return;
 			var enemy = ((Boid) _hostileContacts[0]).GetBody();
 			foreach (var craft in _members.Values) {
-				Vector3 hostileDirection = enemy.Translation - craft.Translation;
+				Vector3 hostileDirection = enemy.GlobalTransform.origin - craft.GlobalTransform.origin;
 				var craftState = GetCraftState(craft);
 				craftState.Set(
 					"angular_input",
@@ -136,7 +136,7 @@ namespace ISIS {
 							(_) => memberDrivers.FullTick(),
 							// at start callback
 							(_) => {
-								memberDrivers = GetEliminateHostilesSubTree();
+								memberDrivers = EliminateTargets(_members.Keys.ToArray());
 								memberDrivers.Start();
 							}
 						)
@@ -144,262 +144,273 @@ namespace ISIS {
 				);
 		}
 
-		private GreenBehaviors.Node GetEliminateHostilesSubTree() {
-
-			foreach (var memberId in _members.Keys) {
+		protected virtual GreenBehaviors.Node InterceptTargets(params string[] members) {
+			foreach (var memberId in members) {
 				var member = _members[memberId];
 				_memberSteeringRoutines[memberId] = InterceptRoutine(_memberTargets[memberId]);
 			}
 			return LambdaLeafNode.EmptyRunningNode;
 		}
 
-		//         protected virtual GreenBehaviors.Node CraftAttackPersue(RigidBody craft, ScanPresence quarry) {
+		protected virtual GreenBehaviors.Node EliminateTargets(params string[] members) {
 
-		//             /*
-		//                  |
-		//             AttackPersue(quarry)       blackboard = [quarry, attackingRange]
-		//                  |
-		//         Prioritized Selector
-		//            /           |
-		//           /            |
-		//    IsTargetDead      Prioritized Selector
-		//                              |            \
-		//                         m(IsFar)           \
-		//                              |              \  
-		//                         Intecept          Attack
-		//                         (quarry)         (quarry)
-		//         */
-		//         }
+			var childrenRoutines = new PrioritizedSelector(
+				"");
 
-		//         protected virtual GreenBehaviors.Node CraftIntercept(RigidBody craft, ScanPresence quarry) {
-		//             /*
-		//                              |
-		//                         Intercept(quarry)       blackboard = [quarry]
-		//                              |
-		//                     Prioritized Selector
-		//                        /           |
-		//                       /            |
-		//                IsTargetDead      Prioritized Selector
-		//                                          |            \
-		//                                     m(IsFar)           \
-		//                                          |              \  
-		//                                     Intecept          Attack
-		//                                     (quarry)         (quarry)
-		//                     */
+			foreach (var memberId in members) {
+				var member = _members[memberId];
+				DecoratorNode craftInputRoutineWrapper = new SimpleInclude($"{memberId} AttackPursue");
+				_memberSteeringRoutines[memberId] = AttackPersueRoutineClosure(ref craftInputRoutineWrapper, member, _memberTargets[memberId]);
+				childrenRoutines.AddChild(craftInputRoutineWrapper);
+			}
+			return childrenRoutines;
+		}
 
-		//         }
+		protected static SteeringRoutine AttackPersueRoutineClosure(
+			ref DecoratorNode wrappingNode,
+			RigidBody craft,
+			ScanPresence quarry
+		) {
 
-		//         public virtual SteeringRoutine GetAttackPersueRoutineClosure(
-		//             ref DecoratorNode wrappingNode,
-		//             MonoBehaviour quarry = null
-		//         ) {
-		//             if (!quarry)
-		//                 quarry = _target.GetComponent<MonoBehaviour>();
+			/*
+						 |
+					AttackPersue(quarry)       blackboard = [quarry, attackingRange]
+						 |
+				Prioritized Selector
+				   /           |
+				  /            |
+		   IsTargetDead      Prioritized Selector
+									 |            \
+								m(IsFar)           \
+									 |              \  
+								Intecept          Attack
+								(quarry)         (quarry)
+				*/
+			var quarryRigidbody = (RigidBody) ((quarry as Boid)?.GetBody());
 
-		//             var attackingRange = 1000;
+			var attackingRange = 1000;
 
-		//             // AbstractDecoratorNode interceptSubtree = new Checker("Intercept Subtree Wrap");
-		//             DecoratorNode attackSubtree = new Checker("Attack Subtree Wrap");
+			// AbstractDecoratorNode interceptSubtree = new Checker("Intercept Subtree Wrap");
+			DecoratorNode attackSubtree = new SimpleInclude("Attack Subtree Wrap");
 
-		//             var attackSubroutine = GetAttackRoutine(ref attackSubtree, quarry);
-		//             var interceptSubroutine = GetInterceptRoutine(quarry);
+			var attackSubroutine = AttackRoutine(ref attackSubtree, craft, quarry);
+			var interceptSubroutine = InterceptRoutine(quarry);
 
-		//             // initially assume we're too far to attack 
-		//             var activeSubroutine = interceptSubroutine;
+			// initially assume we're too far to attack 
+			var activeSubroutine = interceptSubroutine;
 
-		//             {
-		//                 // setupTree
-		//                 var attackPersueTree = new PrioritizedSelector(
-		//                     $"AttackPersue : Attack Persue Subtree"
-		//                 ).AddChild(
-		//                     new Conditional(
-		//                         $"AttackPersue : Is Quarry Dead",
-		//                         _ => false
-		//                     )
-		//                 ).AddChild(
-		//                     new PrioritizedSelector(
-		//                         "AttackPersue : Core")
-		//                     .AddChild(
-		//                         new Monitored(
-		//                             // name
-		//                             "AttackPersue : Intercept Target",
-		//                             // guard node 
-		//                             "AttackPersue : Is Target Beyond Fire Range",
-		//                             (_) => {
-		//                                 var distanceToTargetSquared = (quarry.transform.position - _craft.transform.position).sqrMagnitude;
-		//                                 return distanceToTargetSquared > (attackingRange * attackingRange);
-		//                             },
-		//                             // chargeNode
-		//                             new Action(
-		//                                 // name
-		//                                 "AttackPersue : Intercept Wrapper",
-		//                                 // action
-		//                                 _ => NodeState.Running,
-		//                                 // start
-		//                                 _ => {
-		//                                     activeSubroutine = interceptSubroutine;
-		//                                 }
-		//                             )
-		//                         )
-		//                     ).AddChild(
-		//                         new Action(
-		//                             // name
-		//                             "AttackPersue : Attack Wrapper",
-		//                             // action
-		//                             _ => attackSubtree.FullTick(),
-		//                             // start
-		//                             _ => {
-		//                                 // attackSubtree.Start();
-		//                                 activeSubroutine = attackSubroutine;
-		//                             }
-		//                         )
-		//                     )
-		//                 );
+			{
+				// setupTree
+				var attackPersueTree = new PrioritizedSelector(
+					$"AttackPersue : Attack Persue Subtree"
+				).AddChild(
+					new Conditional(
+						$"AttackPersue : Is Quarry Dead",
+						_ => false
+					)
+				).AddChild(
+					new PrioritizedSelector(
+						"AttackPersue : Core")
+					.AddChild(
+						new Monitored(
+							// name
+							"AttackPersue : Intercept Target",
+							// guard node 
+							"AttackPersue : Is Target Beyond Fire Range",
+							(_) => {
+								var distanceToTargetSquared = (quarry.GlobalTransform.origin - craft.GlobalTransform.origin).LengthSquared();
+								return distanceToTargetSquared > (attackingRange * attackingRange);
+							},
+							// chargeNode
+							new Action(
+								// name
+								"AttackPersue : Intercept Wrapper",
+								// action
+								_ => NodeState.Running,
+								// start
+								_ => {
+									activeSubroutine = interceptSubroutine;
+								}
+							)
+						)
+					).AddChild(
+						new Action(
+							// name
+							"AttackPersue : Attack Wrapper",
+							// action
+							_ => attackSubtree.FullTick(),
+							// start
+							_ => {
+								// attackSubtree.Start();
+								activeSubroutine = attackSubroutine;
+							}
+						)
+					)
+				);
 
-		//                 wrappingNode.SetChild(attackPersueTree);
-		//             }
+				wrappingNode.SetChild(attackPersueTree);
+			}
 
-		//             return (Transform currentTransform, ref ISIS.NewtonianCraft.State currentState) => {
-		//                 return activeSubroutine(currentTransform, ref currentState);
-		//             };
-		//         }
+			return (Transform currentTransform, Godot.Object currentState) => {
+				return activeSubroutine(currentTransform, currentState);
+			};
+		}
 
-		//         public virtual SteeringRoutine GetAttackPersueRoutineBlackboard(
-		//             ref Checker wrappingNode,
-		//             MonoBehaviour quarry = null
-		//         ) {
-		//             /*
-		//                               |
-		//                           g(WhileQuarryAlive)
-		//                               |
-		//                            AttackPersue(Quarry) blackboard = [isAsideDirection]
-		//                               |
-		//                            Parallel Sequence Resume
-		//                               |            |
-		//                            Caclulate     Parallel Select Join
-		//                            Distance        |      \
-		//                                            |       \
-		//                                       Guard(IsFar)  Guard(IsClose)
-		//                                            |         |
-		//                                          Intecept   Attack
+		protected static SteeringRoutine GetAttackPersueRoutineBlackboard(
+			ref DecoratorNode wrappingNode,
+			RigidBody craft,
+			ScanPresence quarry
+		) {
+			throw new System.NotImplementedException();
+		}
 
-		//                    */
-		//             throw new System.NotImplementedException();
-		//         }
+		protected static SteeringRoutine AttackRoutine(
+			ref DecoratorNode wrappingNode,
+			RigidBody craft,
+			ScanPresence quarry
+		) {
+			/*
+			  --Attack(quarry)       blackboard = Static[quarry]{targetDirecton}
+					 |
+				   ProritizedSelect
+				   /        |       \
+				  /         |        \
+			  M(isAhead)  M(isAside)  +
+				 |          |         |
+			Line Up       Loop    Brake With Flair 
+			 Shot
+		*/
 
-		//         public virtual SteeringRoutine GetAttackRoutine(
-		//             ref DecoratorNode wrappingNode,
-		//             MonoBehaviour quarry = null
-		//         ) {
-		//             /*
-		//       --Attack(quarry)       blackboard = Static[quarry]{targetDirecton}
-		//              |
-		//            ProritizedSelect
-		//            /        |       \
-		//           /         |        \
-		//       M(isAhead)  M(isAside)  +
-		//          |          |         |
-		//     Line Up       Loop    Brake With Flair 
-		//      Shot
-		// */
-		//             if (!quarry)
-		//                 quarry = _target.GetComponent<MonoBehaviour>();
+			var lineUpShotRoutine = LineUpShotRoutine(quarry);
+			var interceptSubroutine = InterceptRoutine(quarry);
+			var loopSubroutine = interceptSubroutine;
+			var brakeWithFlairSubroutine = interceptSubroutine;
 
-		//             var lineUpShotRoutine = GetLineUpShotRoutine(quarry);
-		//             var interceptSubroutine = GetInterceptRoutine(quarry);
-		//             var loopSubroutine = interceptSubroutine;
-		//             var brakeWithFlairSubroutine = interceptSubroutine;
+			var activeSubroutine = interceptSubroutine;
 
-		//             // initially assume we're too far to attack 
-		//             var activeSubroutine = lineUpShotRoutine;
+			// var lastTargetDirection = GeneralRelativeDirection.Ahead;
+			var targetDirection = Spatial.GeneralRelativeDirection.Ahead;
 
-		//             // var lastTargetDirection = GeneralRelativeDirection.Ahead;
-		//             var targetDirection = NewtonianStatic.GeneralRelativeDirection.Ahead;
+			var attackRoutineTree = new PrioritizedSelector(
+				"Attack : Core"
+			).AddChild(
+				new PrioritizedSelector(
+					$"Attack : Choose Craft Input Routine FSM",
+					new Monitored(
+						// name
+						$"Attack : Target Ahead Gurad",
+						// guard name
+						$"Attack : Is Target Ahead",
+						// guard callback
+						(_) => {
+							targetDirection = Spatial.GetGeneralRelativeDirectionOfTransforms(craft.GlobalTransform, quarry.GlobalTransform);
+							return targetDirection == Spatial.GeneralRelativeDirection.Ahead;
+						},
+						// charge
+						new Action(
+							"Attack : Taget Ahead - Line Up Shot",
+							(_) => {
+								if (IsInCroshair(craft.GlobalTransform, quarry))
+									FirePrimaryWeapons(craft);
+								return NodeState.Running;
+							},
+							// start callback
+							(_) => {
+								GD.Print("Target Is Ahead: Lining Up Shot");
+								activeSubroutine = lineUpShotRoutine;
+							}
+						)
+					),
+					new Monitored(
+						$"Attack : Target Aside Gurad",
+						$"Attack : Is Target Aside",
+						(_) => targetDirection == Spatial.GeneralRelativeDirection.Aside, // targetDirection was caclulated earlier
+						new Action(
+							"Attack : Target Aside",
+							// tick callback
+							(_) => NodeState.Running,
+							// start callback
+							(_) => {
+								GD.Print("Target Is Aside");
+								activeSubroutine = loopSubroutine;
+							}
+						)
+					),
+					new Action(
+						"Attack : Target Behind",
+						(_) => {
+							return NodeState.Running;
+						},
+						(_) => {
+							GD.Print("Target Is Behind");
+							activeSubroutine = loopSubroutine;
+						}
+					)
+				)
+			);
+			wrappingNode.SetChild(attackRoutineTree);
 
-		//             var attackRoutineTree = new PrioritizedSelector(
-		//                 "Attack : Core"
-		//             ).AddChild(
-		//                 new PrioritizedSelector(
-		//                     $"Attack : Choose Craft Input Routine FSM",
-		//                     new Monitored(
-		//                         // name
-		//                         $"Attack : Target Ahead Gurad",
-		//                         // guard name
-		//                         $"Attack : Is Target Ahead",
-		//                         // guard callback
-		//                         (_) => {
-		//                             targetDirection = NewtonianStatic.GetGeneralRelativeDirectionOfTransforms(transform, quarry.transform);
-		//                             return targetDirection == NewtonianStatic.GeneralRelativeDirection.Ahead;
-		//                         },
-		//                         // charge
-		//                         new Action(
-		//                             "Attack : Taget Ahead - Line Up Shot",
-		//                             (_) => {
-		//                                 //_basicArmsBehaviorTree.Tick();
-		//                                 return NodeState.Running;
-		//                             },
-		//                             (_) => {
-		//                                 Debug.Log("Target Is Ahead: Lining Up Shot");
-		//                                 activeSubroutine = lineUpShotRoutine;
-		//                             }
-		//                         )
-		//                     ),
-		//                     new Monitored(
-		//                         $"Attack : Target Aside Gurad",
-		//                         $"Attack : Is Target Aside",
-		//                         (_) => targetDirection == NewtonianStatic.GeneralRelativeDirection.Aside, // targetDirection was caclulated earlier
-		//                         new Action(
-		//                             "Attack : Target Aside",
-		//                             (_) => NodeState.Running,
-		//                             (_) => {
-		//                                 Debug.Log("Target Is Aside");
-		//                                 activeSubroutine = loopSubroutine;
-		//                             }
-		//                         )
-		//                     ),
-		//                     new Action(
-		//                         "Attack : Target Behind",
-		//                         (_) => {
-		//                             return NodeState.Running;
-		//                         },
-		//                         (_) => {
-		//                             Debug.Log("Target Is Behind");
-		//                             activeSubroutine = loopSubroutine;
-		//                         }
-		//                     )
-		//                 )
-		//             );
-		//             wrappingNode.SetChild(attackRoutineTree);
+			return (Transform currentTransform, Godot.Object currentState) => {
+				return activeSubroutine(currentTransform, currentState);
+			};
+		}
 
-		//             return (Transform currentTransform, ref ISIS.NewtonianCraft.State currentState) => {
-		//                 return activeSubroutine(currentTransform, ref currentState);
-		//             };
-		//         }
-		//         public virtual SteeringRoutine GetLineUpShotRoutine(
-		//             MonoBehaviour quarry = null
-		//         ) {
-		//             var averageWeaponVelocity = _craft.ArmsManager.AverageFixMountedProjectileVelocity;
+		protected static SteeringRoutine LineUpShotRoutine(
+			ScanPresence quarry
+		) {
 
-		//             return (Transform currentTransform, ref ISIS.NewtonianCraft.State currentState) => {
-		//                 var targetPosition = FindInterceptionPosition(
-		//                     currentTransform.position,
-		//                     averageWeaponVelocity,
-		//                     _target.transform.position,
-		//                     _targetRigidBody.velocity
-		//                 );
+			var quarryRigidbody = (RigidBody) ((quarry as Boid)?.GetBody());
+			var averageWeaponVelocity = 500; //_craft.ArmsManager.AverageFixMountedProjectileVelocity;
 
-		//                 /*  if (Vector3.Angle(currentTransform.forward, targetPosition - currentTransform.position) < _firingAngularProximity) {
-		//                 foreach (var weapon in _fireableWeapons)
-		//                     weapon.Fire();
-		//             }
-		//  */
-		//                 _basicArmsBehaviorTree.Tick();
-		//                 return new ISIS.NewtonianCraft.State.InputPack(
-		//                     Vector3.Scale(SeekPosition(currentTransform.position, targetPosition), currentState.LinearVLimit),
-		//                     AngularInputToFacePosition(targetPosition, currentTransform)
-		//                 );
-		//             };
-		//         }
+			return (Transform currentTransform, Godot.Object currentState) => {
+				var quarryVelocity = quarryRigidbody != null ? quarryRigidbody.LinearVelocity : Vector3.Zero;
+				var targetPosition = SteeringBehaviors.FindInterceptionPosition(
+					currentTransform.origin,
+					averageWeaponVelocity,
+					quarry.GlobalTransform.origin,
+					quarryVelocity
+				);
+
+				var linearVLimit = (Vector3) currentState.Get("linear_v_limit");
+				return (
+					SteeringBehaviors.SeekPosition(currentTransform.origin, targetPosition) * linearVLimit,
+					FacePositionAngularInput(targetPosition, currentTransform)
+				);
+			};
+		}
+
+		protected static bool IsInCroshair(
+			Transform currentTransform,
+			ScanPresence quarry
+		) {
+
+			var quarryRigidbody = (RigidBody) ((quarry as Boid)?.GetBody());
+
+			float targetAngularProximity;
+
+			// if target is moving
+			if (quarryRigidbody != null) {
+
+				// find position where weapons can hit mark
+				var intereptPosition = SteeringBehaviors.FindInterceptionPosition(
+					currentTransform.origin,
+					500, // use weapon average velocity 
+					quarry.GlobalTransform.origin,
+					quarryRigidbody.LinearVelocity
+				);
+
+				// cacluate angular proximity
+				targetAngularProximity = currentTransform.basis.z.AngleTo(
+					intereptPosition - currentTransform.origin
+				);
+			} else {
+				// for immotile targets
+				targetAngularProximity = currentTransform.basis.z.AngleTo(
+					quarry.GlobalTransform.origin - currentTransform.origin
+				);
+			}
+			return targetAngularProximity < 1f;
+		}
+
 	}
-
 }

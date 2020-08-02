@@ -116,4 +116,50 @@ namespace ISIS {
             );
 
     }
+
+    public static class Spatial {
+
+        public enum GeneralRelativeDirection {
+            Ahead,
+            Aside,
+            Behind
+        }
+
+        public const float DirectionDeterminationCosThreshold = 0.707f;
+
+        public static GeneralRelativeDirection GetGeneralRelativeDirectionOfTransforms(
+            Transform currentTransform,
+            Transform targetTransform,
+            float cosThreshold = DirectionDeterminationCosThreshold
+        ) => GetGeneralRelativeDirectionOfPositions(
+            targetTransform.origin,
+            currentTransform.origin,
+            currentTransform.basis.z,
+            cosThreshold);
+
+        public static GeneralRelativeDirection GetGeneralRelativeDirectionOfPositions(
+            Vector3 position,
+            Vector3 currentPostion,
+            Vector3 forwardDirection,
+            float cosThreshold = DirectionDeterminationCosThreshold
+        ) {
+            var targetDirection = (position - currentPostion).Normalized();
+            return GetGeneralRelativeDirectionOfDirections(targetDirection, forwardDirection, cosThreshold);
+        }
+
+        public static GeneralRelativeDirection GetGeneralRelativeDirectionOfDirections(
+            Vector3 direction,
+            Vector3 forwardDirection,
+            float cosThreshold = DirectionDeterminationCosThreshold
+        ) {
+            var forwardness = forwardDirection.Dot(direction);
+            if (forwardness > cosThreshold) {
+                return GeneralRelativeDirection.Ahead;
+            } else if (forwardness < -cosThreshold) {
+                return GeneralRelativeDirection.Behind;
+            } else {
+                return GeneralRelativeDirection.Aside;
+            }
+        }
+    }
 }
