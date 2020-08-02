@@ -18,11 +18,11 @@ var _moment_of_inertia_inv := Vector3();
 func _ready():
 	assert(_config is CraftConfig);
 	engine._init_from_config(_config, self);
-	attires.connect("damage_recieved", self, "recieved_damage");
+	assert(attires.connect("damage_recieved", self, "recieved_damage") == OK);
 	if arms.primary_weapon:
-		arms.primary_weapon.connect("damage_done", self, "did_damage");
+		assert(arms.primary_weapon.connect("damage_done", self, "did_damage") == OK);
 	if arms.secondary_weapon:
-		arms.secondary_weapon.connect("damage_done", self, "did_damage");
+		assert(arms.secondary_weapon.connect("damage_done", self, "did_damage") == OK);
 
 
 func recieved_damage(profile: AttireProfile, weapon: Weapon, damage_recieved: float):

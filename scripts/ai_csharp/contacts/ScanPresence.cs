@@ -1,7 +1,7 @@
 using System;
 using Godot;
 
-public class ScanPresence : Node {
+public class ScanPresence : Spatial {
 
     public override void _EnterTree() {
         base._EnterTree();

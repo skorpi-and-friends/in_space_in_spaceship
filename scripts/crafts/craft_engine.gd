@@ -13,7 +13,7 @@ onready var motor := $Motor as CraftMotor;
 	
 # duck type craft_master to avoid cyclic dependecy issues
 func _init_from_config(config: CraftConfig, craft_master):
-	craft_master.connect("moment_of_inertia_changed", self, "moi_changed");
+	assert(craft_master.connect("moment_of_inertia_changed", self, "moi_changed") == OK);
 	
 	_rigidbody = craft_master.get_craft_rigidbody();
 	_rigidbody.linear_damp = 0.0

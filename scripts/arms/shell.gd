@@ -12,8 +12,8 @@ var _speed: float;
 var _lifetime: float;
 
 func _ready():
-	connect("area_entered",self,"on_entered");
-	connect("body_entered",self,"on_entered");
+	assert(connect("area_entered",self,"on_entered") == OK);
+	assert(connect("body_entered",self,"on_entered") == OK);
 
 func _activate(owner: Weapon, speed: float, lifetime: float):
 	_owner_weapon = owner;

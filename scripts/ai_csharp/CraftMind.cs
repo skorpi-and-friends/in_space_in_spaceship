@@ -2,8 +2,7 @@ using Godot;
 using static ISIS.Static;
 
 namespace ISIS {
-
-    public class CraftMind : Node {
+    public partial class CraftMind : Node {
 
         protected static Vector3 FaceDirectionAngularInput(Vector3 direction, Transform currentTransform) =>
             FaceLocalDirectionAngularInput(currentTransform.basis.XformInv(direction));
@@ -17,7 +16,7 @@ namespace ISIS {
             );
         }
 
-        public(bool, RigidBody) IsCraftMaster(object instance) {
+        public static(bool, RigidBody) IsCraftMaster(object instance) {
             if (!(instance is Godot.RigidBody godotObject))
                 return (false, null);
 
@@ -29,8 +28,47 @@ namespace ISIS {
         }
 
         /// Assumes passed craft is already verified to be a craft
-        public Godot.Object GetCraftState(Godot.Object craft) {
+        public static Godot.Object GetCraftState(Godot.Object craft) {
             return (Godot.Object) ((Godot.Object) craft.Get("engine")).Get("state");
         }
+
+        public static void SetLinearInput(Godot.Object state, Vector3 linearInput) {
+            state.Set("linear_input", linearInput);
+        }
+
+        public static void SetAngularInput(Godot.Object state, Vector3 angularInput) {
+            state.Set("angular_input", angularInput);
+        }
+
+        public static void SetCraftInput(Godot.Object state, (Vector3, Vector3) input) {
+            SetLinearInput(state, input.Item1);
+            SetAngularInput(state, input.Item2);
+        }
     }
+
+    public delegate(Vector3 linearInput, Vector3 angularInput) SteeringRoutine(Transform currentTransform,
+        Godot.Object currentState);
+
+    public partial class CraftMind {
+
+        public static SteeringRoutine InterceptRoutine(ScanPresence quarry) {
+            var quarryRigidbody = (RigidBody) ((quarry as Boid)?.GetBody());
+
+            return (Transform currentTransform, Godot.Object currentState) => {
+                var linearVLimit = (Vector3) currentState.Get("linear_v_limit");
+                var steerVector = quarryRigidbody != null ?
+                    SteeringBehaviors.InterceptObject(
+                        currentTransform.origin, linearVLimit.z, quarryRigidbody) :
+                    SteeringBehaviors.SeekPosition(
+                        currentTransform.origin, quarry.Translation);
+
+                return (
+                    currentTransform.TransformVectorInv(steerVector) * linearVLimit,
+                    FaceDirectionAngularInput(steerVector.Normalized(), currentTransform)
+                );
+            };
+
+        }
+    }
+
 }

@@ -13,7 +13,7 @@ onready var motor := $Motor as CraftMotor2D;
 
 # duck type craft_master to avoid cyclic dependecy issues
 func _start_engine(craft_master):
-	craft_master.connect("moment_of_inertia_changed", self, "moi_changed");
+	assert(craft_master.connect("moment_of_inertia_changed", self, "moi_changed") == OK);
 
 	_rigidbody = craft_master.get_craft_rigidbody();
 	_rigidbody.linear_damp = 0.0
@@ -23,7 +23,7 @@ func _start_engine(craft_master):
 	caclulate_torque();
 
 
-func _physics_process(delta):
+func _physics_process(_delta: float) -> void:
 	update_readings();
 	driver._update_flames(state);
 	motor._apply_flames(state, _rigidbody);

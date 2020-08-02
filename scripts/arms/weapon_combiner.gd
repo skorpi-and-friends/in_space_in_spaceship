@@ -11,7 +11,7 @@ func _ready():
 		if !weapon: continue;
 		damage += weapon.damage;
 		active = active || weapon.active;
-		weapon.connect("damage_done", self, "report_child_damage");
+		assert(weapon.connect("damage_done", self, "report_child_damage") == OK);
 		children.append(weapon);
 	assert(len(children) > 0);
 	damage /= len(children);

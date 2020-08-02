@@ -78,6 +78,13 @@ namespace ISIS {
 
         public static float Sign(this float value) => Mathf.Sign(value);
         public static float Abs(this float value) => Mathf.Abs(value);
+
+        public static Vector3 TransformPoint(this Transform transform, Vector3 point) => transform.basis.Xform(point) + transform.origin;
+        public static Vector3 TransformPointInv(this Transform transform, Vector3 point) => transform.basis.XformInv(point) + transform.origin;
+        public static Vector3 TransformVector(this Transform transform, Vector3 vector) => transform.basis.Xform(vector);
+        public static Vector3 TransformVectorInv(this Transform transform, Vector3 vector) => transform.basis.XformInv(vector);
+        public static Vector3 TransformDirection(this Transform transform, Vector3 direction) => transform.basis.Orthonormalized().Xform(direction);
+        public static Vector3 TransformDirectionInv(this Transform transform, Vector3 direction) => transform.basis.Orthonormalized().XformInv(direction);
     }
 
     public static class Vector3Utilities {

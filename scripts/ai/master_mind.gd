@@ -10,7 +10,7 @@ signal contact_lost(contact);
 func _ready():
 	add_to_group("MasterMind");
 	var scene_tree = get_tree();
-	scene_tree.connect("node_added",self,"node_added");
+	assert(scene_tree.connect("node_added",self,"node_added") == OK);
 	for contact in scene_tree.get_nodes_in_group("ScanPresence"):
 		master_contact_list.append(contact);
 
