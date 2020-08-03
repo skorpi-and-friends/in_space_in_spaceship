@@ -2,12 +2,12 @@
 
 importer="scene"
 type="PackedScene"
-path="res://.import/ball_fighter.dae-ea1a2eb6b935608e296d6e59bd4b2fd6.scn"
+path="res://.import/asteroid_001.dae-bf7ff1e35955e7f24696dcf4f68a180f.scn"
 
 [deps]
 
-source_file="res://mesh/ball_fighter.dae"
-dest_files=[ "res://.import/ball_fighter.dae-ea1a2eb6b935608e296d6e59bd4b2fd6.scn" ]
+source_file="res://mesh/asteroid_001.dae"
+dest_files=[ "res://.import/asteroid_001.dae-bf7ff1e35955e7f24696dcf4f68a180f.scn" ]
 
 [params]
 

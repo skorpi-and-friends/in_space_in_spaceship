@@ -2,25 +2,218 @@
 
 ## To-do
 
-- [x] PID Driver
-- [ ] armament
-  - [ ] missile
-  - [ ] particle cannon
-  - [x] mesh cannon
-- [ ] attire
-  - [ ] collision damage detection
-    - [ ] contact reporting
- - [ ] cockpit
-	- [ ] engine display
-	- [ ] arms display
-	- [ ] attire display
-- [ ] ai
+- [ ] Craft trackin ui
+- [ ] turrets
+- [ ] missiles
+- [ ] collision avoidance
 
 ## design-doc
 
 ### Features
 
-- [ ] Crafts
+- [ ] Newtonian Flight Model
+- [ ] Cool Cockpits
+- [ ] 2d World Map, 3d Combat Map (M&B Style)
+- [ ] To Scale Solar System
+  - [ ] Procedurally Generate Planet Models (Stylized)
+- [ ] Craft Pack Fighting
+  - [ ] Calendars! (Yoon Ha Lee's)
+- [ ] Dockable Stations
+
+### Backlog
+
+- [ ] Craft
+  - [x] Newtonian Flight Model Driver
+  - [ ] Drone
+    - [x] Model
+    - [ ] Mind
+  - [ ] Wing
+    - [ ] Model
+    - [ ] Mind
+  - [ ] Droneship
+    - [x] Model
+    - [ ] Mind
+
+- [ ] Armament
+  - [ ] Beam
+  - [ ] Turreted
+  - [ ] Fixed
+  - [x] MeshCannon
+  - [ ] Particle Cannon
+  - [ ] Missles
+
+- [ ] Defense
+  - [ ] Attire
+	- [ ] Collision Damage Detection
+    - [ ] Contact Reporting
+    - [ ] Particle Collision Detection
+
+- [ ] Basic Level
+
+- [ ] Skybox
+
+- [ ] HUD
+  - [ ] Simple Target display
+
+- [ ] Cockpit
+	- [ ] Engine Display
+	- [ ] Arms Display
+	- [ ] Attire Display
+
+- [ ] AI
+  - [x] Behavior Trees
+  - [ ] Finite State Machines
+  - [ ] MasterMind
+  - [ ] GroupMind
+  - [ ] SubMind
+  - [ ] Craft Mind
+    - [ ] Steering Behaviors
+    - [ ] Paths
+    - [ ] Context Steering
+    - [ ] Formations
+
+- [ ] 2D
+
+
+### Attire System
+
+Layout:
+
+AttireMaster
+    ↓↓
+AttireProfile
+    ↓↓
+Attire
+
+
+### AI
+
+#### Current Setup
+
+```diagram
+
+ActionSelection:
+    GroupMind BT
+       ↓↓
+    SteeringRoutine BT (Optional)
+       ↓↓
+Steering:
+    SteeringRoutines (using Steering Behaviors)
+       ↓↓
+Locomotion:
+    CraftEngine
+```
+
+#### Steering Routines
+
+##### Description
+
+A `SteeringRoutine` is something that determines craft input every frame. Currently, a lightweight form of the Strategy pattern using closures is being used.
+
+BehaviorTree based selection `SteeringRoutines` for each craft.
+
+Each craft has an active _SteeringRoutine_.
+
+Some `SteeringRoutine`s are simple they might not even need non-transient state. Others are dynamic, using state (currently stored in closures) or even their own behavior trees to modify their behavior.
+
+These `SteeringRoutine`s are used everyframe and one runs for each AI controlled craft. Performance matters. 
+
+Having complex trees embedded inside the `SteeringRoutine`s doesn't sound something that'd scale.
+
+Instead, we use decorator behavior nodes, like the `Checked` or `SimpleInclude` from `GreenBehaviors`, to hook into the ticking of whatever behavior selected the `SteeringRoutine` in the first place. While this creates a coupling, it provides certain advantages:
+
+- Performance improvements since we probably won't be ticking the tree every frame (skipping frames or running on another thread).
+- A cleaner way for the `SteeringRoutine` to communicate with the tree.
+- Look at source of AttackPersue routine.
+
+`SteeringRoutine` are more than steering behaviors. They're a step above them to be exact. From other BehaviorTree schemes, you might liken them to a Task. In simple terms, they're behaviors (in the behavior tree sense) that are used to control a `Craft`. 
+
+Right now, they're implemented using  closures that return Linear/Angular input and it works alright but I can imagine some issues along the way. Primarly:
+- `SteeringRoutine` are meant to control more than the motion, like weapons and the like. Separating the Linear/Angular input from the rest doesn't offer much advantages if this is true. For example, if you want to poll a number of `SteeringRoutine` to determine movement for a frame (for combining or choosing), it might be found necessary to invalidate other decisions the `SteeringRoutine` has made inside. A choice lays ahead.
+
+##### Routines
+
+- [ ] AttackPersue
+- [ ] ShootDown
+- [ ] Intercept
+- [ ] Evade
+- [ ] Hide
+- [ ] Line Up Shot
+
+#### Steering Behaviors
+
+- [x] Seek
+- [x] Flee
+- [ ] Avoid Obstacle
+  - [ ] Mesh Colliders
+  - [ ] Detection When Inside Collider
+- [ ] Raycast Obstacle Avoidance
+- [x] Intercept
+- [x] Evade
+- [ ] Arrival
+- [ ] Collision Avoidance
+- [ ] Separation
+- [ ] Allignment
+- [ ] Cohesion
+- [ ] Interpose
+
+#### BehaviorTrees
+
+##### EliminateHostiles
+
+```BehaviorTreeDiagram
+
+         --MainTree       blackboard = [members, hostiles]
+             |
+      M(HostilesAround)
+             |
+          Sequence
+          |        \
+        Assign      Parallel Selector Resume
+        Targets       \    |    /
+        ToMembers     AttackPersue
+                    (members, targets)
+                           |  |
+```
+
+##### AttackPursue Behavior
+
+```BehaviorTreeDiagram
+
+
+                 |
+            AttackPersue(quarry)       blackboard = [quarry]
+                 |
+           Parallel Select Resume
+           /           |
+          /            |
+   IsTargetDead     Parallel Select Resume
+                             |            \
+                         m(IsFar)          \
+                             |              \  
+                          Intecept          Attack
+                          (quarry)         (quarry)
+                                              | |
+```
+
+##### Attack Behavior
+
+```BehaviorTreeDiagram
+
+      --Attack(quarry)       blackboard = Static[quarry]{targetDirecton}
+          |
+        Parallel Sequence Resume
+          |                 |
+        Calculate       ProritizedSelect
+        {target         /        |       \
+       Directon}       /         |        \
+                   M(isAhead)  M(isAside)  +
+                      |          |         |
+                 Line Up       Loop    Brake With
+                  Shot                  Flair💅
+                  And
+                 Fire
+```
 
 ## dev-log
 
