@@ -13,7 +13,7 @@ onready var _aflame_label := find_node("AngularFlame") as Label;
 onready var _any_display_label := find_node("Any") as Label;
 onready var time_graph := find_node("Graph") as TimeGraph;
 
-func _process(delta):
+func _process(_delta: float) -> void:
 	if !Globals.player_mind:
 		return;
 	var player := Globals.player_mind;

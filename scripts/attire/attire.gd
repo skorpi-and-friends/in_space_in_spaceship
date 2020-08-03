@@ -23,8 +23,8 @@ func _process(delta):
 			remaining_integrity = factory_integrity;
 
 
-func damage(damage: float, type: int) -> float:
-	var actual_damage := (damage_multipliers[type] as float) * damage;
+func damage(damage: float, damage_type: int) -> float:
+	var actual_damage := (damage_multipliers[damage_type] as float) * damage;
 
 	var new_integrity := remaining_integrity - actual_damage;
 
@@ -33,12 +33,12 @@ func damage(damage: float, type: int) -> float:
 		return 0.0;
 
 	var remaining_damage := actual_damage - new_integrity;
-	remaining_damage /= damage_multipliers[type];
+	remaining_damage /= damage_multipliers[damage_type];
 	return remaining_damage;
 
 
-func set_resistance(resistance: float, type: int):
-	damage_multipliers[type] = resistance;
+func set_resistance(resistance: float, damage_type: int) -> void:
+	damage_multipliers[damage_type] = resistance;
 
 
 #class Configuration:

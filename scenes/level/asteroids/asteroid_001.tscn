@@ -1,0 +1,42 @@
+[gd_scene load_steps=8 format=2]
+
+[ext_resource path="res://textures/asteroid_001_normals.png" type="Texture" id=1]
+[ext_resource path="res://mesh/asteroid_001.dae" type="PackedScene" id=2]
+[ext_resource path="res://scenes/rigid_obstacle_template.tscn" type="PackedScene" id=3]
+
+
+[sub_resource type="CapsuleShape" id=2]
+radius = 91.0669
+height = 100.0
+
+[sub_resource type="CapsuleShape" id=3]
+radius = 73.9903
+height = 86.0017
+
+[sub_resource type="SpatialMaterial" id=1]
+albedo_color = Color( 0.498039, 0.184314, 0, 1 )
+normal_enabled = true
+normal_scale = 1.0
+normal_texture = ExtResource( 1 )
+
+[sub_resource type="ConvexPolygonShape" id=4]
+
+[node name="Asteroid001" instance=ExtResource( 3 )]
+
+[node name="CollisionShape" type="CollisionShape" parent="." index="0"]
+transform = Transform( 0.909482, -0.152909, -0.386602, -0.122918, 0.789434, -0.601403, 0.397156, 0.594486, 0.69918, -12.3243, -19.4433, 38.8225 )
+shape = SubResource( 2 )
+
+[node name="CollisionShape2" type="CollisionShape" parent="." index="1"]
+transform = Transform( 0.176773, -0.601181, 0.779315, 0.613707, 0.686343, 0.390252, -0.76949, 0.409285, 0.490276, 77.7107, 9.99174, 70.914 )
+shape = SubResource( 3 )
+
+[node name="asteroid_001" parent="." index="2" instance=ExtResource( 2 )]
+
+[node name="rock000" parent="asteroid_001" index="0"]
+material_override = SubResource( 1 )
+
+[node name="CollisionShape3" type="CollisionShape" parent="." index="3"]
+shape = SubResource( 4 )
+
+[editable path="asteroid_001"]

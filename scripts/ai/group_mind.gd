@@ -2,11 +2,14 @@ extends CraftMind
 
 class_name GroupMind
 
+var _master_mind: MasterMind;
+
 var _crafts := [];
+var _hostile_contacts := []; 
 
-var _hostile_contacts := [];
+var _active_craft_index := 0;
+var _craft_targets := {};
 
-var _master_mind: MasterMind; 
 
 func _ready():
 	_master_mind = get_tree().get_nodes_in_group("MasterMind")[0] as MasterMind;
@@ -19,7 +22,7 @@ func _ready():
 			_hostile_contacts.append(contact);
 
 
-func _process(delta):
+func _process(_delta: float) -> void:
 	if _hostile_contacts.empty():
 		return;
 	var enemy := (_hostile_contacts[0] as Boid).get_body();
@@ -38,4 +41,3 @@ func new_contact(contact: ScanPresence):
 func is_hostile_contact(contact: ScanPresence) -> bool:
 #	return contact.is_in_group("Boid") && self.is_a_parent_of(contact);
 	return contact is Boid && !self.is_a_parent_of(contact);
-

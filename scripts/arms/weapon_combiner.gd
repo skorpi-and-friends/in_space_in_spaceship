@@ -11,7 +11,7 @@ func _ready():
 		if !weapon: continue;
 		damage += weapon.damage;
 		active = active || weapon.active;
-		weapon.connect("damage_done", self, "report_child_damage");
+		assert(weapon.connect("damage_done", self, "report_child_damage") == OK);
 		children.append(weapon);
 	assert(len(children) > 0);
 	damage /= len(children);
@@ -19,7 +19,7 @@ func _ready():
 func report_child_damage(child_weapon: Weapon, node: Node, damage_done: float):
 	emit_signal("damage_done", child_weapon, node, damage_done);
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	active = false;
 	for weapon in children:
 		active = active || weapon.active;

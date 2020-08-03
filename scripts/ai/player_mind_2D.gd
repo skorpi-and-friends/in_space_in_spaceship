@@ -27,7 +27,7 @@ func _input(event: InputEvent):
 
 # we handle craft input separte from the event pipeline
 # to simulate idle craft behavior
-func updatecraft_master_input(delta):
+func updatecraft_master_input(_delta: float) -> void:
 	var state := craft_master.engine.state;
 	
 	var linear_input := Vector2();

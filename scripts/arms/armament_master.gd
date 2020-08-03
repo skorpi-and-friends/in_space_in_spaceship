@@ -2,8 +2,8 @@ extends Spatial
 
 class_name ArmamentMaster
 
-onready var primary_weapon := $Primary as Weapon
-onready var secondary_weapon := $Secondary as Weapon
+onready var primary_weapon := get_node_or_null(@"Primary") as Weapon
+onready var secondary_weapon := get_node_or_null(@"Secondary") as Weapon
 
 
 func activate_primary():

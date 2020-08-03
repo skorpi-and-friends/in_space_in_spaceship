@@ -10,7 +10,7 @@ func _ready():
 	for child in get_children():
 		var profile := child as AttireProfile;
 		if !profile: continue;
-		profile.connect("contact", self, "contact");
+		assert(profile.connect("contact", self, "contact") == OK);
 		profiles.append(profile);
 	if profiles.empty():
 		printerr("no profiles found on attire master");

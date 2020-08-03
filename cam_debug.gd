@@ -5,7 +5,8 @@ onready var _camera := get_node(_camera_path) as CraftCamera;
 
 export var direction := Vector3.LEFT;
 
-func _process(delta):
+func _process(_delta: float) -> void:
+	return;
 	var position = _camera._focus_point;
 	var adjusted_rotation := Utility.transform_direction(
 			_camera._target_rotation, 

@@ -3,7 +3,7 @@ extends NameLabelHolo
 onready var _activation_display := find_node("Activatation", true) as ColorRect;
 
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 #	if !weapon:
 #		_activation_display.color = Color.webgray;
 	if weapon.active:

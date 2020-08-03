@@ -12,9 +12,9 @@ func _init_from_config(config: CraftConfig):
 	_angular_input_multiplier = config.angular_input_multiplier;
 
 
-func _update_flames(state: CraftState):
+func _update_flames(_state: CraftState):
 	pass
 
 
-func _moi_changed(state: CraftState):
+func _moi_changed(_state: CraftState):
 	pass

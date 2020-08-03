@@ -12,7 +12,7 @@ func _ready():
 		1
 	);
 
-func _physics_process(delta):
+func _physics_process(_delta: float) -> void:
 	if Input.is_action_pressed("Fire Primary"):
 		add_torque(acceleration * inertia_display);
 

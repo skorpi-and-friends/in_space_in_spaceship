@@ -35,5 +35,5 @@ func _activate():
 	active = false;
 
 
-func shell_contact(shell: Shell, body: Node):
+func shell_contact(_shell: Shell, _body: Node):
 	pass

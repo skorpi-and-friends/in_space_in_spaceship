@@ -15,7 +15,7 @@ func _ready() -> void:
 	_hull_bar.value = 0;
 
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	if !profile:
 		return;
 	_shield_bar.percent_visible = false;

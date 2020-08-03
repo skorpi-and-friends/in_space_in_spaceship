@@ -97,7 +97,7 @@ func _input(event):
 	_last_manual_rotation_time = 0;
 
 
-func automatic_rotation(delta: float) -> bool:
+func automatic_rotation(_delta: float) -> bool:
 	if _last_manual_rotation_time < align_delay:
 		return false;
 	
