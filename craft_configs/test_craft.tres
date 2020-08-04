@@ -5,7 +5,7 @@
 [resource]
 script = ExtResource( 1 )
 set_speed = Vector3( 0, 0, 0 )
-limit_forward_v = true
+limit_forward_v = false
 limit_strafe_v = true
 limit_angular_v = true
 limit_acceleration = true

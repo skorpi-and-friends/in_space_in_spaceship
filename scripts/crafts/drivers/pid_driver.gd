@@ -72,7 +72,7 @@ func update_linear_flames(state: CraftState):
 	# if forward dampener is off, 
 	if !state.limit_forward_v:
 		# restore the clamped input by the z
-		v_limit.z = state.linear_input.z;
+		linear_input.z = state.linear_input.z;
 
 	var max_force := state.linear_thruster_force * state.force_multiplier;
 

@@ -1,6 +1,7 @@
-[gd_scene load_steps=13 format=2]
+[gd_scene load_steps=15 format=2]
 
 [ext_resource path="res://textures/planet_256.png" type="Texture" id=1]
+[ext_resource path="res://textures/target_marker_offscreen.png" type="Texture" id=2]
 
 [sub_resource type="GDScript" id=1]
 script/source = "extends Spatial
@@ -96,6 +97,15 @@ func _ready() -> void:
 [sub_resource type="BoxShape" id=11]
 extents = Vector3( 3.92944, 1, 1 )
 
+[sub_resource type="GDScript" id=12]
+script/source = "extends Sprite
+
+
+func _process(_delta: float) -> void:
+	look_at(get_viewport().get_mouse_position());
+	rotation -= 90;
+"
+
 [node name="Experimenta" type="Node"]
 
 [node name="Camera" type="Camera" parent="."]
@@ -162,3 +172,8 @@ material/0 = null
 
 [node name="CollisionShape" type="CollisionShape" parent="mass and collisions/1kg"]
 shape = SubResource( 11 )
+
+[node name="LookAt" type="Sprite" parent="."]
+position = Vector2( 815.709, 500.203 )
+texture = ExtResource( 2 )
+script = SubResource( 12 )

@@ -2,10 +2,10 @@
 
 ## To-do
 
-- [ ] Craft trackin ui
-- [ ] turrets
-- [ ] missiles
-- [ ] collision avoidance
+- [X] Craft Tracker HUD
+- [ ] Turrets
+- [ ] Missiles
+- [ ] Collision Avoidance AI
 
 ## design-doc
 
@@ -53,7 +53,7 @@
 - [ ] Skybox
 
 - [ ] HUD
-  - [ ] Simple Target display
+  - [x] Simple Target Tracker
 
 - [ ] Cockpit
 	- [ ] Engine Display
@@ -72,6 +72,8 @@
     - [ ] Context Steering
     - [ ] Formations
 
+- [ ] Targets
+
 - [ ] 2D
 
 
@@ -79,11 +81,13 @@
 
 Layout:
 
+```diagram
 AttireMaster
     ↓↓
 AttireProfile
     ↓↓
 Attire
+```
 
 
 ### AI

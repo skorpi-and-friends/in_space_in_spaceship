@@ -16,7 +16,7 @@ func _process(_delta):
 
 [sub_resource type="World" id=2]
 
-[node name="CraftInteface" type="MarginContainer"]
+[node name="CraftUniversalHud" type="MarginContainer"]
 anchor_right = 1.0
 anchor_bottom = 1.0
 theme = ExtResource( 1 )
@@ -25,6 +25,9 @@ custom_constants/margin_top = 10
 custom_constants/margin_left = 10
 custom_constants/margin_bottom = 10
 script = ExtResource( 2 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="Columns" type="HBoxContainer" parent="."]
 margin_left = 10.0
