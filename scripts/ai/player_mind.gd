@@ -22,9 +22,9 @@ func _process(_delta: float) -> void:
 		module._update_engine_input(state);
 	
 	if Input.is_action_pressed("Fire Primary"):
-		craft_master.arms.activate_primary();
+		active_craft.arms.activate_primary();
 	if Input.is_action_pressed("Fire Secondary"):
-		craft_master.arms.activate_secondary();
+		active_craft.arms.activate_secondary();
 
 
 func _ready():

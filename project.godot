@@ -169,11 +169,6 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://scripts/ai/player_mind_modules/engine_controller.gd"
 }, {
-"base": "Reference",
-"class": "GreenBehaviors",
-"language": "GDScript",
-"path": "res://addons/GreenBehaviors/behavior_trees/green_behaviors.gd"
-}, {
 "base": "CraftMind",
 "class": "GroupMind",
 "language": "GDScript",
@@ -342,7 +337,6 @@ _global_script_class_icons={
 "CraftState2D": "",
 "Damage": "",
 "EngineController": "",
-"GreenBehaviors": "",
 "GroupMind": "",
 "MasterMind": "",
 "MotherCraftMaster": "",
