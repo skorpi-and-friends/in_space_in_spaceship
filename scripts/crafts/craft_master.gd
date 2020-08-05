@@ -26,12 +26,15 @@ func _ready():
 
 
 func recieved_damage(profile: AttireProfile, weapon: Weapon, damage_recieved: float):
-	printerr("%s: recieved damage %s by a %s at %s" % [name, damage_recieved, weapon.name, profile.name]);
+	if name != "TestFighter2":
+		return;
+	printerr("%s: recieved damage %s at %s by: %s (%s)" % [name, damage_recieved, profile.name, weapon.owner.name, weapon.name]);
 	weapon._report_damage(self, damage_recieved);
 
 
 func did_damage(weapon, node, damage):
-	printerr("Did damage %s to a %s using %s" % [damage, node.name, weapon.name]);
+#	printerr("%s: did damage %s to a %s using %s" % [name, damage, node.name, weapon.name]);
+	pass;
 
 
 func get_craft_rigidbody() -> RigidBody:

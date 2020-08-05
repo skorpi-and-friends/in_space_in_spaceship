@@ -11,7 +11,7 @@ damage = 150.0
 damage_type = 5
 active = true
 _shell_speed = 500.0
-_shell_lifetime = 4.0
+_shell_range = 2000.0
 _instanitate_offset = Vector3( 0, 0, 2.3 )
 
 [node name="CSGBox" type="CSGBox" parent="."]
