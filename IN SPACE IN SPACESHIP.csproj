@@ -63,32 +63,12 @@
     <Compile Include="scripts\ai_csharp\CraftMind.cs" />
     <Compile Include="scripts\ai_csharp\GroupMind.cs" />
     <Compile Include="scripts\ai_csharp\MasterMind.cs" />
+    <Compile Include="scripts\ai_csharp\PlayerMindModule.cs" />
+    <Compile Include="scripts\ai_csharp\player_mind_modules\SubMind.cs" />
     <Compile Include="scripts\ai_csharp\SteeringBehaviors.cs" />
     <Compile Include="scripts\utility\Utility.cs" />
     <!-- FIXME: use a separate project for these -->
-    <Compile Include="addons\GreenBehaviors\behavior_trees\GreenBehaviorScripts.cs" />
-    <Compile Include="addons\GreenBehaviors\behavior_trees\GreenBehaviors\BehaviorTree.cs" />
-    <Compile Include="addons\GreenBehaviors\behavior_trees\GreenBehaviors\composite\CompositeNode.cs" />
-    <Compile Include="addons\GreenBehaviors\behavior_trees\GreenBehaviors\composite\Filter.cs" />
-    <Compile Include="addons\GreenBehaviors\behavior_trees\GreenBehaviors\composite\Parallel.cs" />
-    <Compile Include="addons\GreenBehaviors\behavior_trees\GreenBehaviors\composite\PrioritizedSelector.cs" />
-    <Compile Include="addons\GreenBehaviors\behavior_trees\GreenBehaviors\composite\Selector.cs" />
-    <Compile Include="addons\GreenBehaviors\behavior_trees\GreenBehaviors\composite\Sequence.cs" />
-    <Compile Include="addons\GreenBehaviors\behavior_trees\GreenBehaviors\decorator\Checker.cs" />
-    <Compile Include="addons\GreenBehaviors\behavior_trees\GreenBehaviors\decorator\DecoratorNode.cs" />
-    <Compile Include="addons\GreenBehaviors\behavior_trees\GreenBehaviors\decorator\Inverter.cs" />
-    <Compile Include="addons\GreenBehaviors\behavior_trees\GreenBehaviors\decorator\Monitored.cs" />
-    <Compile Include="addons\GreenBehaviors\behavior_trees\GreenBehaviors\decorator\Repeater.cs" />
-    <Compile Include="addons\GreenBehaviors\behavior_trees\GreenBehaviors\decorator\SimpleInclude.cs" />
-    <Compile Include="addons\GreenBehaviors\behavior_trees\GreenBehaviors\leaf_funcref\Action.cs" />
-    <Compile Include="addons\GreenBehaviors\behavior_trees\GreenBehaviors\leaf_funcref\Conditional.cs" />
-    <Compile Include="addons\GreenBehaviors\behavior_trees\GreenBehaviors\leaf_funcref\FuncRefLeafNode.cs" />
-    <Compile Include="addons\GreenBehaviors\behavior_trees\GreenBehaviors\leaf_lambda\Action.cs" />
-    <Compile Include="addons\GreenBehaviors\behavior_trees\GreenBehaviors\leaf_lambda\Conditional.cs" />
-    <Compile Include="addons\GreenBehaviors\behavior_trees\GreenBehaviors\leaf_lambda\LambdaLeafNode.cs" />
-    <Compile Include="addons\GreenBehaviors\behavior_trees\GreenBehaviors\leaf_utility\RollDicePercentage.cs" />
-    <Compile Include="addons\GreenBehaviors\behavior_trees\GreenBehaviors\Node.cs" />
-    <Compile Include="addons\GreenBehaviors\behavior_trees\GreenBehaviors\NodeState.cs" />
-  </ItemGroup>
+    <ProjectReference Include="addons\GreenBehaviors\GreenBehaviors.csproj" />
+ </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

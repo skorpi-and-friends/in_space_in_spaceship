@@ -3,9 +3,10 @@
 ## To-do
 
 - [X] Craft Tracker HUD
+- [ ] Collision Avoidance AI
 - [ ] Turrets
 - [ ] Missiles
-- [ ] Collision Avoidance AI
+- [ ] A Demo
 
 ## design-doc
 
@@ -67,7 +68,7 @@
   - [ ] Finite State Machines
   - [ ] MasterMind
   - [ ] GroupMind
-  - [ ] SubMind
+  - [x] SubMind
   - [ ] Craft Mind
     - [ ] Steering Behaviors
     - [ ] Paths
