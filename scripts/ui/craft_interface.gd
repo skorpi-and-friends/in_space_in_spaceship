@@ -17,7 +17,7 @@ func _process(_delta: float) -> void:
 	if !Globals.player_mind:
 		return;
 	var player := Globals.player_mind;
-	var state := player.craft_master.engine.state;
+	var state := player.active_craft.engine.state;
 	_lvelocity_label.text = "LVel: %s m/s" % Utility.format_vector_std(state.linear_velocity);
 	_avelocity_label.text = "AVel: %s m/s" % Utility.format_vector_std(state.angular_velocity);
 	_setspeed_label.text = "SSpd: %s m/s" % Utility.format_vector_std(state.set_speed);

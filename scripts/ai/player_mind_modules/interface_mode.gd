@@ -25,12 +25,12 @@ func _ready():
 
 
 func _process(_delta: float) -> void:
-	var state := craft_master.engine.state;
+	var state := active_craft.engine.state;
 	
 	if i_mode == InterfaceMode.ORBIT:
 		if !_camera_free_look: # we're using the mouse for movement
 			state.angular_input += PlayerMind.face_dir_angular_input(
-					orbit_camera.facing_direction, craft_master.global_transform); 
+					orbit_camera.facing_direction, active_craft.global_transform); 
 			player_mind.graph_value = state.angular_input.y;
 #	angular_input *= state.angular_v_limit;
 #	angular_input *= delta;
@@ -69,10 +69,10 @@ func switch_interface_mode():
 	else: # reset the orbit camera otherwise 
 		if cockpit:
 			cockpit.disable_cockpit();
-		orbit_camera.target = craft_master;
+		orbit_camera.target = active_craft;
 		orbit_camera.make_current();
 		# align_orbit_camera_to_craft
-		orbit_camera.facing_direction = craft_master.global_transform.basis.z;
+		orbit_camera.facing_direction = active_craft.global_transform.basis.z;
 		i_mode = InterfaceMode.ORBIT;
 
 

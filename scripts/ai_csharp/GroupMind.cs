@@ -8,61 +8,50 @@ using GreenBehaviors.LeafLambda;
 
 namespace ISIS {
 
-	public class GroupMind : CraftMind {
+	public partial class GroupMind : CraftMind {
 
-		private MasterMind _masterMind;
-		private List<ScanPresence> _hostileContacts = new List<ScanPresence>();
+		protected MasterMind _masterMind;
+		protected List<ScanPresence> _hostileContacts = new List<ScanPresence>();
 
-		private Dictionary<string, RigidBody> _members = new Dictionary<string, RigidBody>();
-		private Dictionary<string, SteeringRoutine> _memberSteeringRoutines = new Dictionary<string, SteeringRoutine>();
-		private Dictionary<string, ScanPresence> _memberTargets = new Dictionary<string, ScanPresence>();
+		protected Dictionary<string, RigidBody> _members = new Dictionary<string, RigidBody>();
+		protected Dictionary<string, SteeringRoutine> _memberSteeringRoutines = new Dictionary<string, SteeringRoutine>();
+		protected Dictionary<string, ScanPresence> _memberTargets = new Dictionary<string, ScanPresence>();
 
-		private GreenBehaviors.Node _mainBehaviorTree;
+		protected GreenBehaviors.Node _mainBehaviorTree;
 
 		public override void _Ready() {
 			base._Ready();
-			foreach (var item in GetChildren()) {
-				var(isCraftMaster, craftMaster) = IsCraftMaster(item);
-				if (!isCraftMaster)
-					continue;
-				_members[craftMaster.Name] = craftMaster;
-			}
-
+			CollectMembers();
 			_masterMind = (MasterMind) GetTree().GetNodesInGroup("MasterMind") [0];
-			foreach (var contact in _masterMind.MasterContactList) {
-				if (IsHostileContact(contact))
-					_hostileContacts.Add(contact);
-			}
 			_masterMind.Connect(nameof(MasterMind.ContactMade), this, nameof(NewContact));
 			_masterMind.Connect(nameof(MasterMind.ContactLost), this, nameof(ContactLost));
-
+			AnalyzeAllContacts();
 			SetupBehavior();
 		}
 
 		public override void _Process(float delta) {
 			base._Process(delta);
-
-			foreach (var memberId in _members.Keys) {
-				var member = _members[memberId];
-				if (_memberSteeringRoutines.TryGetValue(memberId, out var routine)) {
-					var state = GetCraftState(member);
-					var input = routine.Invoke(member.GlobalTransform, state);
-					SetCraftInput(state, input);
-				}
-			}
+			RunSteeringRoutines();
 			Think();
-			return;
-			if (_hostileContacts.Count == 0)
-				return;
-			var enemy = ((Boid) _hostileContacts[0]).GetBody();
-			foreach (var craft in _members.Values) {
-				Vector3 hostileDirection = enemy.GlobalTransform.origin - craft.GlobalTransform.origin;
-				var craftState = GetCraftState(craft);
-				craftState.Set(
-					"angular_input",
-					FaceDirectionAngularInput(
-						hostileDirection, craft.GlobalTransform));
+		}
+		protected virtual void CollectMembers() {
+			foreach (var item in GetChildren()) {
+				var(isCraftMaster, craftMaster) = IsCraftMaster(item);
+				if (!isCraftMaster)
+					continue;
+				AddMember(craftMaster);
 			}
+		}
+
+		protected virtual void AnalyzeAllContacts() {
+			foreach (var contact in _masterMind.MasterContactList) {
+				if (IsHostileContact(contact))
+					_hostileContacts.Add(contact);
+			}
+		}
+
+		protected virtual void SetupBehavior() {
+			_mainBehaviorTree = DestroyAllHostiles();
 		}
 
 		protected virtual bool IsHostileContact(ScanPresence contact) {
@@ -77,15 +66,49 @@ namespace ISIS {
 		protected virtual void ContactLost(ScanPresence contact) {
 			_hostileContacts.Remove(contact);
 		}
-
+		protected virtual void RunSteeringRoutines() {
+			foreach (var memberId in _members.Keys) {
+				var member = _members[memberId];
+				if (_memberSteeringRoutines.TryGetValue(memberId, out var routine)) {
+					var state = GetCraftState(member);
+					var input = routine.Invoke(member.GlobalTransform, state);
+					SetCraftInput(state, input);
+				}
+			}
+		}
 		protected virtual void Think() {
 			_mainBehaviorTree.FullTick();
 		}
 
-		protected virtual void SetupBehavior() {
-			_mainBehaviorTree = DestroyAllHostiles();
-
+		protected virtual void AddMember(RigidBody craft) {
+			var id = GenerateCraftId(craft);
+			if (_members.ContainsKey(id))
+				return;
+			_members[id] = craft;
+			CancelAllBehaviors();
 		}
+
+		protected virtual void RemoveMember(string id) {
+			_members.Remove(id);
+			_memberSteeringRoutines.Remove(id);
+			_memberTargets.Remove(id);
+			CancelAllBehaviors();
+		}
+
+		protected virtual void RemoveAllMembers() {
+			_members.Clear();
+			_memberSteeringRoutines.Clear();
+			_memberTargets.Clear();
+			CancelAllBehaviors();
+		}
+		protected static string GenerateCraftId(RigidBody craft) => craft.Name;
+
+		private void CancelAllBehaviors() {
+			_mainBehaviorTree?.Cancel();
+		}
+	}
+
+	public partial class GroupMind {
 
 		protected virtual GreenBehaviors.Node DestroyAllHostiles() {
 			// setup basicFlightBehaviorTree

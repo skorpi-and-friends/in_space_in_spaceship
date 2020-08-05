@@ -4,18 +4,18 @@ class_name PlayerMind
 
 var modules := [];
 
-onready var craft_master: CraftMaster;
+onready var active_craft: CraftMaster;
 
 func _enter_tree() -> void:
 	Globals.player_mind = self;
 	for child in get_children():
-		var module := child as PlayerMindModule;
-		if module:
-			modules.append(module);
-			module.player_mind = self;
+		if (child as Object).has_meta(PlayerMindModule.identifier_meta):
+			modules.append(child);
+			child.player_mind = self;
+
 
 func _process(_delta: float) -> void:
-	var state = craft_master.engine.state;
+	var state = active_craft.engine.state;
 	state.linear_input = Vector3();
 	state.angular_input = Vector3();
 	for module in modules:
@@ -30,14 +30,14 @@ func _ready():
 			break;
 	# assert on the next frame
 	yield(get_tree(), "idle_frame")
-	assert(craft_master);
+	assert(active_craft);
 
 
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("Fire Primary"):
-		craft_master.arms.activate_primary();
+		active_craft.arms.activate_primary();
 	elif event.is_action_pressed("Fire Secondary"):
-		craft_master.arms.activate_secondary();
+		active_craft.arms.activate_secondary();
 	elif event.is_action_pressed("Toggle Mouse Capture"):
 		var new_mouse_mode := Input.MOUSE_MODE_CAPTURED;
 		if Input.get_mouse_mode() == new_mouse_mode:
@@ -48,9 +48,9 @@ func _input(event: InputEvent) -> void:
 var graph_value: float
 
 func take_control_of_craft(craft: CraftMaster) -> void:
-	if craft == craft_master:
+	if craft == active_craft:
 		return;
-	craft_master = craft;
+	active_craft = craft;
 	
 	for module in modules:
 		module._craft_changed(craft);

@@ -63,10 +63,11 @@
     <Compile Include="scripts\ai_csharp\CraftMind.cs" />
     <Compile Include="scripts\ai_csharp\GroupMind.cs" />
     <Compile Include="scripts\ai_csharp\MasterMind.cs" />
+    <Compile Include="scripts\ai_csharp\PlayerMindModule.cs" />
+    <Compile Include="scripts\ai_csharp\player_mind_modules\SubMind.cs" />
     <Compile Include="scripts\ai_csharp\SteeringBehaviors.cs" />
     <Compile Include="scripts\utility\Utility.cs" />
     <!-- FIXME: use a separate project for these -->
-    
     <Compile Include="addons\GreenBehaviors\behavior_trees\GreenBehaviorScripts.cs" />
     <Compile Include="addons\GreenBehaviors\behavior_trees\GreenBehaviors\BehaviorTree.cs" />
     <Compile Include="addons\GreenBehaviors\behavior_trees\GreenBehaviors\composite\CompositeNode.cs" />
@@ -90,7 +91,6 @@
     <Compile Include="addons\GreenBehaviors\behavior_trees\GreenBehaviors\leaf_utility\RollDicePercentage.cs" />
     <Compile Include="addons\GreenBehaviors\behavior_trees\GreenBehaviors\Node.cs" />
     <Compile Include="addons\GreenBehaviors\behavior_trees\GreenBehaviors\NodeState.cs" />
-  
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>
