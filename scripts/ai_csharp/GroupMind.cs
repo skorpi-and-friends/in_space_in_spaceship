@@ -432,7 +432,7 @@ namespace ISIS {
 					quarry.GlobalTransform.origin - currentTransform.origin
 				);
 			}
-			return targetAngularProximity < 1f;
+			return targetAngularProximity < 0.001 * Static.DegreeToRadian;
 		}
 
 	}

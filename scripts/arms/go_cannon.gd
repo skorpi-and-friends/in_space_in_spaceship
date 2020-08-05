@@ -1,9 +1,9 @@
-extends Weapon
+extends RangedWeapon
 
 onready var shell_scene := preload("res://scenes/arms/shell.tscn");
 
 export var _shell_speed: float;
-export var _shell_lifetime: float;
+export var _shell_range: float;
 export var _instanitate_offset := Vector3(0, 0, 1);
 export var _rounds_per_second := 5.0;
 
@@ -29,7 +29,7 @@ func _activate():
 	scene_root.add_child(clone)
 	
 	clone.global_transform = self.global_transform.translated(_instanitate_offset);
-	clone._activate(self, _shell_speed, _shell_lifetime);
+	clone._activate(self, _shell_speed, _shell_range);
 	
 	_time_since_last_round = 0.0;
 	active = false;
@@ -37,3 +37,14 @@ func _activate():
 
 func shell_contact(_shell: Shell, _body: Node):
 	pass
+
+func _get_projectile_velocity() -> float:
+	return _shell_speed;
+
+
+func _get_range() -> float:
+	return _shell_range;
+
+
+func _get_emit_frequency() -> float:
+	return _rounds_per_second;

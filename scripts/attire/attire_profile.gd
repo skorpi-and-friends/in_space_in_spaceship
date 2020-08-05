@@ -39,8 +39,8 @@ func add_members(new_members: Array):
 	members += new_members;
 
 func damage(damage: float, type: int) -> float:
-	printerr("Damaged attire %s" % name);
-	printerr("Force: %s kN" % (damage / 1000.0));
+#	printerr("Damaged attire %s" % name);
+#	printerr("Force: %s kN" % (damage / 1000.0));
 	var remaining_damage := damage;
 	for member in members:
 		remaining_damage = member.damage(remaining_damage, type);

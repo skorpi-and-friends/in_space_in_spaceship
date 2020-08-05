@@ -55,6 +55,8 @@
 
 - [ ] HUD
   - [x] Simple Target Tracker
+  - [x] Aim Leading Marker
+  - [x] Velocity Direction Marker
 
 - [ ] Cockpit
 	- [ ] Engine Display
@@ -77,7 +79,6 @@
 
 - [ ] 2D
 
-
 ### Attire System
 
 Layout:
@@ -89,7 +90,6 @@ AttireProfile
     ↓↓
 Attire
 ```
-
 
 ### AI
 
@@ -246,7 +246,7 @@ While working on the cockpit world, which requires having one viewport/world for
 
 Found out the altitiude raise direction is flipped as well...hmmm.
 
-It turns out using V-Flip is only useful when rendering on a mesh suraface. I was alternating between rendering on a surface and rendering through a ViewportContainer, which I suppose isn't the same and thus the issue. Switching the setting on/off appropriatley fixes the problem; a very subtle problem as it got it's wires crossed and flipped it horizontally which isn't as obvious.
+It turns out using V-Flip is only useful when rendering on a mesh suraface. I was alternating between rendering on a surface and rendering through a ViewportContainer, which I suppose isn't the same and thus the issue. Switching the setting on/off appropriatley fixes the problem; a very subtle problem as it got it's wires' crossed and flipped it horizontally which isn't as obvious.
 
 ### Rigidbody2D and the applied_force/torque properties
 
@@ -254,7 +254,7 @@ What would you assume was the purpose of such properties when you see them on th
 
 ### BUG: acceleration limiter
 
-The acceleration limit seems to be errenous on the larger craft but works observably right on the test fighter. Could that editor range limit on a Rigidbody's mass be actually a thing? I had worked assuming it's there for a reason (using multipliers and stuff) for a while but after retrieveing the mass in code noticing it wasn't clamped, I decided it was a helpful guide or a bug. Limiting mass doesn't make sense anyhow. But this enigmatic bug makes me wonder. But say, even massive crafts under the "mass limit" are exhibiting the limit; I might have typed this all down for no reason.
+The acceleration limit seems to be errenous on the larger craft but works observably right on the test fighter. Could that editor range limit on a Rigidbody's mass be actually a thing? I had worked assuming it's there for a reason (using multipliers and stuff) for a while but after retrieveing the mass in code noticing it wasn't clamped, I decided it was a helpful guide or a bug. Limiting mass doesn't make sense anyhow. But this enigmatic bug makes me wonder. But say, even massive crafts under the "mass limit" are exhibiting the bug; I might have typed this all down for no reason.
 
 ### Underscore prefixes on private gdscript functions
 

@@ -55,5 +55,7 @@ func _update_engine_input(state: CraftState) -> void:
 	if Input.is_action_pressed("Yaw Right"):
 		angular_input.y -= 1
 	angular_input *= state.angular_v_limit;
-	
-	state.angular_input += angular_input;
+	var keyboard_rotation_sensetivity := ProjectSettings.get_setting("ISIS/Controls/Craft/Keyboard Rotation Sensetivity") as float;
+	if keyboard_rotation_sensetivity:
+		angular_input *= keyboard_rotation_sensetivity; 
+	state.angular_input += angular_input * 0.1 # get_process_delta_time();

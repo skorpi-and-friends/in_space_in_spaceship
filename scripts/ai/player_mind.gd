@@ -20,6 +20,11 @@ func _process(_delta: float) -> void:
 	state.angular_input = Vector3();
 	for module in modules:
 		module._update_engine_input(state);
+	
+	if Input.is_action_pressed("Fire Primary"):
+		craft_master.arms.activate_primary();
+	if Input.is_action_pressed("Fire Secondary"):
+		craft_master.arms.activate_secondary();
 
 
 func _ready():
@@ -34,11 +39,7 @@ func _ready():
 
 
 func _input(event: InputEvent) -> void:
-	if event.is_action_pressed("Fire Primary"):
-		active_craft.arms.activate_primary();
-	elif event.is_action_pressed("Fire Secondary"):
-		active_craft.arms.activate_secondary();
-	elif event.is_action_pressed("Toggle Mouse Capture"):
+	if event.is_action_pressed("Toggle Mouse Capture"):
 		var new_mouse_mode := Input.MOUSE_MODE_CAPTURED;
 		if Input.get_mouse_mode() == new_mouse_mode:
 			new_mouse_mode = Input.MOUSE_MODE_VISIBLE 
