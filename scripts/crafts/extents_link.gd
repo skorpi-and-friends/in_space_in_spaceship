@@ -10,6 +10,6 @@ func _ready():
 	var size = mesh.get_aabb().size;
 	if size == Vector3():
 		printerr("linked mesh has zero volume.");
-	engine._craft_extents = size;
+	engine.craft_extents = size;
 	queue_free()
 	
