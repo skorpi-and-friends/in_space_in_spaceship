@@ -1,0 +1,17 @@
+[gd_resource type="Environment" load_steps=3 format=2]
+
+[ext_resource path="res://textures/starscape_2048.png" type="Texture" id=1]
+
+
+[sub_resource type="PanoramaSky" id=2]
+resource_local_to_scene = true
+panorama = ExtResource( 1 )
+
+[resource]
+resource_local_to_scene = true
+background_mode = 2
+background_sky = SubResource( 2 )
+background_color = Color( 0.584314, 0.207843, 0.207843, 1 )
+glow_strength = 2.0
+glow_bloom = 1.0
+adjustment_contrast = 0.93

@@ -1,0 +1,517 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=4
+
+_global_script_classes=[ {
+"base": "NameLabelHolo",
+"class": "AmmoCounterHolo",
+"language": "GDScript",
+"path": "res://scripts/cockpit/arm_holos/ammo_counter_holo.gd"
+}, {
+"base": "Spatial",
+"class": "ArmamentMaster",
+"language": "GDScript",
+"path": "res://scripts/arms/armament_master.gd"
+}, {
+"base": "Node",
+"class": "Attire",
+"language": "GDScript",
+"path": "res://scripts/attire/attire.gd"
+}, {
+"base": "Spatial",
+"class": "AttireMaster",
+"language": "GDScript",
+"path": "res://scripts/attire/attire_master.gd"
+}, {
+"base": "Area",
+"class": "AttireProfile",
+"language": "GDScript",
+"path": "res://scripts/attire/attire_profile.gd"
+}, {
+"base": "MarginContainer",
+"class": "AttireProfileDisplay",
+"language": "GDScript",
+"path": "res://scripts/cockpit/attire_profile_display.gd"
+}, {
+"base": "ScanPresence",
+"class": "Boid",
+"language": "GDScript",
+"path": "res://scripts/ai/contacts/boid.gd"
+}, {
+"base": "PlayerMindModule",
+"class": "CameraInterface",
+"language": "GDScript",
+"path": "res://scripts/ai/player_mind_modules/interface_mode.gd"
+}, {
+"base": "CraftMaster",
+"class": "ChildCraftMaster",
+"language": "GDScript",
+"path": "res://scripts/crafts/craft_master_child.gd"
+}, {
+"base": "CockpitDisplay",
+"class": "CkpitArms",
+"language": "GDScript",
+"path": "res://scripts/cockpit/arms_display.gd"
+}, {
+"base": "CockpitDisplay",
+"class": "CkpitAttire",
+"language": "GDScript",
+"path": "res://scripts/cockpit/attire_display.gd"
+}, {
+"base": "CockpitDisplay",
+"class": "CkpitEngine",
+"language": "GDScript",
+"path": "res://scripts/cockpit/engine_display.gd"
+}, {
+"base": "CockpitDisplay",
+"class": "CkpitPrimary",
+"language": "GDScript",
+"path": "res://scripts/cockpit/primary_display.gd"
+}, {
+"base": "Node",
+"class": "CockpitDisplay",
+"language": "GDScript",
+"path": "res://scripts/cockpit/cockpit_display.gd"
+}, {
+"base": "Spatial",
+"class": "CockpitMaster",
+"language": "GDScript",
+"path": "res://scripts/cockpit/cockpit_master.gd"
+}, {
+"base": "Camera",
+"class": "CraftCamera",
+"language": "GDScript",
+"path": "res://scripts/craft_camera.gd"
+}, {
+"base": "Camera",
+"class": "CraftCameraAngle",
+"language": "GDScript",
+"path": "res://scripts/craft_camera_angle.gd"
+}, {
+"base": "Resource",
+"class": "CraftConfig",
+"language": "GDScript",
+"path": "res://scripts/crafts/craft_config.gd"
+}, {
+"base": "Node",
+"class": "CraftDriver",
+"language": "GDScript",
+"path": "res://scripts/crafts/craft_driver.gd"
+}, {
+"base": "Node",
+"class": "CraftDriver2D",
+"language": "GDScript",
+"path": "res://scripts/crafts_2D/craft_driver_2D.gd"
+}, {
+"base": "Node",
+"class": "CraftEngine",
+"language": "GDScript",
+"path": "res://scripts/crafts/craft_engine.gd"
+}, {
+"base": "Node",
+"class": "CraftEngine2D",
+"language": "GDScript",
+"path": "res://scripts/crafts_2D/craft_engine_2D.gd"
+}, {
+"base": "Control",
+"class": "CraftInterface",
+"language": "GDScript",
+"path": "res://scripts/ui/craft_interface.gd"
+}, {
+"base": "RigidBody",
+"class": "CraftMaster",
+"language": "GDScript",
+"path": "res://scripts/crafts/craft_master.gd"
+}, {
+"base": "RigidBody2D",
+"class": "CraftMaster2D",
+"language": "GDScript",
+"path": "res://scripts/crafts_2D/craft_master_2D.gd"
+}, {
+"base": "Node",
+"class": "CraftMind",
+"language": "GDScript",
+"path": "res://scripts/ai/craft_mind.gd"
+}, {
+"base": "Node",
+"class": "CraftMotor",
+"language": "GDScript",
+"path": "res://scripts/crafts/craft_motor.gd"
+}, {
+"base": "Node",
+"class": "CraftMotor2D",
+"language": "GDScript",
+"path": "res://scripts/crafts_2D/craft_motor_2D.gd"
+}, {
+"base": "Node",
+"class": "CraftState",
+"language": "GDScript",
+"path": "res://scripts/crafts/craft_state.gd"
+}, {
+"base": "Node",
+"class": "CraftState2D",
+"language": "GDScript",
+"path": "res://scripts/crafts_2D/craft_state_2D.gd"
+}, {
+"base": "Object",
+"class": "Damage",
+"language": "GDScript",
+"path": "res://scripts/arms/damage.gd"
+}, {
+"base": "PlayerMindModule",
+"class": "EngineController",
+"language": "GDScript",
+"path": "res://scripts/ai/player_mind_modules/engine_controller.gd"
+}, {
+"base": "CraftMind",
+"class": "GroupMind",
+"language": "GDScript",
+"path": "res://scripts/ai/group_mind.gd"
+}, {
+"base": "Node",
+"class": "MasterMind",
+"language": "GDScript",
+"path": "res://scripts/ai/master_mind.gd"
+}, {
+"base": "ChildCraftMaster",
+"class": "MotherCraftMaster",
+"language": "GDScript",
+"path": "res://scripts/crafts/craft_master_mother.gd"
+}, {
+"base": "WeaponHolo",
+"class": "NameLabelHolo",
+"language": "GDScript",
+"path": "res://scripts/cockpit/arm_holos/name_label_holo.gd"
+}, {
+"base": "Node",
+"class": "PIDController",
+"language": "GDScript",
+"path": "res://scripts/utility/pid_controller.gd"
+}, {
+"base": "Node",
+"class": "PIDControllerVector",
+"language": "GDScript",
+"path": "res://scripts/utility/pid_controller_vector.gd"
+}, {
+"base": "Node",
+"class": "PIDControllerVector2D",
+"language": "GDScript",
+"path": "res://scripts/utility/pid_controller_vector_2D.gd"
+}, {
+"base": "CraftDriver",
+"class": "PIDDriver",
+"language": "GDScript",
+"path": "res://scripts/crafts/drivers/pid_driver.gd"
+}, {
+"base": "CraftDriver2D",
+"class": "PIDDriver2D",
+"language": "GDScript",
+"path": "res://scripts/crafts_2D/drivers/pid_driver_2D.gd"
+}, {
+"base": "CraftMind",
+"class": "PlayerMind",
+"language": "GDScript",
+"path": "res://scripts/ai/player_mind.gd"
+}, {
+"base": "CraftMind",
+"class": "PlayerMind2D",
+"language": "GDScript",
+"path": "res://scripts/ai/player_mind_2D.gd"
+}, {
+"base": "Node",
+"class": "PlayerMindModule",
+"language": "GDScript",
+"path": "res://scripts/ai/player_mind_module.gd"
+}, {
+"base": "PlayerMindModule",
+"class": "PlayerPackMind",
+"language": "GDScript",
+"path": "res://scripts/ai/player_mind_modules/packs.gd"
+}, {
+"base": "Weapon",
+"class": "RangedWeapon",
+"language": "GDScript",
+"path": "res://scripts/arms/ranged_weapon.gd"
+}, {
+"base": "Spatial",
+"class": "ScanPresence",
+"language": "GDScript",
+"path": "res://scripts/ai/contacts/scan_presence.gd"
+}, {
+"base": "Area",
+"class": "Shell",
+"language": "GDScript",
+"path": "res://scripts/arms/shell.gd"
+}, {
+"base": "CraftMotor",
+"class": "SimpleMotorAcceleration",
+"language": "GDScript",
+"path": "res://scripts/crafts/motors/simple_motor_acceleration.gd"
+}, {
+"base": "CraftMotor2D",
+"class": "SimpleMotorAcceleration2D",
+"language": "GDScript",
+"path": "res://scripts/crafts_2D/motors/simple_motor_acceleration_2D.gd"
+}, {
+"base": "Spatial",
+"class": "SireCraft",
+"language": "GDScript",
+"path": "res://scripts/sire_craft.gd"
+}, {
+"base": "RemoteTransform",
+"class": "SireCraftTransformer",
+"language": "GDScript",
+"path": "res://scripts/sire_craft_transformer.gd"
+}, {
+"base": "Object",
+"class": "SteeringBehaviors",
+"language": "GDScript",
+"path": "res://scripts/ai/steering_behaviors.gd"
+}, {
+"base": "MarginContainer",
+"class": "TimeGraph",
+"language": "GDScript",
+"path": "res://scripts/ui/time_graph.gd"
+}, {
+"base": "Object",
+"class": "Utility",
+"language": "GDScript",
+"path": "res://scripts/utility/utility.gd"
+}, {
+"base": "Node",
+"class": "ViewportMaster",
+"language": "GDScript",
+"path": "res://scripts/viewport_master.gd"
+}, {
+"base": "Spatial",
+"class": "Weapon",
+"language": "GDScript",
+"path": "res://scripts/arms/weapon.gd"
+}, {
+"base": "Weapon",
+"class": "WeaponCombiner",
+"language": "GDScript",
+"path": "res://scripts/arms/weapon_combiner.gd"
+}, {
+"base": "Control",
+"class": "WeaponHolo",
+"language": "GDScript",
+"path": "res://scripts/cockpit/arm_holos/weapon_holo.gd"
+} ]
+_global_script_class_icons={
+"AmmoCounterHolo": "",
+"ArmamentMaster": "",
+"Attire": "",
+"AttireMaster": "",
+"AttireProfile": "",
+"AttireProfileDisplay": "",
+"Boid": "",
+"CameraInterface": "",
+"ChildCraftMaster": "",
+"CkpitArms": "",
+"CkpitAttire": "",
+"CkpitEngine": "",
+"CkpitPrimary": "",
+"CockpitDisplay": "",
+"CockpitMaster": "",
+"CraftCamera": "",
+"CraftCameraAngle": "",
+"CraftConfig": "",
+"CraftDriver": "",
+"CraftDriver2D": "",
+"CraftEngine": "",
+"CraftEngine2D": "",
+"CraftInterface": "",
+"CraftMaster": "",
+"CraftMaster2D": "",
+"CraftMind": "",
+"CraftMotor": "",
+"CraftMotor2D": "",
+"CraftState": "",
+"CraftState2D": "",
+"Damage": "",
+"EngineController": "",
+"GroupMind": "",
+"MasterMind": "",
+"MotherCraftMaster": "",
+"NameLabelHolo": "",
+"PIDController": "",
+"PIDControllerVector": "",
+"PIDControllerVector2D": "",
+"PIDDriver": "",
+"PIDDriver2D": "",
+"PlayerMind": "",
+"PlayerMind2D": "",
+"PlayerMindModule": "",
+"PlayerPackMind": "",
+"RangedWeapon": "",
+"ScanPresence": "",
+"Shell": "",
+"SimpleMotorAcceleration": "",
+"SimpleMotorAcceleration2D": "",
+"SireCraft": "",
+"SireCraftTransformer": "",
+"SteeringBehaviors": "",
+"TimeGraph": "",
+"Utility": "",
+"ViewportMaster": "",
+"Weapon": "",
+"WeaponCombiner": "",
+"WeaponHolo": ""
+}
+
+[ISIS]
+
+"Controls/Craft/Keyboard Rotation Sensetivity"=1.0
+
+[application]
+
+config/name="IN SPACE IN SPACESHIP"
+run/main_scene="res://scenes/Main.tscn"
+config/icon="res://icon.png"
+
+[autoload]
+
+Globals="*res://scripts/isis_globals.gd"
+
+[debug]
+
+gdscript/completion/autocomplete_setters_and_getters=true
+
+[display]
+
+window/size/width=1066
+window/size/always_on_top=true
+
+[input]
+
+Thrust={
+"deadzone": 0.5,
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":87,"unicode":0,"echo":false,"script":null)
+ ]
+}
+"Thrust Reverse"={
+"deadzone": 0.5,
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":83,"unicode":0,"echo":false,"script":null)
+ ]
+}
+"Starfe Left"={
+"deadzone": 0.5,
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":65,"unicode":0,"echo":false,"script":null)
+ ]
+}
+"Starfe Right"={
+"deadzone": 0.5,
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":68,"unicode":0,"echo":false,"script":null)
+ ]
+}
+"Altitude Raise"={
+"deadzone": 0.5,
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":69,"unicode":0,"echo":false,"script":null)
+ ]
+}
+"Altitude Lower"={
+"deadzone": 0.5,
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":81,"unicode":0,"echo":false,"script":null)
+ ]
+}
+"Pitch Up"={
+"deadzone": 0.5,
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":16777358,"unicode":0,"echo":false,"script":null)
+ ]
+}
+"Pitch Down"={
+"deadzone": 0.5,
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":16777355,"unicode":0,"echo":false,"script":null)
+ ]
+}
+"Yaw Left"={
+"deadzone": 0.5,
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":16777354,"unicode":0,"echo":false,"script":null)
+ ]
+}
+"Yaw Right"={
+"deadzone": 0.5,
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":16777356,"unicode":0,"echo":false,"script":null)
+ ]
+}
+"Roll Left"={
+"deadzone": 0.5,
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":16777357,"unicode":0,"echo":false,"script":null)
+ ]
+}
+"Roll Right"={
+"deadzone": 0.5,
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":16777359,"unicode":0,"echo":false,"script":null)
+ ]
+}
+"Fire Primary"={
+"deadzone": 0.5,
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":32,"unicode":0,"echo":false,"script":null)
+ ]
+}
+"Fire Secondary"={
+"deadzone": 0.5,
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":70,"unicode":0,"echo":false,"script":null)
+ ]
+}
+"Toggle Mouse Capture"={
+"deadzone": 0.5,
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":74,"unicode":0,"echo":false,"script":null)
+ ]
+}
+"Camera Free Look"={
+"deadzone": 0.5,
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":96,"unicode":0,"echo":false,"script":null)
+ ]
+}
+"Toggle Camera Free Look"={
+"deadzone": 0.5,
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":90,"unicode":0,"echo":false,"script":null)
+ ]
+}
+"Increase Camera Distance"={
+"deadzone": 0.5,
+"events": [ Object(InputEventMouseButton,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"button_mask":0,"position":Vector2( 0, 0 ),"global_position":Vector2( 0, 0 ),"factor":1.0,"button_index":4,"pressed":false,"doubleclick":false,"script":null)
+ ]
+}
+"Decrease Camera Distance"={
+"deadzone": 0.5,
+"events": [ Object(InputEventMouseButton,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"button_mask":0,"position":Vector2( 0, 0 ),"global_position":Vector2( 0, 0 ),"factor":1.0,"button_index":5,"pressed":false,"doubleclick":false,"script":null)
+ ]
+}
+"Switch Interface Mode"={
+"deadzone": 0.5,
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":67,"unicode":0,"echo":false,"script":null)
+ ]
+}
+"Switch Craft"={
+"deadzone": 0.5,
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":71,"unicode":0,"echo":false,"script":null)
+ ]
+}
+"Debug Button"={
+"deadzone": 0.5,
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":84,"unicode":0,"echo":false,"script":null)
+ ]
+}
+
+[physics]
+
+2d/default_gravity=0
+2d/default_linear_damp=0.0
+2d/default_angular_damp=0
+3d/default_gravity=0.0
+3d/default_linear_damp=0.0
+3d/default_angular_damp=0.0
+
+[rendering]
+
+threads/thread_model=2
+environment/default_environment="res://enviroments/daytime_sky.tres"

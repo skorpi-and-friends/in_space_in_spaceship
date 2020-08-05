@@ -1,0 +1,20 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://scripts/cockpit/arm_holos/ammo_counter_holo.gd" type="Script" id=1]
+
+[node name="AmmoCounterWeaponHolo" type="VBoxContainer"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+custom_constants/separation = 20
+script = ExtResource( 1 )
+
+[node name="NameLabel" type="Label" parent="."]
+margin_right = 1024.0
+margin_bottom = 14.0
+text = "Weapon Name"
+
+[node name="AmmoCounter" type="Label" parent="."]
+margin_top = 34.0
+margin_right = 1024.0
+margin_bottom = 48.0
+text = "Weapon Name"

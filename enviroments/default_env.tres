@@ -1,0 +1,30 @@
+[gd_resource type="Environment" load_steps=2 format=2]
+
+[sub_resource type="ProceduralSky" id=1]
+sky_top_color = Color( 0.207843, 0.156863, 0.364706, 1 )
+sky_horizon_color = Color( 0.45098, 0.294118, 0.890196, 1 )
+sky_curve = 1.01823
+sky_energy = 0.2
+ground_bottom_color = Color( 0.756863, 0.282353, 0.780392, 1 )
+ground_horizon_color = Color( 0.45098, 0.294118, 0.890196, 1 )
+ground_curve = 0.844485
+ground_energy = 0.2
+sun_color = Color( 1, 0.972549, 0.72549, 1 )
+sun_latitude = 10.0
+sun_angle_min = 2.0
+sun_angle_max = 20.0
+sun_curve = 0.068302
+
+[resource]
+background_mode = 2
+background_sky = SubResource( 1 )
+background_sky_orientation = Basis( 0.129156, 0.613526, 0.77904, 0.907673, 0.24321, -0.34202, -0.399309, 0.751288, -0.52547 )
+fog_color = Color( 0.643137, 0.501961, 0.701961, 1 )
+ssao_radius2 = 62.9
+ssao_intensity2 = 0.0
+ssao_bias = 0.001
+ssao_light_affect = 0.55
+ssao_ao_channel_affect = 0.29
+ssao_quality = 2
+glow_enabled = true
+glow_bloom = 0.27
