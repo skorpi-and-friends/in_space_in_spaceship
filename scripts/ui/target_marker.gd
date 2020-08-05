@@ -17,7 +17,7 @@ var target_screen_position: Vector2;
 func _process(delta: float) -> void:
 	if !_target:
 		return;
-	var target_world_position = _target.global_transform.origin;
+	var target_world_position := _target.global_transform.origin;
 	var viewport := get_viewport();
 	var current_camera := viewport.get_camera();
 	var target_position := current_camera.unproject_position(target_world_position);

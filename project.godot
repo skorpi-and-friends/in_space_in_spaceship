@@ -239,6 +239,11 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://scripts/ai/player_mind_modules/packs.gd"
 }, {
+"base": "Weapon",
+"class": "RangedWeapon",
+"language": "GDScript",
+"path": "res://scripts/arms/ranged_weapon.gd"
+}, {
 "base": "Spatial",
 "class": "ScanPresence",
 "language": "GDScript",
@@ -270,7 +275,7 @@ _global_script_classes=[ {
 "path": "res://scripts/sire_craft_transformer.gd"
 }, {
 "base": "Object",
-"class": "SteerBhvrs",
+"class": "SteeringBehaviors",
 "language": "GDScript",
 "path": "res://scripts/ai/steering_behaviors.gd"
 }, {
@@ -351,13 +356,14 @@ _global_script_class_icons={
 "PlayerMind2D": "",
 "PlayerMindModule": "",
 "PlayerPackMind": "",
+"RangedWeapon": "",
 "ScanPresence": "",
 "Shell": "",
 "SimpleMotorAcceleration": "",
 "SimpleMotorAcceleration2D": "",
 "SireCraft": "",
 "SireCraftTransformer": "",
-"SteerBhvrs": "",
+"SteeringBehaviors": "",
 "TimeGraph": "",
 "Utility": "",
 "ViewportMaster": "",
@@ -365,6 +371,10 @@ _global_script_class_icons={
 "WeaponCombiner": "",
 "WeaponHolo": ""
 }
+
+[ISIS]
+
+"Controls/Craft/Keyboard Rotation Sensetivity"=1.0
 
 [application]
 

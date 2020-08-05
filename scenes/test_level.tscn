@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=2]
+[gd_scene load_steps=25 format=2]
 
 [ext_resource path="res://enviroments/default_env.tres" type="Environment" id=1]
 [ext_resource path="res://scripts/ai_csharp/MasterMind.cs" type="Script" id=2]
@@ -13,6 +13,7 @@
 [ext_resource path="res://scenes/ui/target_marker.tscn" type="PackedScene" id=11]
 [ext_resource path="res://scenes/crafts/test_corvette.tscn" type="PackedScene" id=12]
 [ext_resource path="res://scenes/human_prop.tscn" type="PackedScene" id=13]
+[ext_resource path="res://scenes/ui/target_aim_leading.tscn" type="PackedScene" id=14]
 
 [sub_resource type="CapsuleMesh" id=1]
 
@@ -146,6 +147,12 @@ visible = false
 [node name="MasterMind" type="Node" parent="."]
 script = ExtResource( 2 )
 
+[node name="GroupMind" type="Node" parent="."]
+script = ExtResource( 3 )
+
+[node name="TestFighter2" parent="GroupMind" instance=ExtResource( 10 )]
+transform = Transform( -1, 0, -1.50996e-07, 0, 1, 0, 1.50996e-07, 0, -0.999999, -48.3192, 0, 267.841 )
+
 [node name="PlayerMind" parent="." instance=ExtResource( 4 )]
 
 [node name="TestFighter" parent="PlayerMind" instance=ExtResource( 10 )]
@@ -169,42 +176,42 @@ material/0 = null
 visible = false
 script = SubResource( 10 )
 
-[node name="GroupMind" type="Node" parent="Disabled"]
-script = ExtResource( 3 )
-
-[node name="TestFighter2" parent="Disabled/GroupMind" instance=ExtResource( 10 )]
-transform = Transform( -1, 0, -1.50996e-07, 0, 1, 0, 1.50996e-07, 0, -0.999999, -48.3192, 0, 267.841 )
-
-[node name="TestFighter3" parent="Disabled/GroupMind" instance=ExtResource( 10 )]
+[node name="TestFighter3" parent="Disabled" instance=ExtResource( 10 )]
 transform = Transform( -1, 0, -1.50996e-07, 0, 1, 0, 1.50996e-07, 0, -0.999999, 89.7655, 0, 82.3878 )
 
-[node name="TestFighter4" parent="Disabled/GroupMind" instance=ExtResource( 10 )]
+[node name="TestFighter4" parent="Disabled" instance=ExtResource( 10 )]
 transform = Transform( -1, 0, -1.50996e-07, 0, 1, 0, 1.50996e-07, 0, -0.999999, -56.7882, 0, 556.167 )
 
-[node name="TestFighter5" parent="Disabled/GroupMind" instance=ExtResource( 10 )]
+[node name="TestFighter5" parent="Disabled" instance=ExtResource( 10 )]
 transform = Transform( -1, 0, -1.50996e-07, 0, 1, 0, 1.50996e-07, 0, -0.999999, -89.5081, 0, 418.052 )
 
-[node name="TestFighter6" parent="Disabled/GroupMind" instance=ExtResource( 10 )]
+[node name="TestFighter6" parent="Disabled" instance=ExtResource( 10 )]
 transform = Transform( -1, 0, -1.50996e-07, 0, 1, 0, 1.50996e-07, 0, -0.999999, -41.3787, 0, 588.39 )
 
-[node name="TestFighter7" parent="Disabled/GroupMind" instance=ExtResource( 10 )]
+[node name="TestFighter7" parent="Disabled" instance=ExtResource( 10 )]
 transform = Transform( -1, 0, -1.50996e-07, 0, 1, 0, 1.50996e-07, 0, -0.999999, -58.1278, 0.145798, 536.362 )
 
-[node name="TestFighter8" parent="Disabled/GroupMind" instance=ExtResource( 10 )]
+[node name="TestFighter8" parent="Disabled" instance=ExtResource( 10 )]
 transform = Transform( -1, 0, -1.50996e-07, 0, 1, 0, 1.50996e-07, 0, -0.999999, 350.924, 0, 82.3877 )
 
-[node name="TestFighter9" parent="Disabled/GroupMind" instance=ExtResource( 10 )]
+[node name="TestFighter9" parent="Disabled" instance=ExtResource( 10 )]
 transform = Transform( -1, 0, -1.50996e-07, 0, 1, 0, 1.50996e-07, 0, -0.999999, -56.7874, 0, 6106.29 )
 
-[node name="TestFighter10" parent="Disabled/GroupMind" instance=ExtResource( 10 )]
+[node name="TestFighter10" parent="Disabled" instance=ExtResource( 10 )]
 transform = Transform( -1, 0, -1.50996e-07, 0, 1, 0, 1.50996e-07, 0, -0.999999, -109.034, 0, 82.3878 )
 
-[node name="Artery" parent="Disabled/GroupMind" instance=ExtResource( 9 )]
+[node name="Artery" parent="Disabled" instance=ExtResource( 9 )]
 transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -55.5283, 0, 73.3256 )
 
 [node name="CraftWorldHud" parent="." instance=ExtResource( 7 )]
 
 [node name="TargetMarker" parent="CraftWorldHud" instance=ExtResource( 11 )]
-_target_path = NodePath("../../Enviroment/Asteroid")
+_target_path = NodePath("../../GroupMind/TestFighter2")
+
+[node name="TargetAimLeading" parent="CraftWorldHud" instance=ExtResource( 14 )]
+_target_path = NodePath("../../GroupMind/TestFighter2")
+_weapon_path = NodePath("../../PlayerMind/TestFighter/Arms/Primary/GOCannon")
+
+[editable path="PlayerMind/TestFighter"]
 
 [editable path="CraftWorldHud"]

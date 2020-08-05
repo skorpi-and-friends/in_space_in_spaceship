@@ -15,10 +15,10 @@ func _ready():
 	assert(connect("area_entered",self,"on_entered") == OK);
 	assert(connect("body_entered",self,"on_entered") == OK);
 
-func _activate(owner: Weapon, speed: float, lifetime: float):
+func _activate(owner: Weapon, speed: float, range_distance: float):
 	_owner_weapon = owner;
 	_speed = speed;
-	_lifetime = lifetime;
+	_lifetime = range_distance/speed;
 	_active = true;
 
 
