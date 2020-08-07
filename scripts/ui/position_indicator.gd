@@ -4,8 +4,9 @@ class_name PositionIndicator
 
 onready var _onscreen_marker := $OnscreenMarker as Control;
 onready var _offscreen_marker := $OffscreenMarker as Sprite;
+#onready var _top_color_bar := $OnscreenMarker/TopColorBar as ColorRect;
 
-onready var target: Spatial;
+onready var target: Spatial setget _set_target;
 
 export var offscreen_marker_max_size := Vector2(64, 64);
 
@@ -17,6 +18,7 @@ var target_screen_position: Vector2;
 func _ready() -> void:
 	assert(_onscreen_marker);
 	assert(_offscreen_marker);
+#	assert(_top_color_bar);
 
 
 func _process(delta: float) -> void:
@@ -102,3 +104,16 @@ func _process(delta: float) -> void:
 				clamp(new_position.y, padding, viewport.size.y - padding)
 			);
 		_offscreen_marker.position = new_position;
+
+
+func set_color_scheme(color: Color) -> void:
+	_offscreen_marker.self_modulate = color;
+	_onscreen_marker.self_modulate = color;
+#	_top_color_bar.visible = true;
+#	_top_color_bar.color = color;
+
+
+func _set_target(value: Spatial) -> void:
+	target = value;
+	set_color_scheme(Color.white);
+#	_top_color_bar.visible = false;

@@ -23,11 +23,11 @@ namespace ISIS {
 			base._Ready();
 			CollectMembers();
 			_masterMind = (MasterMind) GetTree().GetNodesInGroup("MasterMind") [0];
-			_masterMind.Connect(nameof(MasterMind.ContactMade), this, nameof(NewContact));
+			_masterMind.Connect(nameof(MasterMind.ContactMade), this, nameof(ContactMade));
 			_masterMind.Connect(nameof(MasterMind.ContactLost), this, nameof(ContactLost));
 			// AnalyzeAllContacts();
 			foreach (var contact in _masterMind.MasterContactList) {
-				NewContact(contact);
+				ContactMade(contact);
 			}
 			SetupBehavior();
 		}
@@ -37,6 +37,7 @@ namespace ISIS {
 			RunSteeringRoutines();
 			Think();
 		}
+
 		protected virtual void CollectMembers() {
 			foreach (var item in GetChildren()) {
 				var(isCraftMaster, craftMaster) = IsCraftMaster(item);
@@ -54,7 +55,20 @@ namespace ISIS {
 			return contact is Boid && !this.IsAParentOf(contact);
 		}
 
-		protected virtual void NewContact(ScanPresence contact) {
+		protected virtual bool IsFreindlyContact(ScanPresence contact) {
+			return contact is Boid boid &&
+				_members.ContainsKey(GenerateCraftId((RigidBody) boid.GetBody()));
+		}
+
+		public virtual Relationship AssessRelationship(ScanPresence contact) {
+			if (IsHostileContact(contact))
+				return Relationship.Hostile;
+			if (IsFreindlyContact(contact))
+				return Relationship.Freindly;
+			return Relationship.Neutral;
+		}
+
+		protected virtual void ContactMade(ScanPresence contact) {
 			if (IsHostileContact(contact))
 				_hostileContacts.Add(contact);
 		}
@@ -62,6 +76,7 @@ namespace ISIS {
 		protected virtual void ContactLost(ScanPresence contact) {
 			_hostileContacts.Remove(contact);
 		}
+
 		protected virtual void RunSteeringRoutines() {
 			foreach (var memberId in _members.Keys) {
 				var member = _members[memberId];

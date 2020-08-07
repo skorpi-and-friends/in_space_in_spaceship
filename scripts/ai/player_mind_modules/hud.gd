@@ -4,7 +4,8 @@ const velocity_direction_marker_scene: PackedScene = preload("res://scenes/ui/ve
 
 var velocity_direction_marker:Control = velocity_direction_marker_scene.instance();
 
-var _master_mind: Node;
+onready var _master_mind:Node = get_tree().get_nodes_in_group("MasterMind")[0];
+onready var _submindModule = get_node_or_null("../SubMind")
 
 var _boid_contact_indicators := {};
 
@@ -39,23 +40,25 @@ func _generate_aim_leading() -> Control:
 
 
 func _craft_changed(craft: CraftMaster) -> void:
-	._craft_changed(craft);
 	velocity_direction_marker.craft = craft;
 	# disable indicators for the newly piloted craft
 	# and enable them for the previously piloted
 	if active_craft:
-		_contact_made(active_craft.presence);
+		_contact_made(active_craft.presence, Relationship.Stance.Freindly);
 	_contact_lost(craft.presence);
 	active_craft = craft;
 	for contact in _boid_contact_indicators:
 		var indicator := _boid_contact_indicators[contact] as BoidIndicator;
 		indicator.player_craft = craft;
+	._craft_changed(craft);
 
 
 func _ready() -> void:
+	assert(_master_mind);
+	assert(_submindModule);
 	
 	Globals.game_world_hud_layer.add_child(velocity_direction_marker);
-	_master_mind = get_tree().get_nodes_in_group("MasterMind")[0];
+	
 	assert(OK == _master_mind.connect("ContactMade", self, "_contact_made"));
 	assert(OK == _master_mind.connect("ContactLost", self, "_contact_lost"));
 	# give everyone chance to be ready
@@ -69,13 +72,23 @@ func _ready() -> void:
 		_contact_made(contact);
 
 
-func _contact_made(contact: Spatial) -> void:
+func _contact_made(contact: Spatial, relationship: int = -1) -> void:
 	if !(contact.get_script() == CSharp.Boid):
 		return;
 	var target := contact.GetBody() as RigidBody;
 	var boid_indicator := _boid_indicator_pool.GetObject() as BoidIndicator;
 	Globals.game_world_hud_layer.add_child(boid_indicator);
-	boid_indicator.initialize(target, active_craft, _aim_indicator_pool);
+	boid_indicator.initialize(target,_aim_indicator_pool, active_craft);
+	if !~relationship:
+		relationship = _submindModule.AssessRelationship(contact);
+	match relationship:
+		Relationship.Stance.Neutral: 
+			pass;
+		Relationship.Stance.Hostile:
+			boid_indicator.set_color_scheme(Relationship.HostileColor);
+		Relationship.Stance.Freindly:
+			boid_indicator.set_color_scheme(Relationship.FreindlyColor);
+	
 	_boid_contact_indicators[contact] = boid_indicator;
 
 

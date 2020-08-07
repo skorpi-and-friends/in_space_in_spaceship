@@ -1,10 +1,17 @@
 extends Node
 
+"""abstract"""
 class_name PlayerMindModule
+
+"""
+The modules expect to be siblings in the scene tree and expect other modules
+to always carry the same node name. 
+FIXME: a better dependency/relationship construct between the modules 
+"""
 
 const identifier_meta = "player_mind_module";
 
-var active_craft: CraftMaster;
+var active_craft: CraftMaster setget _craft_changed;
 var player_mind setget _set_player_mind;
 
 func _init() -> void:

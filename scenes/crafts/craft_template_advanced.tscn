@@ -8,9 +8,6 @@
 [node name="CraftAdvanced" instance=ExtResource( 1 )]
 script = ExtResource( 2 )
 
-[node name="Boid" parent="." index="0"]
-_body = NodePath("../../CraftAdvanced")
-
 [node name="ExtentsLink" parent="." index="1"]
 _engine_path = NodePath("../../CraftAdvanced/Engine")
 
@@ -23,3 +20,4 @@ script = ExtResource( 4 )
 [node name="ImmersiveCockpitMarker" type="Position3D" parent="." index="5"]
 
 [node name="FrontCamera" type="Camera" parent="." index="6"]
+far = 8192.0

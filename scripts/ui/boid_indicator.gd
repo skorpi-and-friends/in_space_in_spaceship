@@ -15,11 +15,12 @@ func _ready() -> void:
 	assert(_position_indicator);
 
 func initialize(target: CraftMaster, 
-		player_piloted_craft: CraftMaster, 
-		aim_leading_pool) -> void:
+		aim_leading_pool,
+		player_piloted_craft: CraftMaster = null) -> void:
 	_aim_lead_indicator_pool = aim_leading_pool;
 	self.target = target;
-	self.player_craft = player_piloted_craft;
+	if player_piloted_craft:
+		self.player_craft = player_piloted_craft;
 
 
 func _set_target(craft: CraftMaster):
@@ -40,7 +41,6 @@ func _refresh():
 		_aim_lead_indicator_pool.ReturnObject(indicator);
 		remove_child(indicator);
 	_aim_leading_indicators.clear();
-
 	for weapon in player_craft.arms.get_all_weapons():
 		var aim_lead_indicator := _aim_lead_indicator_pool.GetObject() as AimLeadIndicator;
 		aim_lead_indicator.weapon = weapon;
@@ -57,3 +57,7 @@ func reset():
 		_aim_lead_indicator_pool.ReturnObject(indicator);
 		remove_child(indicator);
 	_aim_leading_indicators.clear();
+
+
+func set_color_scheme(color: Color) -> void:
+	_position_indicator.set_color_scheme(color);

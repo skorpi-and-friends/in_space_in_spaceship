@@ -3,16 +3,8 @@ using Godot;
 
 public interface IPlayerMindModule {
 
-    RigidBody _activeCraft { get; set; }
+    RigidBody active_craft { get; set; }
     Godot.Node player_mind { get; set; }
-
-    // Called when the node enters the scene tree for the first time.
-    /* public override void _Ready() {
-        SetMeta(IdentifierMeta, true);
-    }
- */
-
-    void _craft_changed(Godot.Object craft);
 
     void _update_engine_input(Godot.Object state);
 

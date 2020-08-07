@@ -54,4 +54,4 @@ func take_control_of_craft(craft: CraftMaster) -> void:
 	active_craft = craft;
 	
 	for module in modules:
-		module._craft_changed(craft);
+		module.active_craft = craft;

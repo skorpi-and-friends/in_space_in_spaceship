@@ -65,6 +65,7 @@
     <Compile Include="scripts\ai_csharp\MasterMind.cs" />
     <Compile Include="scripts\ai_csharp\PlayerMindModule.cs" />
     <Compile Include="scripts\ai_csharp\player_mind_modules\SubMind.cs" />
+    <Compile Include="scripts\ai_csharp\Relationship.cs" />
     <Compile Include="scripts\ai_csharp\SteeringBehaviors.cs" />
     <Compile Include="scripts\utility\ObjectPool.cs" />
     <Compile Include="scripts\utility\Utility.cs" />
