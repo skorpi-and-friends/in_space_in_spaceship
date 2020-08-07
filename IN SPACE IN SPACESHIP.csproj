@@ -66,9 +66,10 @@
     <Compile Include="scripts\ai_csharp\PlayerMindModule.cs" />
     <Compile Include="scripts\ai_csharp\player_mind_modules\SubMind.cs" />
     <Compile Include="scripts\ai_csharp\SteeringBehaviors.cs" />
+    <Compile Include="scripts\utility\ObjectPool.cs" />
     <Compile Include="scripts\utility\Utility.cs" />
     <!-- FIXME: use a separate project for these -->
     <ProjectReference Include="addons\GreenBehaviors\GreenBehaviors.csproj" />
- </ItemGroup>
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

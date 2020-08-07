@@ -1,23 +1,28 @@
 extends Control
 
+class_name PositionIndicator
+
 onready var _onscreen_marker := $OnscreenMarker as Control;
 onready var _offscreen_marker := $OffscreenMarker as Sprite;
 
-export var _target_path: NodePath
-onready var _target := get_node(_target_path) as Spatial;
+onready var target: Spatial;
 
 export var offscreen_marker_max_size := Vector2(64, 64);
 
-#var _target_visiblity:= VisibilityNotifier.new();
+#var target_visiblity:= VisibilityNotifier.new();
 
 var viewport_size: Vector2;
 var target_screen_position: Vector2;
 
+func _ready() -> void:
+	assert(_onscreen_marker);
+	assert(_offscreen_marker);
+
 
 func _process(delta: float) -> void:
-	if !_target:
+	if !target:
 		return;
-	var target_world_position := _target.global_transform.origin;
+	var target_world_position := target.global_transform.origin;
 	var viewport := get_viewport();
 	var current_camera := viewport.get_camera();
 	var target_position := current_camera.unproject_position(target_world_position);
@@ -52,9 +57,14 @@ func _process(delta: float) -> void:
 		if is_behind_camera:
 			new_position *= -1;
 			
-		var slope := new_position.y / new_position.x;
+		# avoid division by zero
+		if new_position.x == 0:
+			new_position.x += 1;
+		
+		var	slope = new_position.y / new_position.x;
+		
 		# if x is longer
-		if abs(slope) < .5:
+		if abs(slope) < 1:
 			if new_position.x < 0:
 				# hug the left edge
 				new_position.x = -half_size.x;
@@ -92,11 +102,3 @@ func _process(delta: float) -> void:
 				clamp(new_position.y, padding, viewport.size.y - padding)
 			);
 		_offscreen_marker.position = new_position;
-
-
-func set_target(target: Spatial) -> void:
-	_target = target;
-#	var visiblilty_parent := _target_visiblity.get_parent();
-#	if visiblilty_parent:
-#		visiblilty_parent.remove_child(_target_visiblity)
-#	_target.add_child(_target_visiblity);

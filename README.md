@@ -1,2 +1,3 @@
-# IN SPACE IN SPACESESHIP
- Space smup for learning ropes of Godot.
+# IN SPACE IN SPACESHIP
+
+Space shmup for learning ropes of Godot.

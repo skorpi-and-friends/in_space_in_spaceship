@@ -9,6 +9,11 @@
 config_version=4
 
 _global_script_classes=[ {
+"base": "Control",
+"class": "AimLeadIndicator",
+"language": "GDScript",
+"path": "res://scripts/ui/target_aim_leading.gd"
+}, {
 "base": "NameLabelHolo",
 "class": "AmmoCounterHolo",
 "language": "GDScript",
@@ -43,6 +48,16 @@ _global_script_classes=[ {
 "class": "Boid",
 "language": "GDScript",
 "path": "res://scripts/ai/contacts/boid.gd"
+}, {
+"base": "Control",
+"class": "BoidIndicator",
+"language": "GDScript",
+"path": "res://scripts/ui/boid_indicator.gd"
+}, {
+"base": "Object",
+"class": "CSharp",
+"language": "GDScript",
+"path": "res://scripts/utility/csharp_scripts_references.gd"
 }, {
 "base": "PlayerMindModule",
 "class": "CameraInterface",
@@ -189,6 +204,11 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://scripts/cockpit/arm_holos/name_label_holo.gd"
 }, {
+"base": "Reference",
+"class": "ObjectPool",
+"language": "GDScript",
+"path": "res://scripts/utility/object_pool.gd"
+}, {
 "base": "Node",
 "class": "PIDController",
 "language": "GDScript",
@@ -233,6 +253,11 @@ _global_script_classes=[ {
 "class": "PlayerPackMind",
 "language": "GDScript",
 "path": "res://scripts/ai/player_mind_modules/packs.gd"
+}, {
+"base": "Control",
+"class": "PositionIndicator",
+"language": "GDScript",
+"path": "res://scripts/ui/position_indicator.gd"
 }, {
 "base": "Weapon",
 "class": "RangedWeapon",
@@ -294,7 +319,7 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://scripts/arms/weapon.gd"
 }, {
-"base": "Weapon",
+"base": "RangedWeapon",
 "class": "WeaponCombiner",
 "language": "GDScript",
 "path": "res://scripts/arms/weapon_combiner.gd"
@@ -305,6 +330,7 @@ _global_script_classes=[ {
 "path": "res://scripts/cockpit/arm_holos/weapon_holo.gd"
 } ]
 _global_script_class_icons={
+"AimLeadIndicator": "",
 "AmmoCounterHolo": "",
 "ArmamentMaster": "",
 "Attire": "",
@@ -312,6 +338,8 @@ _global_script_class_icons={
 "AttireProfile": "",
 "AttireProfileDisplay": "",
 "Boid": "",
+"BoidIndicator": "",
+"CSharp": "",
 "CameraInterface": "",
 "ChildCraftMaster": "",
 "CkpitArms": "",
@@ -341,6 +369,7 @@ _global_script_class_icons={
 "MasterMind": "",
 "MotherCraftMaster": "",
 "NameLabelHolo": "",
+"ObjectPool": "",
 "PIDController": "",
 "PIDControllerVector": "",
 "PIDControllerVector2D": "",
@@ -350,6 +379,7 @@ _global_script_class_icons={
 "PlayerMind2D": "",
 "PlayerMindModule": "",
 "PlayerPackMind": "",
+"PositionIndicator": "",
 "RangedWeapon": "",
 "ScanPresence": "",
 "Shell": "",

@@ -7,6 +7,7 @@ signal moment_of_inertia_changed(inc_inertia);
 export var _config: Resource;
 
 #var powered_on := true;
+onready var presence := $Boid as Spatial;
 
 onready var engine := $Engine as CraftEngine;
 onready var arms := $Arms as ArmamentMaster;
@@ -32,7 +33,7 @@ func recieved_damage(profile: AttireProfile, weapon: Weapon, damage_recieved: fl
 	weapon._report_damage(self, damage_recieved);
 
 
-func did_damage(weapon, node, damage):
+func did_damage(_weapon, _node, _damage) -> void:
 #	printerr("%s: did damage %s to a %s using %s" % [name, damage, node.name, weapon.name]);
 	pass;
 

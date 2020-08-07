@@ -25,7 +25,10 @@ namespace ISIS {
 			_masterMind = (MasterMind) GetTree().GetNodesInGroup("MasterMind") [0];
 			_masterMind.Connect(nameof(MasterMind.ContactMade), this, nameof(NewContact));
 			_masterMind.Connect(nameof(MasterMind.ContactLost), this, nameof(ContactLost));
-			AnalyzeAllContacts();
+			// AnalyzeAllContacts();
+			foreach (var contact in _masterMind.MasterContactList) {
+				NewContact(contact);
+			}
 			SetupBehavior();
 		}
 
@@ -40,13 +43,6 @@ namespace ISIS {
 				if (!isCraftMaster)
 					continue;
 				AddMember(craftMaster);
-			}
-		}
-
-		protected virtual void AnalyzeAllContacts() {
-			foreach (var contact in _masterMind.MasterContactList) {
-				if (IsHostileContact(contact))
-					_hostileContacts.Add(contact);
 			}
 		}
 
