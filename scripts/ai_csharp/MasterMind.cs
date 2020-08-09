@@ -1,39 +1,59 @@
 using System.Collections.Generic;
 using Godot;
 
-public class MasterMind : Node {
+namespace ISIS {
 
-    [Signal] public delegate void ContactMade(ScanPresence contact);
-    [Signal] public delegate void ContactLost(ScanPresence contact);
-    public List<ScanPresence> MasterContactList { get; private set; } = new List<ScanPresence>();
+    public class MasterMind : Node {
 
-    // Called when the node enters the scene tree for the first time.
-    public override void _EnterTree() {
-        base._Ready();
-        AddToGroup("MasterMind");
-        var sceneTree = GetTree();
-        foreach (var item in sceneTree.GetNodesInGroup("ScanPresence")) {
-            var presence = (ScanPresence) item;
-            MasterContactList.Add(presence);
+        [Signal] public delegate void ContactMade(ScanPresence contact);
+        [Signal] public delegate void ContactLost(ScanPresence contact);
+        public List<ScanPresence> MasterContactList { get; private set; } = new List<ScanPresence>();
+
+        // Called when the node enters the scene tree for the first time.
+        public override void _EnterTree() {
+            base._Ready();
+            AddToGroup("MasterMind");
+            var sceneTree = GetTree();
+            foreach (var item in sceneTree.GetNodesInGroup("ScanPresence")) {
+                var presence = (ScanPresence) item;
+                MasterContactList.Add(presence);
+            }
+            sceneTree.Connect("node_added", this, nameof(NodeAddedToTree));
+
         }
-        sceneTree.Connect("node_added", this, nameof(NodeAddedToTree));
 
-    }
-
-    private void NodeAddedToTree(Node node) {
-        if (node.IsInGroup("ScanPresence")) {
-            var scanPresence = (ScanPresence) node;
-            MasterContactList.Add(scanPresence);
-            scanPresence.Connect("tree_exiting",
-                this,
-                nameof(PresenceExitingTree),
-                new Godot.Collections.Array { scanPresence });
-            EmitSignal(nameof(ContactMade), scanPresence);
+        private void NodeAddedToTree(Node node) {
+            if (node.IsInGroup("ScanPresence")) {
+                var scanPresence = (ScanPresence) node;
+                MasterContactList.Add(scanPresence);
+                scanPresence.Connect("tree_exiting",
+                    this,
+                    nameof(PresenceExitingTree),
+                    new Godot.Collections.Array { scanPresence });
+                EmitSignal(nameof(ContactMade), scanPresence);
+            }
         }
-    }
 
-    private void PresenceExitingTree(ScanPresence presence) {
-        MasterContactList.Remove(presence);
-        EmitSignal(nameof(ContactLost), presence);
+        private void PresenceExitingTree(ScanPresence presence) {
+            MasterContactList.Remove(presence);
+            EmitSignal(nameof(ContactLost), presence);
+        }
+
+        // TODO: a hash grid or someother spatial database
+        public Boid ClosestBoidTo(ScanPresence presence) {
+            var presencePosition = presence.GlobalTransform.origin;
+            Boid closestBoid = null;
+            float minDistanceYetSquared = Godot.Mathf.Inf;
+            foreach (var contact in MasterContactList) {
+                if (contact == presence || !(contact is Boid boid))
+                    continue;
+                var distanceSquared = presencePosition.DistanceSquaredTo(contact.GlobalTransform.origin);
+                if (distanceSquared < minDistanceYetSquared) {
+                    minDistanceYetSquared = distanceSquared;
+                    closestBoid = boid;
+                }
+            }
+            return closestBoid;
+        }
     }
 }

@@ -1,24 +1,26 @@
 extends Control
 
+class_name AimLeadIndicator
 
-export var _target_path: NodePath
-onready var _target := get_node(_target_path) as RigidBody;
+var target: RigidBody;
 
-export var _weapon_path: NodePath
-onready var weapon :=get_node(_weapon_path) as RangedWeapon;
+onready var weapon: RangedWeapon;
 
 onready var _marker := $Marker as Control;
 export var _marker_max_size := Vector2(32, 32);
 export var _marker_min_size := Vector2(8, 8);
 
+func _ready() -> void:
+	assert(_marker);
+
 
 func _process(delta: float) -> void:
-	if !_target || !weapon:
+	if !target || !weapon:
 		_marker.visible = false;
 		return;
 	
-	var target_world_position := _target.global_transform.origin;
-	var target_velocity := _target.linear_velocity;
+	var target_world_position := target.global_transform.origin;
+	var target_velocity := target.linear_velocity;
 	if target_velocity.length_squared() < 0.1:
 		_marker.visible = false;
 		return;
@@ -59,15 +61,13 @@ func _process(delta: float) -> void:
 	projected_position = current_camera.unproject_position(
 		leading_world_position
 	);
+	
 	var weight := 1.0 - (target_distance/weapon_range);
 	var result = lerp(
 		_marker_min_size, 
 		_marker_max_size, 
 		weight);
 	_marker.rect_size = result;
+	
 	projected_position -= _marker.rect_size * .5;
 	_marker.rect_position = projected_position;
-
-
-func set_target(target: RigidBody) -> void:
-	_target = target;

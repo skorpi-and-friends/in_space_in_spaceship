@@ -1,29 +1,31 @@
 extends Control
 
+class_name PositionIndicator
+
 onready var _onscreen_marker := $OnscreenMarker as Control;
 onready var _offscreen_marker := $OffscreenMarker as Sprite;
+#onready var _top_color_bar := $OnscreenMarker/TopColorBar as ColorRect;
 
-export var _target_path: NodePath
-onready var _target := get_node(_target_path) as Spatial;
+onready var target: Spatial setget _set_target;
 
-export var offscreen_marker_max_size := Vector2(64, 64);
+export var onscreen_marker_max_size := Vector2(64, 64);
+export var onscreen_marker_min_size := Vector2(8, 8);
 
-#var _target_visiblity:= VisibilityNotifier.new();
+#var target_visiblity:= VisibilityNotifier.new();
 
-var viewport_size: Vector2;
-var target_screen_position: Vector2;
+func _ready() -> void:
+	assert(_onscreen_marker);
+	assert(_offscreen_marker);
+#	assert(_top_color_bar);
 
 
 func _process(delta: float) -> void:
-	if !_target:
+	if !target:
 		return;
-	var target_world_position := _target.global_transform.origin;
+	var target_world_position := target.global_transform.origin;
 	var viewport := get_viewport();
 	var current_camera := viewport.get_camera();
 	var target_position := current_camera.unproject_position(target_world_position);
-	
-	viewport_size = viewport.size;
-	target_screen_position = target_position;
 	
 	var is_on_screen := target_position.x > 0 && target_position.x < viewport.size.x;
 	is_on_screen = is_on_screen && target_position.y > 0 && target_position.y < viewport.size.y;
@@ -32,8 +34,20 @@ func _process(delta: float) -> void:
 		_offscreen_marker.visible = false;
 		_onscreen_marker.visible = true;
 		
-		# todo: dynamic sizing
-		_onscreen_marker.rect_size = offscreen_marker_max_size;
+		# todo: max indicator range
+		
+		var target_distance := (target_world_position - current_camera.global_transform.origin).length();
+		
+		var weight := (target_distance/ 2000.0); # fixme: find a sane distance
+		weight = clamp(weight, 0, 1);
+		# use smoothstep to prefer smaller sizes to larger sizes
+		var result = lerp( 
+			onscreen_marker_max_size, 
+			onscreen_marker_min_size, 
+			weight
+		);
+		
+		_onscreen_marker.rect_size = result;
 		
 		target_position -= _onscreen_marker.rect_size * .5;
 		_onscreen_marker.rect_position = target_position;
@@ -52,9 +66,14 @@ func _process(delta: float) -> void:
 		if is_behind_camera:
 			new_position *= -1;
 			
-		var slope := new_position.y / new_position.x;
+		# avoid division by zero
+		if new_position.x == 0:
+			new_position.x += 1;
+		
+		var slope = new_position.y / new_position.x;
+		
 		# if x is longer
-		if abs(slope) < .5:
+		if abs(slope) < 1:
 			if new_position.x < 0:
 				# hug the left edge
 				new_position.x = -half_size.x;
@@ -94,9 +113,14 @@ func _process(delta: float) -> void:
 		_offscreen_marker.position = new_position;
 
 
-func set_target(target: Spatial) -> void:
-	_target = target;
-#	var visiblilty_parent := _target_visiblity.get_parent();
-#	if visiblilty_parent:
-#		visiblilty_parent.remove_child(_target_visiblity)
-#	_target.add_child(_target_visiblity);
+func set_color_scheme(color: Color) -> void:
+	_offscreen_marker.self_modulate = color;
+	_onscreen_marker.self_modulate = color;
+#	_top_color_bar.visible = true;
+#	_top_color_bar.color = color;
+
+
+func _set_target(value: Spatial) -> void:
+	target = value;
+	set_color_scheme(Color.white);
+#	_top_color_bar.visible = false;

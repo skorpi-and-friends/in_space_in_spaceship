@@ -4,7 +4,7 @@ extends Weapon
 class_name RangedWeapon 
 
 func _get_projectile_velocity() -> float:
-	return 0.0;
+	return INF;
 
 
 func _get_range() -> float:

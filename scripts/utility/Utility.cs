@@ -85,6 +85,8 @@ namespace ISIS {
         public static Vector3 TransformVectorInv(this Transform transform, Vector3 vector) => transform.basis.XformInv(vector);
         public static Vector3 TransformDirection(this Transform transform, Vector3 direction) => transform.basis.Orthonormalized().Xform(direction);
         public static Vector3 TransformDirectionInv(this Transform transform, Vector3 direction) => transform.basis.Orthonormalized().XformInv(direction);
+
+        public static Godot.Node ISISGlobals(this Godot.Node node) => node.GetNode("/root/Globals");
     }
 
     public static class Vector3Utilities {

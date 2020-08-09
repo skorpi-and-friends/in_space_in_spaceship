@@ -1,4 +1,4 @@
-[gd_scene load_steps=26 format=2]
+[gd_scene load_steps=24 format=2]
 
 [ext_resource path="res://enviroments/default_env.tres" type="Environment" id=1]
 [ext_resource path="res://scripts/ai_csharp/MasterMind.cs" type="Script" id=2]
@@ -6,15 +6,12 @@
 [ext_resource path="res://scenes/ai/player_mind_template_full.tscn" type="PackedScene" id=4]
 [ext_resource path="res://scenes/level/asteroids/asteroid_001.tscn" type="PackedScene" id=5]
 [ext_resource path="res://scenes/level/test_sphere_obstacle.tscn" type="PackedScene" id=6]
-[ext_resource path="res://scenes/ui/craft_hud_world.tscn" type="PackedScene" id=7]
+[ext_resource path="res://themes/craft_hud_main.tres" type="Theme" id=7]
 [ext_resource path="res://cam_debug.gd" type="Script" id=8]
 [ext_resource path="res://scenes/crafts/corvette_artery.tscn" type="PackedScene" id=9]
 [ext_resource path="res://scenes/crafts/test_fighter.tscn" type="PackedScene" id=10]
-[ext_resource path="res://scenes/ui/target_marker.tscn" type="PackedScene" id=11]
 [ext_resource path="res://scenes/crafts/test_corvette.tscn" type="PackedScene" id=12]
 [ext_resource path="res://scenes/human_prop.tscn" type="PackedScene" id=13]
-[ext_resource path="res://scenes/ui/target_aim_leading.tscn" type="PackedScene" id=14]
-[ext_resource path="res://scenes/ui/velocity_direction_marker.tscn" type="PackedScene" id=15]
 
 [sub_resource type="CapsuleMesh" id=1]
 
@@ -86,6 +83,13 @@ script/source = "extends Spatial
 func _enter_tree() -> void:
 	for child in get_children():
 		remove_child(child);
+"
+
+[sub_resource type="GDScript" id=11]
+script/source = "extends Control
+
+func _enter_tree() -> void:
+	Globals.game_world_hud = self;
 "
 
 [node name="TestLevel" type="Spatial"]
@@ -204,24 +208,13 @@ script = SubResource( 10 )
 
 [node name="TestCrvt" parent="Disabled" instance=ExtResource( 12 )]
 
-[node name="CraftWorldHud" parent="." instance=ExtResource( 7 )]
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
 
-[node name="TargetMarker" parent="CraftWorldHud" instance=ExtResource( 11 )]
-_target_path = NodePath("../../GroupMind/TestFighter3")
-
-[node name="TargetMarker2" parent="CraftWorldHud" instance=ExtResource( 11 )]
-_target_path = NodePath("../../GroupMind/TestFighter4")
-
-[node name="TargetMarker3" parent="CraftWorldHud" instance=ExtResource( 11 )]
-_target_path = NodePath("../../GroupMind/TestFighter5")
-
-[node name="TargetMarker4" parent="CraftWorldHud" instance=ExtResource( 11 )]
-_target_path = NodePath("../../GroupMind/TestFighter6")
-
-[node name="TargetMarker5" parent="CraftWorldHud" instance=ExtResource( 11 )]
-_target_path = NodePath("../../GroupMind/TestFighter10")
-
-[node name="TargetMarker6" parent="CraftWorldHud" instance=ExtResource( 11 )]
-_target_path = NodePath("../../GroupMind/TestFighter9")
-
-[editable path="CraftWorldHud"]
+[node name="GameWorldHud" type="Control" parent="CanvasLayer"]
+margin_right = 40.0
+margin_bottom = 40.0
+theme = ExtResource( 7 )
+script = SubResource( 11 )
+__meta__ = {
+"_edit_use_anchors_": false
+}

@@ -6,6 +6,9 @@
 - [ ] Collision Avoidance AI
 - [ ] Turrets
 - [ ] Missiles
+- [ ] spatial database for MasterMind
+- [ ] Generalize indicators beyond boids(CraftMaster)
+- [ ] better target indicator (RebelGalaxy style)
 - [ ] A Demo
 
 ## design-doc
@@ -45,7 +48,7 @@
 
 - [ ] Defense
   - [ ] Attire
-	- [ ] Collision Damage Detection
+  - [ ] Collision Damage Detection
     - [ ] Contact Reporting
     - [ ] Particle Collision Detection
 
@@ -59,9 +62,9 @@
   - [x] Velocity Direction Marker
 
 - [ ] Cockpit
-	- [ ] Engine Display
-	- [ ] Arms Display
-	- [ ] Attire Display
+  - [ ] Engine Display
+  - [ ] Arms Display
+  - [ ] Attire Display
 
 - [ ] AI
   - [x] Behavior Trees
@@ -117,11 +120,11 @@ A `SteeringRoutine` is something that determines craft input every frame. Curren
 
 BehaviorTree based selection `SteeringRoutines` for each craft.
 
-Each craft has an active _SteeringRoutine_.
+Each craft has an active `SteeringRoutine`.
 
 Some `SteeringRoutine`s are simple they might not even need non-transient state. Others are dynamic, using state (currently stored in closures) or even their own behavior trees to modify their behavior.
 
-These `SteeringRoutine`s are used everyframe and one runs for each AI controlled craft. Performance matters. 
+These `SteeringRoutine`s are used everyframe and one runs for each AI controlled craft. Performance matters.
 
 Having complex trees embedded inside the `SteeringRoutine`s doesn't sound something that'd scale.
 
@@ -131,9 +134,10 @@ Instead, we use decorator behavior nodes, like the `Checked` or `SimpleInclude` 
 - A cleaner way for the `SteeringRoutine` to communicate with the tree.
 - Look at source of AttackPersue routine.
 
-`SteeringRoutine` are more than steering behaviors. They're a step above them to be exact. From other BehaviorTree schemes, you might liken them to a Task. In simple terms, they're behaviors (in the behavior tree sense) that are used to control a `Craft`. 
+`SteeringRoutine` are more than steering behaviors. They're a step above them to be exact. From other BehaviorTree schemes, you might liken them to a Task. In simple terms, they're behaviors (in the behavior tree sense) that are used to control a `Craft`.
 
 Right now, they're implemented using  closures that return Linear/Angular input and it works alright but I can imagine some issues along the way. Primarly:
+
 - `SteeringRoutine` are meant to control more than the motion, like weapons and the like. Separating the Linear/Angular input from the rest doesn't offer much advantages if this is true. For example, if you want to poll a number of `SteeringRoutine` to determine movement for a frame (for combining or choosing), it might be found necessary to invalidate other decisions the `SteeringRoutine` has made inside. A choice lays ahead.
 
 ##### Routines
