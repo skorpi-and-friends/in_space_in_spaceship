@@ -14,4 +14,9 @@ const METER2PIXEL := 1 / PIXLE2METER;
 var player_mind: PlayerMind; 
 var cockpit_master: CockpitMaster; 
 var viewport_master: ViewportMaster;
-var game_world_hud_layer: CanvasLayer;
+var game_world_hud: Control;
+
+var csharp_utility_funcs;
+
+func _init() -> void:
+	csharp_utility_funcs = CSharp.GDScriptUtilities.new();

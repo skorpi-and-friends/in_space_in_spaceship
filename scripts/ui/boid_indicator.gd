@@ -23,7 +23,7 @@ func initialize(target: CraftMaster,
 		self.player_craft = player_piloted_craft;
 
 
-func _set_target(craft: CraftMaster):
+func _set_target(craft: CraftMaster) -> void:
 	target = craft;
 	_position_indicator.target = craft;
 	for indicator in _aim_leading_indicators:
@@ -35,7 +35,7 @@ func _player_craft_changed(craft: CraftMaster):
 	_refresh();
 
 
-func _refresh():
+func _refresh() -> void:
 	for indicator in _aim_leading_indicators:
 		indicator.target = null;
 		_aim_lead_indicator_pool.ReturnObject(indicator);
@@ -49,7 +49,7 @@ func _refresh():
 		add_child(aim_lead_indicator);
 
 
-func reset():
+func reset() -> void:
 	target = null;
 	_position_indicator.target = null;
 	for indicator in _aim_leading_indicators:

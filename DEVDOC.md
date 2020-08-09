@@ -6,7 +6,9 @@
 - [ ] Collision Avoidance AI
 - [ ] Turrets
 - [ ] Missiles
-- [ ] consider CraftMaster C# rewrite? 
+- [ ] spatial database for MasterMind
+- [ ] Generalize indicators beyond boids(CraftMaster)
+- [ ] better target indicator (RebelGalaxy style)
 - [ ] A Demo
 
 ## design-doc

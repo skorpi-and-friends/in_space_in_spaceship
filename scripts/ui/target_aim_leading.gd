@@ -61,11 +61,13 @@ func _process(delta: float) -> void:
 	projected_position = current_camera.unproject_position(
 		leading_world_position
 	);
+	
 	var weight := 1.0 - (target_distance/weapon_range);
 	var result = lerp(
 		_marker_min_size, 
 		_marker_max_size, 
 		weight);
 	_marker.rect_size = result;
+	
 	projected_position -= _marker.rect_size * .5;
 	_marker.rect_position = projected_position;

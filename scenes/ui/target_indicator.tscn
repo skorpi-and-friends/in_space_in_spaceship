@@ -1,0 +1,31 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://scenes/ui/boid_indicator.tscn" type="PackedScene" id=1]
+[ext_resource path="res://scripts/ui/target_indicator.gd" type="Script" id=2]
+
+[node name="TargetIndicator" instance=ExtResource( 1 )]
+script = ExtResource( 2 )
+
+[node name="RightSideLabels" type="VBoxContainer" parent="PositionIndicator/OnscreenMarker" index="1"]
+anchor_left = 1.0
+anchor_right = 1.0
+margin_left = 5.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="NameLabel" type="Label" parent="PositionIndicator/OnscreenMarker/RightSideLabels" index="0"]
+margin_right = 102.0
+margin_bottom = 14.0
+text = "Arterty Corvette"
+
+[node name="DistanceLabel" type="Label" parent="PositionIndicator/OnscreenMarker/RightSideLabels" index="1"]
+margin_top = 18.0
+margin_right = 102.0
+margin_bottom = 32.0
+text = "9000 M"
+
+[node name="OffscreenMarker" parent="PositionIndicator" index="1"]
+scale = Vector2( 1, 1 )
+
+[editable path="PositionIndicator"]

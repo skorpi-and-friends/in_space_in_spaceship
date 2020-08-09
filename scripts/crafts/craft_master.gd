@@ -7,7 +7,9 @@ signal moment_of_inertia_changed(inc_inertia);
 export var _config: Resource;
 
 #var powered_on := true;
-onready var presence := $Boid as Spatial;
+ 
+# ScanPresence's inherit their parent's name
+onready var presence := get_node(name) as Spatial; 
 
 onready var engine := $Engine as CraftEngine;
 onready var arms := $Arms as ArmamentMaster;
@@ -27,8 +29,8 @@ func _ready():
 
 
 func recieved_damage(profile: AttireProfile, weapon: Weapon, damage_recieved: float):
-	if name != "TestFighter2":
-		return;
+#	if name != "TestFighter2":
+#		return;
 	printerr("%s: recieved damage %s at %s by: %s (%s)" % [name, damage_recieved, profile.name, weapon.owner.name, weapon.name]);
 	weapon._report_damage(self, damage_recieved);
 

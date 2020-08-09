@@ -8,12 +8,10 @@ onready var _offscreen_marker := $OffscreenMarker as Sprite;
 
 onready var target: Spatial setget _set_target;
 
-export var offscreen_marker_max_size := Vector2(64, 64);
+export var onscreen_marker_max_size := Vector2(64, 64);
+export var onscreen_marker_min_size := Vector2(8, 8);
 
 #var target_visiblity:= VisibilityNotifier.new();
-
-var viewport_size: Vector2;
-var target_screen_position: Vector2;
 
 func _ready() -> void:
 	assert(_onscreen_marker);
@@ -29,9 +27,6 @@ func _process(delta: float) -> void:
 	var current_camera := viewport.get_camera();
 	var target_position := current_camera.unproject_position(target_world_position);
 	
-	viewport_size = viewport.size;
-	target_screen_position = target_position;
-	
 	var is_on_screen := target_position.x > 0 && target_position.x < viewport.size.x;
 	is_on_screen = is_on_screen && target_position.y > 0 && target_position.y < viewport.size.y;
 	var is_behind_camera := current_camera.is_position_behind(target_world_position);
@@ -39,8 +34,20 @@ func _process(delta: float) -> void:
 		_offscreen_marker.visible = false;
 		_onscreen_marker.visible = true;
 		
-		# todo: dynamic sizing
-		_onscreen_marker.rect_size = offscreen_marker_max_size;
+		# todo: max indicator range
+		
+		var target_distance := (target_world_position - current_camera.global_transform.origin).length();
+		
+		var weight := (target_distance/ 2000.0); # fixme: find a sane distance
+		weight = clamp(weight, 0, 1);
+		# use smoothstep to prefer smaller sizes to larger sizes
+		var result = lerp( 
+			onscreen_marker_max_size, 
+			onscreen_marker_min_size, 
+			weight
+		);
+		
+		_onscreen_marker.rect_size = result;
 		
 		target_position -= _onscreen_marker.rect_size * .5;
 		_onscreen_marker.rect_position = target_position;
@@ -63,7 +70,7 @@ func _process(delta: float) -> void:
 		if new_position.x == 0:
 			new_position.x += 1;
 		
-		var	slope = new_position.y / new_position.x;
+		var slope = new_position.y / new_position.x;
 		
 		# if x is longer
 		if abs(slope) < 1:

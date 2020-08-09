@@ -42,9 +42,7 @@ public class ObjectPool : Reference {
 
     private FuncRef _objectGeneratorFunc;
 
-    public ObjectPool() {
-
-    }
+    public ObjectPool() { }
 
     public ObjectPool(int size, FuncRef objectGenerator, Policy policy) {
         _size = size;
@@ -74,6 +72,8 @@ public class ObjectPool : Reference {
     }
 
     public void ReturnObject(object @object) {
+        if (!_activeObjects.Contains(@object))
+            return; // exit early if not found to preserve numbers
         _activeObjects.Remove(@object);
         _activeObjectCount--;
         var totalObjectCount = _inactiveObjectCount + _activeObjectCount;
