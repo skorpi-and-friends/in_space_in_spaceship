@@ -19,7 +19,6 @@ script = ExtResource( 2 )
 
 [node name="ExtentsLink" type="Node" parent="."]
 script = ExtResource( 3 )
-_engine_path = NodePath("../Engine")
 
 [node name="Engine" type="Node" parent="."]
 script = ExtResource( 4 )

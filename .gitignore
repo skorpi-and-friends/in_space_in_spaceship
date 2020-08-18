@@ -9,3 +9,14 @@ export_presets.cfg
 data_*/
 temp.tscn
 IN SPACE IN SPACESHIP.csproj.old
+.idea/.gitignore
+.idea/.idea.IN SPACE IN SPACESHIP/riderModule.iml
+.idea/.idea.IN SPACE IN SPACESHIP/.idea/.gitignore
+.idea/.idea.IN SPACE IN SPACESHIP/.idea/.name
+.idea/.idea.IN SPACE IN SPACESHIP/.idea/contentModel.xml
+.idea/.idea.IN SPACE IN SPACESHIP/.idea/encodings.xml
+.idea/.idea.IN SPACE IN SPACESHIP/.idea/indexLayout.xml
+.idea/.idea.IN SPACE IN SPACESHIP/.idea/modules.xml
+.idea/.idea.IN SPACE IN SPACESHIP/.idea/projectSettingsUpdater.xml
+.idea/.idea.IN SPACE IN SPACESHIP/.idea/vcs.xml
+IN SPACE IN SPACESHIP.sln.DotSettings.user

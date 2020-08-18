@@ -57,6 +57,7 @@ func _ready() -> void:
 	_smoothstep();
 	_csharp_static_functions();
 	_csharp_enums();
+	_AABB_support_point();
 
 func _generate_basis() -> void:
 	print(\"we're here\");
@@ -98,12 +99,18 @@ func _csharp_static_functions() ->void:
 	var sharpscript: CSharpScript= preload(\"res://scripts/utility/ExperimentTestBed.cs\");
 	sharpscript.SomeStaticFunc();
 
+
 func _csharp_enums() ->void:
 	var sharpscript: CSharpScript= preload(\"res://scripts/ai_csharp/Relationship.cs\");
 #	print(sharpscript.Neutral);
 #	print(sharpscript.Hostile);
 
-	
+
+
+func _AABB_support_point() -> void:
+	var aabb = AABB(Vector3(-1, -1, -1), Vector3(2, 2, 2));
+	print(\"aabb support point(12, 32, 5) -> %s\" % aabb.get_support(
+			Vector3(12, 32, 5).normalized()));
 "
 
 [sub_resource type="BoxShape" id=7]

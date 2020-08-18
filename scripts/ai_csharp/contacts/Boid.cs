@@ -11,6 +11,6 @@ public class Boid : ScanPresence {
     }
 
     public PhysicsBody GetBody() {
-        return GetNode(_bodyPath) as PhysicsBody;
+        return (PhysicsBody) GetNode(_bodyPath);
     }
 }
