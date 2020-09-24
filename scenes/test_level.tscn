@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=2]
+[gd_scene load_steps=25 format=2]
 
 [ext_resource path="res://enviroments/default_env.tres" type="Environment" id=1]
 [ext_resource path="res://scripts/ai_csharp/MasterMind.cs" type="Script" id=2]
@@ -72,11 +72,18 @@ custom_defines = ""
 [sub_resource type="ShaderMaterial" id=8]
 shader = SubResource( 7 )
 
-[sub_resource type="CylinderMesh" id=9]
+[sub_resource type="Curve3D" id=9]
+bake_interval = 20.0
+_data = {
+"points": PoolVector3Array( 0, 0, 0, 0, 0, 0, 1092.12, 474.766, 183.779, 0, 0, 0, 0, 0, 0, 115.981, 1125.76, -171.225, 0, 0, 0, 0, 0, 0, -368.014, 116.759, 190.383, 0, 0, 0, 0, 0, 0, -1071.37, -80.0942, 201.164, 0, 0, 0, 0, 0, 0, -736.883, 197.413, -511.103, 0, 0, 0, 0, 0, 0, 49.8017, 431.084, -1108.57, 0, 0, 0, 0, 0, 0, 1497.64, 442.645, -1131.76, 0, 0, 0, 0, 0, 0, 2375.6, -461.98, 1199.01, 0, 0, 0, 0, 0, 0, -35.4366, -754.942, 1941.64, 0, 0, 0, 0, 0, 0, -1141.55, -375.057, 959.525, 0, 0, 0, 0, 0, 0, -2003.3, -1447.26, 1008, 0, 0, 0, 0, 0, 0, 1106.46, 474.765, 193.546 ),
+"tilts": PoolRealArray( 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 )
+}
+
+[sub_resource type="CylinderMesh" id=10]
 top_radius = 0.5
 bottom_radius = 0.5
 
-[sub_resource type="GDScript" id=10]
+[sub_resource type="GDScript" id=11]
 script/source = "extends Spatial
 
 # Called when the node enters the scene tree for the first time.
@@ -85,7 +92,7 @@ func _enter_tree() -> void:
 		remove_child(child);
 "
 
-[sub_resource type="GDScript" id=11]
+[sub_resource type="GDScript" id=12]
 script/source = "extends Control
 
 func _enter_tree() -> void:
@@ -155,6 +162,9 @@ script = ExtResource( 2 )
 [node name="GroupMind" type="Node" parent="."]
 script = ExtResource( 3 )
 
+[node name="The Path" type="Path" parent="GroupMind"]
+curve = SubResource( 9 )
+
 [node name="TestFighter3" parent="GroupMind" instance=ExtResource( 10 )]
 transform = Transform( -1, 0, -1.50996e-07, 0, 1, 0, 1.50996e-07, 0, -0.999999, 1728.58, 0, 82.3878 )
 
@@ -175,6 +185,9 @@ transform = Transform( -1, 0, -1.50996e-07, 0, 1, 0, 1.50996e-07, 0, -0.999999, 
 
 [node name="PlayerMind" parent="." instance=ExtResource( 4 )]
 
+[node name="The Path" type="Path" parent="PlayerMind/SubMind" index="0"]
+curve = SubResource( 9 )
+
 [node name="CameraFacingDebug" type="Spatial" parent="PlayerMind"]
 transform = Transform( -0.92802, -0.372496, 0.00510959, -0.0897872, 0.236961, 0.967361, -0.361549, 0.897271, -0.25335, 0, 31.6774, 0 )
 visible = false
@@ -184,7 +197,7 @@ direction = Vector3( 0, 1, 0 )
 
 [node name="MeshInstance" type="MeshInstance" parent="PlayerMind/CameraFacingDebug"]
 transform = Transform( 1.01821, -5.96046e-08, -1.19209e-07, -1.19209e-07, 2.38419e-07, -1.01821, -2.98023e-08, 6.08542, -7.45058e-08, 0.178415, 0.0701642, 6.25686 )
-mesh = SubResource( 9 )
+mesh = SubResource( 10 )
 material/0 = null
 
 [node name="TestFighter" parent="PlayerMind" instance=ExtResource( 10 )]
@@ -204,7 +217,7 @@ transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -1284.9
 
 [node name="Disabled" type="Spatial" parent="."]
 visible = false
-script = SubResource( 10 )
+script = SubResource( 11 )
 
 [node name="TestCrvt" parent="Disabled" instance=ExtResource( 12 )]
 
@@ -214,7 +227,9 @@ script = SubResource( 10 )
 margin_right = 40.0
 margin_bottom = 40.0
 theme = ExtResource( 7 )
-script = SubResource( 11 )
+script = SubResource( 12 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[editable path="PlayerMind"]

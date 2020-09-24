@@ -12,7 +12,7 @@ onready var _displays: Array = [
 onready var _cockpit_core_nodes := $Core as Spatial;
 onready var _cockpit_world_nodes := $World as Spatial;
 
-export var _camera_path:= @"Core/CameraPivot";
+export var _camera_path:= @"Core/CameraPivot/Camera";
 onready var cockpit_camera := get_node(_camera_path) as Camera;
 
 onready var _craft_front_camera := get_node(_camera_path) as Camera;
@@ -38,6 +38,9 @@ func _ready() -> void:
 
 # we can only use cockpits if the craft is setup for it
 func set_craft(craft: CraftMaster) -> bool:
+	# enable only if explicitly enabled
+	# disable in case craft is being switched
+	disable_cockpit();
 	_craft_front_camera = craft.find_node("FrontCamera") as Camera;
 	if !_craft_front_camera:
 		return false;
@@ -47,11 +50,7 @@ func set_craft(craft: CraftMaster) -> bool:
 		assert(ckpit_display);
 		ckpit_display.craft = craft;
 		ckpit_display._ready_display();
-	# enable only if explicitly enabled
-	# disable in case craft is being switched
-	enabled = false;
 	return true;
-
 
 func enable_cockpit():
 	if enabled:
@@ -59,17 +58,16 @@ func enable_cockpit():
 	visible = true;
 	# we'll have to make Control nodes visible separately
 	_hud.visible = true;
+	print("making front camera current");
 	_craft_front_camera.make_current();
 	Globals.viewport_master.switch_to_cockpit_screen();
 #	propagate_call("set_process()", [true], false);
 	enabled = true;
 
-
 func disable_cockpit():
 	if !enabled:
 		return
-	if immersive_mode_enabled:
-		toggle_immersive_cockpit();
+	toggle_immersive_cockpit(false);
 	visible = false;
 	_hud.visible = false;
 	# FIXME: replace with a remove_child solution 
@@ -83,16 +81,16 @@ func immersive_cockpit_availaible() -> bool:
 	return _immersive_cockpit_marker != null;
 
 
-func toggle_immersive_cockpit():
+func toggle_immersive_cockpit(on: bool = !immersive_mode_enabled):
 	if !enabled || !immersive_cockpit_availaible():
 		return;
-	if !immersive_mode_enabled:
+	if on && !immersive_mode_enabled:
 		remove_child(_cockpit_core_nodes);
 		_immersive_cockpit_marker.add_child(_cockpit_core_nodes);
 		Globals.viewport_master.switch_to_game_screen();
 		cockpit_camera.make_current();
 		immersive_mode_enabled = true;
-	else:
+	elif immersive_mode_enabled:
 		_craft_front_camera.make_current();
 		_immersive_cockpit_marker.remove_child(_cockpit_core_nodes);
 		add_child(_cockpit_core_nodes);

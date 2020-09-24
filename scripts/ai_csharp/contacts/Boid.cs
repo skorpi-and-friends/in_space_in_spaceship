@@ -1,16 +1,17 @@
 using System;
 using Godot;
 
-public class Boid : ScanPresence {
+namespace ISIS {
+    public class Boid : ScanPresence {
+        [Export] private readonly NodePath _bodyPath = new NodePath("..");
 
-    [Export] private NodePath _bodyPath = new NodePath("..");
+        public override void _EnterTree() {
+            base._EnterTree();
+            AddToGroup("Boid");
+        }
 
-    public override void _EnterTree() {
-        base._EnterTree();
-        AddToGroup("Boid");
-    }
-
-    public PhysicsBody GetBody() {
-        return GetNode(_bodyPath) as PhysicsBody;
+        public PhysicsBody GetBody() {
+            return (PhysicsBody) GetNode(_bodyPath);
+        }
     }
 }

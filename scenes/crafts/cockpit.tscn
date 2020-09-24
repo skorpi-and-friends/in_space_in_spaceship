@@ -9,6 +9,7 @@
 [ext_resource path="res://scenes/ui/cockpit_attire_display.tscn" type="PackedScene" id=7]
 [ext_resource path="res://scripts/cockpit/primary_display.gd" type="Script" id=8]
 [ext_resource path="res://scenes/human_prop.tscn" type="PackedScene" id=9]
+[ext_resource path="res://scripts/cockpit/cockpit_camera.gd" type="Script" id=10]
 
 [sub_resource type="SpatialMaterial" id=1]
 resource_local_to_scene = true
@@ -46,88 +47,28 @@ flags_do_not_receive_shadows = true
 flags_disable_ambient_light = true
 params_cull_mode = 2
 
-[sub_resource type="GDScript" id=7]
-script/source = "extends Camera
-
-onready var Yaw = get_parent()
-export var x_clamp := 5.0;
-export var y_clamp := 10.0;
-
-func _ready():
-	## Tell Godot that we want to handle input
-	set_process_input(false)
-
-func look_updown_rotation(rotation = 0):
-	\"\"\"
-	Get the new rotation for looking up and down
-	\"\"\"
-	var toReturn := self.get_rotation() + Vector3(rotation, 0, 0)
-	##
-	## We don't want the player to be able to bend over backwards
-	## neither to be able to look under their arse.
-	## Here we'll clamp the vertical look to 90° up and down
-	toReturn.x = clamp(toReturn.x, PI / -2, PI / 2)
-
-	return toReturn
-
-func look_leftright_rotation(rotation = 0):
-	\"\"\"
-	Get the new rotation for looking left and right
-	\"\"\"
-	return Yaw.get_rotation() + Vector3(
-			0, 
-			rotation,
-			0);
-
-func mouse(event):
-	\"\"\"
-	First person camera controls
-	\"\"\"
-	##
-	## We'll use the parent node \"Yaw\" to set our left-right rotation
-	## This prevents us from adding the x-rotation to the y-rotation
-	## which would result in a kind of flight-simulator camera
-	var yaw_rotation = look_leftright_rotation(event.relative.x / -200)
-	yaw_rotation.y = clamp(yaw_rotation.y, -deg2rad(x_clamp), deg2rad(x_clamp))
-	Yaw.set_rotation(yaw_rotation);
-
-	##
-	## Now we can simply set our y-rotation for the camera, and let godot
-	## handle the transformation of both together
-	var pitch_rotation = look_updown_rotation(event.relative.y / -200)
-	pitch_rotation.x = clamp(pitch_rotation.x, -deg2rad(y_clamp), deg2rad(y_clamp))
-	self.set_rotation(pitch_rotation)
-
-func _input(event):
-	##
-	## We'll only process mouse motion events
-	if event is InputEventMouseMotion:
-		return mouse(event)"
-
-[sub_resource type="ViewportTexture" id=8]
+[sub_resource type="ViewportTexture" id=7]
 viewport_path = NodePath("EngineDisplay/Viewport")
 
-[sub_resource type="SpatialMaterial" id=9]
+[sub_resource type="SpatialMaterial" id=8]
 resource_local_to_scene = true
 flags_transparent = true
 flags_unshaded = true
 params_cull_mode = 2
-albedo_texture = SubResource( 8 )
+albedo_texture = SubResource( 7 )
 
-[sub_resource type="QuadMesh" id=10]
+[sub_resource type="QuadMesh" id=9]
 size = Vector2( 1.53, 0.9 )
 
-[sub_resource type="CubeMesh" id=11]
+[sub_resource type="CubeMesh" id=10]
 flip_faces = true
 
 [node name="Cockpit" type="Spatial"]
 script = ExtResource( 1 )
-_camera_path = NodePath("Core/CameraPivot/Camera")
 
 [node name="Core" type="Spatial" parent="."]
 
 [node name="HUD" type="CenterContainer" parent="Core"]
-editor/display_folded = true
 anchor_right = 1.0
 anchor_bottom = 1.0
 
@@ -139,7 +80,6 @@ margin_bottom = 332.0
 texture = ExtResource( 2 )
 
 [node name="EngineDisplay" type="MeshInstance" parent="Core"]
-editor/display_folded = true
 transform = Transform( 1, 0, 0, 0, 0.34202, -0.939693, 0, 0.939693, 0.34202, 0, -0.114642, -0.358274 )
 material_override = SubResource( 1 )
 cast_shadow = 0
@@ -148,7 +88,6 @@ material/0 = null
 script = ExtResource( 3 )
 
 [node name="Viewport" type="Viewport" parent="Core/EngineDisplay"]
-editor/display_folded = true
 size = Vector2( 1024, 512 )
 transparent_bg = true
 hdr = false
@@ -191,7 +130,6 @@ custom_styles/panel = SubResource( 3 )
 [node name="ArmsCkpitDisplay" parent="Core/ArmsDisplay/Viewport/BackPanel" instance=ExtResource( 6 )]
 
 [node name="AttireDisplay" type="MeshInstance" parent="Core"]
-editor/display_folded = true
 transform = Transform( 0.967334, 0, -0.253505, 0, 1, 0, 0.253505, 0, 0.967335, 0.26, -0.124, -0.27 )
 material_override = SubResource( 6 )
 cast_shadow = 0
@@ -219,83 +157,60 @@ custom_styles/panel = SubResource( 3 )
 [node name="CameraPivot" type="Spatial" parent="Core"]
 
 [node name="Camera" type="Camera" parent="Core/CameraPivot"]
-cull_mask = 1048573
 fov = 80.0
 far = 8192.0
-script = SubResource( 7 )
+script = ExtResource( 10 )
 
-[node name="CSGSphere" type="CSGBox" parent="Core"]
-editor/display_folded = true
+[node name="Dashboard" type="CSGBox" parent="Core"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.000767946, -0.00106956, -0.000511825 )
-invert_faces = true
 width = 1.0
 
-[node name="CSGCombiner2" type="CSGCombiner" parent="Core/CSGSphere"]
+[node name="CSGCombiner" type="CSGCombiner" parent="Core/Dashboard"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.454641 )
 operation = 1
 
-[node name="CSGBox" type="CSGBox" parent="Core/CSGSphere/CSGCombiner2"]
-transform = Transform( 1, 0, 0, 0, 0.939693, 0.34202, 0, -0.34202, 0.939693, 0, -0.555334, 0 )
+[node name="CSGBox" type="CSGBox" parent="Core/Dashboard/CSGCombiner"]
+transform = Transform( 1, 0, 0, 0, 0.939693, 0.34202, 0, -0.34202, 0.939693, 0, -0.555334, 2.98023e-08 )
 width = 1.0
 height = 0.5
 depth = 0.25
 
-[node name="CSGBox2" type="CSGBox" parent="Core/CSGSphere/CSGCombiner2"]
+[node name="CSGBox2" type="CSGBox" parent="Core/Dashboard/CSGCombiner"]
 transform = Transform( 1, 0, 0, 0, 0.965926, 0.258819, 0, -0.258819, 0.965926, 0, -0.343984, 0 )
 width = 0.4
 height = 0.5
 depth = 0.25
 
-[node name="CSGCombiner" type="CSGCombiner" parent="Core"]
-editor/display_folded = true
-visible = false
-
-[node name="CSGBox" type="CSGBox" parent="Core/CSGCombiner"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0 )
-width = 1.5
-height = 1.5
-depth = 1.0
-
-[node name="CSGSphere" type="CSGBox" parent="Core/CSGCombiner"]
-transform = Transform( 0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, 0, 0, -0.585199 )
-operation = 2
-width = 1.5
-height = 1.0
-depth = 1.5
-
 [node name="World" type="Spatial" parent="."]
-editor/display_folded = true
 
 [node name="PrimaryDisplay" type="Spatial" parent="World"]
-editor/display_folded = true
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.675 )
 script = ExtResource( 8 )
 
 [node name="Screen" type="MeshInstance" parent="World/PrimaryDisplay"]
-material_override = SubResource( 9 )
+material_override = SubResource( 8 )
 use_in_baked_light = true
-mesh = SubResource( 10 )
+mesh = SubResource( 9 )
 material/0 = null
 
 [node name="Screen2" type="MeshInstance" parent="World/PrimaryDisplay"]
 visible = false
-material_override = SubResource( 9 )
+material_override = SubResource( 8 )
 use_in_baked_light = true
-mesh = SubResource( 10 )
+mesh = SubResource( 9 )
 material/0 = null
 
 [node name="HumanProp" parent="World" instance=ExtResource( 9 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.342663, 0.738443 )
-visible = false
 
 [node name="CockpitRoom" type="MeshInstance" parent="World"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.144485, 0 )
 use_in_baked_light = true
-mesh = SubResource( 11 )
+mesh = SubResource( 10 )
 material/0 = null
 
 [node name="OmniLight" type="OmniLight" parent="World"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00234532, 1.07661, -0.00588173 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00234532, 0.754392, -0.00588173 )
 light_color = Color( 1, 0, 0, 1 )
 light_energy = 0.1
 light_indirect_energy = 6.76

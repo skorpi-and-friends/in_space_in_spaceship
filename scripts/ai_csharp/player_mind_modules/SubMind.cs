@@ -1,36 +1,46 @@
 using System;
 using Godot;
-using static PlayerMindModuleMixin;
+using MemberId = System.Int32;
+using static ISIS.PlayerMindModuleMixin;
 
-namespace ISIS {
-
+namespace ISIS.Minds {
     public class SubMind : GroupMind, IPlayerMindModule {
-
         private RigidBody _activeCraft;
         public RigidBody active_craft {
             get => _activeCraft;
             set {
                 // make the old guy a member
-                if (_activeCraft != null)
-                    AddMember(_activeCraft);
+                if (_activeCraft != null) {
+                    var(isOldGuyMindful, oldGuyMind) = CraftMind.IsMindful(_activeCraft);
+                    if (isOldGuyMindful)
+                        AddMember(oldGuyMind);
+                }
 
-                // remove the new guy from membership
-                RemoveMember(GenerateCraftId(value));
+                // deactivate the autopilot of the new guy
+                var(isNewGuyMindful, newGuyMind) = CraftMind.IsMindful(value);
+                if (isNewGuyMindful) {
+                    newGuyMind.DisableAutoPilot();
+                    // remove the new guy from membership
+                    RemoveMember(GenerateCraftId(value));
+                }
 
                 _activeCraft = value;
             }
         }
 
         protected Node _playerMind;
-
         public Node player_mind {
             get => _playerMind;
             set {
                 _playerMind = value;
+                if (!_isReady) return;
                 RemoveAllMembers();
                 CollectMembers();
             }
         }
+
+        private bool _isReady;
+
         public SubMind() {
             this._InitModule();
         }
@@ -41,16 +51,20 @@ namespace ISIS {
 
         public override void _Ready() {
             base._Ready();
+            _isReady = true;
         }
 
         protected override void CollectMembers() {
             if (_playerMind == null)
                 return;
             foreach (var item in _playerMind.GetChildren()) {
-                var(isCraftMaster, craftMaster) = IsCraftMaster(item);
-                if (!isCraftMaster)
+                if (item == active_craft)
                     continue;
-                AddMember(craftMaster);
+
+                var(isMindfulCraft, craftMind) = CraftMind.IsMindfulCraft(item);
+                if (!isMindfulCraft)
+                    continue;
+                AddMember(craftMind);
             }
         }
 

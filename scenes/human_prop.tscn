@@ -1,7 +1,7 @@
 [gd_scene load_steps=2 format=2]
 
 [sub_resource type="CubeMesh" id=1]
-size = Vector3( 1, 2, 1 )
+size = Vector3( 0.75, 2, 0.25 )
 
 [node name="HumanProp" type="MeshInstance"]
 mesh = SubResource( 1 )

@@ -8,8 +8,7 @@ enum InterfaceMode {
 	ORBIT
 }
 
-# gets switched to COCKPIT in ready
-export(InterfaceMode) var i_mode := InterfaceMode.ORBIT;
+export(InterfaceMode) var i_mode := InterfaceMode.COCKPIT;
 
 export var _camera_free_look := false;
 onready var orbit_camera := $"../OrbitCamera" as CraftCamera;
@@ -57,24 +56,26 @@ func _setup_cockpit():
 	cockpit = Globals.cockpit_master;
 
 
-func switch_interface_mode():
+func switch_interface_mode(mode: int = (i_mode +1)% (InterfaceMode.ORBIT +1)):
+	if !cockpit:
+		mode = InterfaceMode.ORBIT;
+	match mode:
+		InterfaceMode.COCKPIT:
+			cockpit.enable_cockpit();
+			cockpit.toggle_immersive_cockpit(false);
+		InterfaceMode.COCKPIT_IR:
+			cockpit.enable_cockpit();
+			cockpit.toggle_immersive_cockpit(true);
+		_:
+			# reset the orbit camera otherwise 
+			if cockpit:
+				cockpit.disable_cockpit();
+			orbit_camera.target = active_craft;
+			orbit_camera.make_current();
+			# align_orbit_camera_to_craft
+			orbit_camera.facing_direction = active_craft.global_transform.basis.z;
+	i_mode = mode;
 		
-	# default to orbit if no cockpit found
-	if _current_craft_has_cockpit && i_mode == InterfaceMode.ORBIT:
-		cockpit.enable_cockpit();
-		i_mode = InterfaceMode.COCKPIT;
-	elif _current_craft_has_cockpit && i_mode == InterfaceMode.COCKPIT && cockpit.immersive_cockpit_availaible():
-		cockpit.toggle_immersive_cockpit();
-		i_mode = InterfaceMode.COCKPIT_IR;
-	else: # reset the orbit camera otherwise 
-		if cockpit:
-			cockpit.disable_cockpit();
-		orbit_camera.target = active_craft;
-		orbit_camera.make_current();
-		# align_orbit_camera_to_craft
-		orbit_camera.facing_direction = active_craft.global_transform.basis.z;
-		i_mode = InterfaceMode.ORBIT;
-
 
 # toggles if no args passed
 func switch_free_look(on := !_camera_free_look):
@@ -93,5 +94,4 @@ func _craft_changed(craft: CraftMaster) -> void:
 	if cockpit:
 		# we can only use cockpits if the craft is setup for it
 		_current_craft_has_cockpit = cockpit.set_craft(craft);
-	i_mode = InterfaceMode.ORBIT
-	switch_interface_mode();
+	switch_interface_mode(i_mode);

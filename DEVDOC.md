@@ -74,7 +74,7 @@
   - [x] SubMind
   - [ ] Craft Mind
     - [ ] Steering Behaviors
-    - [ ] Paths
+    - [x] Paths (using Godot's builtin Path node)
     - [ ] Context Steering
     - [ ] Formations
 
@@ -165,6 +165,7 @@ Right now, they're implemented using  closures that return Linear/Angular input 
 - [ ] Allignment
 - [ ] Cohesion
 - [ ] Interpose
+- [x] Path follow
 
 #### BehaviorTrees
 

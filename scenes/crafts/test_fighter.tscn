@@ -1,10 +1,7 @@
-[gd_scene load_steps=15 format=2]
+[gd_scene load_steps=11 format=2]
 
-[ext_resource path="res://scenes/crafts/craft_template.tscn" type="PackedScene" id=1]
-[ext_resource path="res://scripts/crafts/craft_master_child.gd" type="Script" id=2]
+[ext_resource path="res://scenes/crafts/craft_template_advanced.tscn" type="PackedScene" id=1]
 [ext_resource path="res://craft_configs/test_craft.tres" type="Resource" id=3]
-[ext_resource path="res://scripts/crafts/drivers/pid_driver.gd" type="Script" id=4]
-[ext_resource path="res://scripts/crafts/motors/simple_motor_acceleration.gd" type="Script" id=5]
 [ext_resource path="res://scenes/arms/go_cannon.tscn" type="PackedScene" id=6]
 [ext_resource path="res://scripts/attire/attire_profile.gd" type="Script" id=7]
 [ext_resource path="res://scripts/attire/attire.gd" type="Script" id=8]
@@ -17,31 +14,17 @@ height = 8.0
 [sub_resource type="SphereShape" id=2]
 radius = 4.0
 
-[sub_resource type="SpatialMaterial" id=3]
+[sub_resource type="CubeMesh" id=3]
+size = Vector3( 4, 4, 1 )
+
+[sub_resource type="SpatialMaterial" id=4]
 albedo_color = Color( 1, 0, 0, 1 )
 roughness = 0.0
 
-[sub_resource type="SpatialMaterial" id=4]
-albedo_color = Color( 0.878431, 0.843137, 0, 0.145098 )
-metallic = 0.5
-emission_enabled = true
-emission = Color( 0.513726, 0.133333, 0, 1 )
-emission_energy = 2.68
-emission_operator = 0
-emission_on_uv2 = false
-
-[sub_resource type="CubeMesh" id=5]
-size = Vector3( 4, 4, 1 )
-
-[node name="TestFighter" instance=ExtResource( 1 )]
-script = ExtResource( 2 )
+[node name="BallFighter" instance=ExtResource( 1 )]
 _config = ExtResource( 3 )
 
-[node name="Boid" parent="." index="0"]
-_body = null
-
-[node name="ExtentsLink" parent="." index="1"]
-editor/display_folded = true
+[node name="ExtentsLink" parent="." index="2"]
 _mesh_path = NodePath("MeshInstance")
 
 [node name="MeshInstance" type="MeshInstance" parent="ExtentsLink" index="0"]
@@ -49,23 +32,11 @@ visible = false
 mesh = SubResource( 1 )
 material/0 = null
 
-[node name="Driver" parent="Engine" index="0"]
-script = ExtResource( 4 )
-
-[node name="Motor" parent="Engine" index="1"]
-script = ExtResource( 5 )
-
-[node name="Arms" parent="." index="3"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2 )
-
 [node name="GOCannon" parent="Arms/Primary" index="0" instance=ExtResource( 6 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 2.25, 0, 1 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 2.25, 0, 3 )
 
 [node name="GOCannon2" parent="Arms/Primary" index="1" instance=ExtResource( 6 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -2.25, 0, 1 )
-
-[node name="Attire" parent="." index="4"]
-editor/display_folded = true
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -2.25, 0, 3 )
 
 [node name="Omni" type="Area" parent="Attire" index="0"]
 script = ExtResource( 7 )
@@ -84,120 +55,107 @@ type = 2
 [node name="Shape" type="CollisionShape" parent="Attire/Omni" index="3"]
 shape = SubResource( 2 )
 
-[node name="Mesh" type="CSGCombiner" parent="." index="5"]
-editor/display_folded = true
+[node name="ImmersiveCockpitMarker" parent="." index="6"]
+transform = Transform( -1, 0, 3.25841e-07, 0, 1, 0, -3.25841e-07, 0, -1, 0, 0, 2.383 )
+
+[node name="BackUmbrella" type="MeshInstance" parent="ImmersiveCockpitMarker" index="0"]
+transform = Transform( 1, 0, 1.74846e-07, 0, 1, 0, -1.74846e-07, 0, 1, 7.23233e-09, 0, 0.92611 )
+mesh = SubResource( 3 )
+material/0 = null
+
+[node name="FrontCamera" parent="." index="7"]
+transform = Transform( -1, 0, 3.25841e-07, 0, 1, 0, -3.25841e-07, 0, -1, 0, 0, 1.803 )
+fov = 64.4
+
+[node name="CollisionShape" type="CollisionShape" parent="." index="8"]
+shape = SubResource( 2 )
+
+[node name="Mesh" parent="." index="9" instance=ExtResource( 9 )]
+
+[node name="OldMesh" type="CSGCombiner" parent="." index="10"]
 transform = Transform( 4, 0, 0, 0, 4, 0, 0, 0, 4, 0, 0, 0 )
 visible = false
 
-[node name="Cockpit" type="CSGSphere" parent="Mesh" index="0"]
-material = SubResource( 3 )
+[node name="Cockpit" type="CSGSphere" parent="OldMesh" index="0"]
+material = SubResource( 4 )
 
-[node name="CSGTorus" type="CSGTorus" parent="Mesh/Cockpit" index="0"]
+[node name="CSGTorus" type="CSGTorus" parent="OldMesh/Cockpit" index="0"]
 transform = Transform( 0.25, 0, 0, 0, 0.25, 0, 0, 0, 0.25, 0, 0, 0.287358 )
 inner_radius = 2.5
 ring_sides = 8
 
-[node name="CSGBox2" type="CSGBox" parent="Mesh/Cockpit" index="1"]
+[node name="CSGBox2" type="CSGBox" parent="OldMesh/Cockpit" index="1"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.587809 )
 operation = 1
 width = 0.39
 height = 3.0
 depth = 1.0
 
-[node name="CSGBox3" type="CSGBox" parent="Mesh/Cockpit" index="2"]
+[node name="CSGBox3" type="CSGBox" parent="OldMesh/Cockpit" index="2"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.000742793, 1, 0.314723 )
 operation = 2
 width = 1.0
 height = 1.0
 depth = 1.0
 
-[node name="CSGBox4" type="CSGBox" parent="Mesh/Cockpit" index="3"]
+[node name="CSGBox4" type="CSGBox" parent="OldMesh/Cockpit" index="3"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.000742793, -1, 0.314723 )
 operation = 2
 width = 1.0
 height = 1.0
 depth = 1.0
 
-[node name="Chassis" type="CSGSphere" parent="Mesh" index="1"]
-editor/display_folded = true
+[node name="Chassis" type="CSGSphere" parent="OldMesh" index="1"]
 radial_segments = 24
 rings = 24
 
-[node name="Exahusts" type="CSGCombiner" parent="Mesh/Chassis" index="0"]
-editor/display_folded = true
+[node name="Exahusts" type="CSGCombiner" parent="OldMesh/Chassis" index="0"]
 transform = Transform( 0.25, 0, 0, 0, 0.25, 0, 0, 0, 0.25, 0, 0, 0 )
 operation = 2
 
-[node name="CSGBox2" type="CSGBox" parent="Mesh/Chassis/Exahusts" index="0"]
+[node name="CSGBox2" type="CSGBox" parent="OldMesh/Chassis/Exahusts" index="0"]
 transform = Transform( 3, 0, 0, 0, 3, 0, 0, 0, 3, 1.25, 0, -3.75452 )
 width = 0.2
 height = 0.5
 depth = 1.0
 
-[node name="CSGBox4" type="CSGBox" parent="Mesh/Chassis/Exahusts" index="1"]
+[node name="CSGBox4" type="CSGBox" parent="OldMesh/Chassis/Exahusts" index="1"]
 transform = Transform( 3, 0, 0, 0, 3, 0, 0, 0, 3, 1.25, -2, -3.75452 )
 width = 0.2
 height = 0.5
 depth = 1.0
 
-[node name="CSGBox3" type="CSGBox" parent="Mesh/Chassis/Exahusts" index="2"]
+[node name="CSGBox3" type="CSGBox" parent="OldMesh/Chassis/Exahusts" index="2"]
 transform = Transform( 3, 0, 0, 0, 3, 0, 0, 0, 3, 1.25, 2, -3.75452 )
 width = 0.2
 height = 0.5
 depth = 1.0
 
-[node name="CSGBox5" type="CSGBox" parent="Mesh/Chassis/Exahusts" index="3"]
+[node name="CSGBox5" type="CSGBox" parent="OldMesh/Chassis/Exahusts" index="3"]
 transform = Transform( 3, 0, 0, 0, 3, 0, 0, 0, 3, -1.25, -2, -3.75452 )
 width = 0.2
 height = 0.5
 depth = 1.0
 
-[node name="CSGBox6" type="CSGBox" parent="Mesh/Chassis/Exahusts" index="4"]
+[node name="CSGBox6" type="CSGBox" parent="OldMesh/Chassis/Exahusts" index="4"]
 transform = Transform( 3, 0, 0, 0, 3, 0, 0, 0, 3, -1.25, 2, -3.75452 )
 width = 0.2
 height = 0.5
 depth = 1.0
 
-[node name="CSGBox7" type="CSGBox" parent="Mesh/Chassis/Exahusts" index="5"]
+[node name="CSGBox7" type="CSGBox" parent="OldMesh/Chassis/Exahusts" index="5"]
 transform = Transform( 3, 0, 0, 0, 3, 0, 0, 0, 3, -1.25, 0, -3.75452 )
 width = 0.2
 height = 0.5
 depth = 1.0
 
-[node name="CenteralBox" type="CSGBox" parent="Mesh/Chassis" index="1"]
+[node name="CenteralBox" type="CSGBox" parent="OldMesh/Chassis" index="1"]
 operation = 2
 width = 0.4
 depth = 2.4
 
-[node name="CSGBox" type="CSGBox" parent="Mesh/Chassis/CenteralBox" index="0"]
+[node name="CSGBox" type="CSGBox" parent="OldMesh/Chassis/CenteralBox" index="0"]
 operation = 2
 width = 0.4
 height = 1.0
 depth = 1.6
-
-[node name="CollisionShape" type="CollisionShape" parent="." index="6"]
-shape = SubResource( 2 )
-
-[node name="Mesh2" parent="." index="7" instance=ExtResource( 9 )]
-editor/display_folded = true
-
-[node name="ExhaustGridMainVertical001" parent="Mesh2" index="0"]
-material_override = SubResource( 4 )
-
-[node name="ExhaustGrid Secondary001" parent="Mesh2" index="1"]
-material_override = SubResource( 4 )
-
-[node name="FrontCamera" type="Camera" parent="." index="8"]
-transform = Transform( -1, 0, -8.74228e-008, 0, 1, 0, 8.74228e-008, 0, -1, 0, 0, 1.803 )
-fov = 64.4
-far = 8192.0
-
-[node name="ImmersiveCockpitMarker" type="Position3D" parent="." index="9"]
-transform = Transform( -1, 0, -8.74228e-008, 0, 1, 0, 8.74228e-008, 0, -1, 5.33912e-008, 0, 2.38289 )
-
-[node name="BackUmbrella" type="MeshInstance" parent="ImmersiveCockpitMarker" index="0"]
-transform = Transform( -1, 0, -8.74228e-008, 0, 1, 0, 8.74228e-008, 0, -1, -8.11969e-008, 0, 1.45678 )
-mesh = SubResource( 5 )
-material/0 = null
-
-[editable path="Mesh2"]

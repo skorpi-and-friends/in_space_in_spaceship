@@ -12,7 +12,8 @@ func _ready() -> void:
 	# so that all crafts are truly ready
 	call_deferred("populate");
 
-
+# This methods finds and register all craft under the playermind
+# and chooses a the craft with the most sire_craft as the flagship.
 func populate() -> void:
 	# start the counter at -one
 	# so that even a mothership with 0 
@@ -49,8 +50,9 @@ func _input(event: InputEvent) -> void:
 		all_attached = !all_attached;
 
 
+# Switch to the next craft according to order discovered.
 func switch_craft():
-	while true:
+	while true: 
 		_current_craft_index = wrapi(
 				_current_craft_index + 1, 0, len(crafts));
 		var craft := crafts[_current_craft_index] as CraftMaster;

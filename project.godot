@@ -424,6 +424,10 @@ config/name="IN SPACE IN SPACESHIP"
 run/main_scene="res://scenes/Main.tscn"
 config/icon="res://icon.png"
 
+[audio]
+
+driver="DirectSound"
+
 [autoload]
 
 Globals="*res://scripts/isis_globals.gd"
@@ -567,4 +571,4 @@ Thrust={
 [rendering]
 
 threads/thread_model=2
-environment/default_environment="res://enviroments/daytime_sky.tres"
+environment/default_environment="res://enviroments/default_env.bak.tres"

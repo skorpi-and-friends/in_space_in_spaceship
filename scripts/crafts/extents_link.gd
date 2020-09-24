@@ -1,7 +1,7 @@
 extends Node
 
-export var _mesh_path: NodePath
-export var _engine_path: NodePath
+export var _mesh_path: NodePath;
+export var _engine_path:= @"../Engine";
 
 func _ready():
 	var mesh = get_node(_mesh_path) as VisualInstance;

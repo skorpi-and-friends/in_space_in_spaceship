@@ -1,15 +1,16 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://scenes/crafts/craft_template.tscn" type="PackedScene" id=1]
 [ext_resource path="res://scripts/crafts/craft_master_child.gd" type="Script" id=2]
 [ext_resource path="res://scripts/crafts/drivers/pid_driver.gd" type="Script" id=3]
 [ext_resource path="res://scripts/crafts/motors/simple_motor_acceleration.gd" type="Script" id=4]
+[ext_resource path="res://scripts/ai_csharp/CraftMind.cs" type="Script" id=5]
 
 [node name="CraftAdvanced" instance=ExtResource( 1 )]
 script = ExtResource( 2 )
 
-[node name="ExtentsLink" parent="." index="1"]
-_engine_path = NodePath("../../CraftAdvanced/Engine")
+[node name="Mind" type="Node" parent="." index="1"]
+script = ExtResource( 5 )
 
 [node name="Driver" parent="Engine" index="0"]
 script = ExtResource( 3 )
@@ -17,7 +18,7 @@ script = ExtResource( 3 )
 [node name="Motor" parent="Engine" index="1"]
 script = ExtResource( 4 )
 
-[node name="ImmersiveCockpitMarker" type="Position3D" parent="." index="5"]
+[node name="ImmersiveCockpitMarker" type="Position3D" parent="." index="6"]
 
-[node name="FrontCamera" type="Camera" parent="." index="6"]
+[node name="FrontCamera" type="Camera" parent="." index="7"]
 far = 8192.0
