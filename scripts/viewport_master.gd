@@ -21,7 +21,7 @@ func _ready() -> void:
 	var root_viewport := $"/root" as Viewport;
 	copy_shadow_atlas_settings(root_viewport, _game_viewport);
 	copy_shadow_atlas_settings(root_viewport, _cockpit_viewport);
-	switch_to_cockpit_screen();
+	switch_to_game_screen();
 
 
 func switch_to_cockpit_screen():

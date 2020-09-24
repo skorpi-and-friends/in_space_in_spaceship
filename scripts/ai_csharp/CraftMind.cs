@@ -21,9 +21,16 @@ namespace ISIS.Minds {
             base._Process(delta);
             if (ActiveRoutine != null) {
                 var state = GetCraftState(Craft);
-                var (linearInput, angularInput) = ActiveRoutine.Invoke(Craft.GlobalTransform, state);
+                var(linearInput, angularInput) = ActiveRoutine.Invoke(Craft.GlobalTransform, state);
                 state.SetCraftInput(linearInput, angularInput);
             }
+        }
+
+        public virtual void DisableAutoPilot() {
+#if DEBUG
+            ActiveRoutineDesc = $"NO ACTIVE ROUTINE";
+#endif
+            ActiveRoutine = null;
         }
 
         public virtual void InterceptSetTarget() {

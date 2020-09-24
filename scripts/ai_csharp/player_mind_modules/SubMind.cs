@@ -11,15 +11,20 @@ namespace ISIS.Minds {
             set {
                 // make the old guy a member
                 if (_activeCraft != null) {
-                    var(isMindful, mind) = CraftMind.IsMindful(_activeCraft);
-                    if (isMindful)
-                        AddMember(mind);
+                    var(isOldGuyMindful, oldGuyMind) = CraftMind.IsMindful(_activeCraft);
+                    if (isOldGuyMindful)
+                        AddMember(oldGuyMind);
                 }
-                // remove the new guy from membership
-                RemoveMember(GenerateCraftId(value));
+
+                // deactivate the autopilot of the new guy
+                var(isNewGuyMindful, newGuyMind) = CraftMind.IsMindful(value);
+                if (isNewGuyMindful) {
+                    newGuyMind.DisableAutoPilot();
+                    // remove the new guy from membership
+                    RemoveMember(GenerateCraftId(value));
+                }
 
                 _activeCraft = value;
-                GD.Print("active_craft set");
             }
         }
 
@@ -52,7 +57,6 @@ namespace ISIS.Minds {
         protected override void CollectMembers() {
             if (_playerMind == null)
                 return;
-            GD.Print("members collected");
             foreach (var item in _playerMind.GetChildren()) {
                 if (item == active_craft)
                     continue;

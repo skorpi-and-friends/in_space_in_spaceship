@@ -65,7 +65,6 @@ flip_faces = true
 
 [node name="Cockpit" type="Spatial"]
 script = ExtResource( 1 )
-_camera_path = NodePath("Core/CameraPivot/Camera")
 
 [node name="Core" type="Spatial" parent="."]
 
@@ -158,47 +157,29 @@ custom_styles/panel = SubResource( 3 )
 [node name="CameraPivot" type="Spatial" parent="Core"]
 
 [node name="Camera" type="Camera" parent="Core/CameraPivot"]
-cull_mask = 1048573
 fov = 80.0
 far = 8192.0
 script = ExtResource( 10 )
 
-[node name="CSGSphere" type="CSGBox" parent="Core"]
+[node name="Dashboard" type="CSGBox" parent="Core"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.000767946, -0.00106956, -0.000511825 )
-invert_faces = true
 width = 1.0
 
-[node name="CSGCombiner2" type="CSGCombiner" parent="Core/CSGSphere"]
+[node name="CSGCombiner" type="CSGCombiner" parent="Core/Dashboard"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.454641 )
 operation = 1
 
-[node name="CSGBox" type="CSGBox" parent="Core/CSGSphere/CSGCombiner2"]
-transform = Transform( 1, 0, 0, 0, 0.939693, 0.34202, 0, -0.34202, 0.939693, 0, -0.555334, 0 )
+[node name="CSGBox" type="CSGBox" parent="Core/Dashboard/CSGCombiner"]
+transform = Transform( 1, 0, 0, 0, 0.939693, 0.34202, 0, -0.34202, 0.939693, 0, -0.555334, 2.98023e-08 )
 width = 1.0
 height = 0.5
 depth = 0.25
 
-[node name="CSGBox2" type="CSGBox" parent="Core/CSGSphere/CSGCombiner2"]
+[node name="CSGBox2" type="CSGBox" parent="Core/Dashboard/CSGCombiner"]
 transform = Transform( 1, 0, 0, 0, 0.965926, 0.258819, 0, -0.258819, 0.965926, 0, -0.343984, 0 )
 width = 0.4
 height = 0.5
 depth = 0.25
-
-[node name="CSGCombiner" type="CSGCombiner" parent="Core"]
-visible = false
-
-[node name="CSGBox" type="CSGBox" parent="Core/CSGCombiner"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0 )
-width = 1.5
-height = 1.5
-depth = 1.0
-
-[node name="CSGSphere" type="CSGBox" parent="Core/CSGCombiner"]
-transform = Transform( 0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, 0, 0, -0.585199 )
-operation = 2
-width = 1.5
-height = 1.0
-depth = 1.5
 
 [node name="World" type="Spatial" parent="."]
 
@@ -229,7 +210,7 @@ mesh = SubResource( 10 )
 material/0 = null
 
 [node name="OmniLight" type="OmniLight" parent="World"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00234532, 1.07661, -0.00588173 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00234532, 0.754392, -0.00588173 )
 light_color = Color( 1, 0, 0, 1 )
 light_energy = 0.1
 light_indirect_energy = 6.76
