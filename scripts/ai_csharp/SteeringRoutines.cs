@@ -319,5 +319,24 @@ namespace ISIS.Minds {
                 );
             };
         }
+
+        public static SteeringRoutine AvoidObstacleRoutine(
+            RigidBody craft,
+            int predectionTimeSeconds = 1
+        ) {
+            var raycast = new RayCast();
+
+            raycast.CollideWithBodies = false;
+            raycast.CollideWithAreas = true;
+            raycast.Enabled = true;
+
+            return (Transform currentTransform, CraftStateWrapper currentState) => {
+
+                return (
+                    Vector3.Zero,
+                    Vector3.Zero
+                );
+            };
+        }
     }
 }

@@ -59,6 +59,8 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="scripts\ai_csharp\contacts\Boid.cs" />
+    <Compile Include="scripts\ai_csharp\contacts\ObstaclePresence.cs" />
+    <Compile Include="scripts\ai_csharp\contacts\ObstacleSilhouette.cs" />
     <Compile Include="scripts\ai_csharp\contacts\ScanPresence.cs" />
     <Compile Include="scripts\ai_csharp\CraftMind.cs" />
     <Compile Include="scripts\ai_csharp\GroupMind.cs" />
@@ -69,6 +71,7 @@
     <Compile Include="scripts\ai_csharp\SteeringBehaviors.cs" />
     <Compile Include="scripts\ai_csharp\SteeringRoutines.cs" />
     <Compile Include="scripts\crafts_csharp\CraftStateWrapper.cs" />
+    <Compile Include="scripts\Obstacle.cs" />
     <Compile Include="scripts\utility\ExperimentTestBed.cs" />
     <Compile Include="scripts\utility\GDScriptUtilities.cs" />
     <Compile Include="scripts\utility\ObjectPool.cs" />

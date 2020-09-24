@@ -1,42 +1,74 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=12 format=2]
 
 [ext_resource path="res://textures/asteroid_001_normals.png" type="Texture" id=1]
 [ext_resource path="res://mesh/asteroid_001.dae" type="PackedScene" id=2]
-[ext_resource path="res://scenes/rigid_obstacle_template.tscn" type="PackedScene" id=3]
+[ext_resource path="res://scenes/level/obstacle_template.tscn" type="PackedScene" id=3]
 
+[sub_resource type="SphereShape" id=8]
+radius = 222.0
+
+[sub_resource type="SphereShape" id=3]
+radius = 108.312
+
+[sub_resource type="CapsuleShape" id=1]
+radius = 91.0669
+height = 111.856
 
 [sub_resource type="CapsuleShape" id=2]
-radius = 91.0669
-height = 100.0
+radius = 82.4012
+height = 142.282
 
-[sub_resource type="CapsuleShape" id=3]
-radius = 73.9903
-height = 86.0017
+[sub_resource type="CapsuleShape" id=4]
+radius = 80.4406
+height = 128.106
 
-[sub_resource type="SpatialMaterial" id=1]
-albedo_color = Color( 0.498039, 0.184314, 0, 1 )
+[sub_resource type="CapsuleShape" id=5]
+radius = 66.3437
+height = 217.861
+
+[sub_resource type="CapsuleShape" id=6]
+radius = 54.1331
+height = 162.448
+
+[sub_resource type="SpatialMaterial" id=7]
+albedo_color = Color( 0.5, 0.18, 0, 1 )
 normal_enabled = true
 normal_scale = 1.0
 normal_texture = ExtResource( 1 )
 
-[sub_resource type="ConvexPolygonShape" id=4]
-
 [node name="Asteroid001" instance=ExtResource( 3 )]
+MassMetricTon = 1000
 
-[node name="CollisionShape" type="CollisionShape" parent="." index="0"]
-transform = Transform( 0.909482, -0.152909, -0.386602, -0.122918, 0.789434, -0.601403, 0.397156, 0.594486, 0.69918, -12.3243, -19.4433, 38.8225 )
-shape = SubResource( 2 )
+[node name="Sphere" type="CollisionShape" parent="ObstaclePresence/ObstacleSilhouette" index="0"]
+shape = SubResource( 8 )
 
-[node name="CollisionShape2" type="CollisionShape" parent="." index="1"]
-transform = Transform( 0.176773, -0.601181, 0.779315, 0.613707, 0.686343, 0.390252, -0.76949, 0.409285, 0.490276, 77.7107, 9.99174, 70.914 )
+[node name="CollisionShape4" type="CollisionShape" parent="." index="1"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
 shape = SubResource( 3 )
 
-[node name="asteroid_001" parent="." index="2" instance=ExtResource( 2 )]
+[node name="CollisionShape" type="CollisionShape" parent="." index="2"]
+transform = Transform( 0.909482, -0.152909, -0.386602, -0.122918, 0.789434, -0.601403, 0.397156, 0.594486, 0.69918, -10.9262, -17.2684, 36.294 )
+shape = SubResource( 1 )
 
-[node name="rock000" parent="asteroid_001" index="0"]
-material_override = SubResource( 1 )
+[node name="CollisionShape2" type="CollisionShape" parent="." index="3"]
+transform = Transform( 0.176773, -0.601181, 0.779315, 0.613707, 0.686343, 0.390252, -0.76949, 0.409285, 0.490276, 50.1874, -3.79089, 53.5988 )
+shape = SubResource( 2 )
 
-[node name="CollisionShape3" type="CollisionShape" parent="." index="3"]
+[node name="CollisionShape5" type="CollisionShape" parent="." index="4"]
+transform = Transform( 0.744172, 0.237403, -0.624378, 0, 0.934714, 0.355401, 0.667988, -0.264479, 0.695587, 29.6184, -57.1178, -19.3764 )
 shape = SubResource( 4 )
 
-[editable path="asteroid_001"]
+[node name="CollisionShape6" type="CollisionShape" parent="." index="5"]
+transform = Transform( 0.378572, -0.659744, 0.649168, 0.775603, -0.156624, -0.61148, 0.505096, 0.734987, 0.452406, -6.13566, 16.5662, -12.9941 )
+shape = SubResource( 5 )
+
+[node name="CollisionShape7" type="CollisionShape" parent="." index="6"]
+transform = Transform( 0.975656, 0.187775, 0.113294, -0.218482, 0.876998, 0.427947, -0.0190007, -0.442282, 0.896674, 121.932, -59.3596, 7.75204 )
+shape = SubResource( 6 )
+
+[node name="Mesh" parent="." index="7" instance=ExtResource( 2 )]
+
+[node name="rock000" parent="Mesh" index="0"]
+material/0 = SubResource( 7 )
+
+[editable path="Mesh"]

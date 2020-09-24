@@ -559,6 +559,10 @@ Thrust={
  ]
 }
 
+[layer_names]
+
+3d_physics/layer_6="Obstacle"
+
 [physics]
 
 2d/default_gravity=0

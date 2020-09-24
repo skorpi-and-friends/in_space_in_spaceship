@@ -1,12 +1,21 @@
 using System.Collections.Generic;
 using Godot;
+
+using ObjectId = System.Int32;
+
+#if GODOT_Real_IS_DOUBLE
+using Real = System.Double;
+#else
 using Real = System.Single;
+#endif
 
 namespace ISIS {
     public class MasterMind : Node {
         [Signal] public delegate void ContactMade(ScanPresence contact);
         [Signal] public delegate void ContactLost(ScanPresence contact);
-        public List<ScanPresence> MasterContactList { get; private set; } = new List<ScanPresence>();
+        public List<ScanPresence> MasterContactList { get; } = new List<ScanPresence>();
+
+        // public Dictionary<ObjectId, ScanPresence> ObjectToPresenceMap { get; } = new Dictionary<ObjectId, ScanPresence>();
 
         // Called when the node enters the scene tree for the first time.
         public override void _EnterTree() {
@@ -14,23 +23,26 @@ namespace ISIS {
             AddToGroup("MasterMind");
             var sceneTree = GetTree();
             foreach (var item in sceneTree.GetNodesInGroup("ScanPresence")) {
-                var presence = (ScanPresence) item;
-                MasterContactList.Add(presence);
+                RegisterPresence((ScanPresence) item);
             }
             sceneTree.Connect("node_added", this, nameof(NodeAddedToTree));
         }
 
         private void NodeAddedToTree(Node node) {
             if (node.IsInGroup("ScanPresence")) {
-                var scanPresence = (ScanPresence) node;
-                MasterContactList.Add(scanPresence);
-                scanPresence.Connect("tree_exiting",
-                    this,
-                    nameof(PresenceExitingTree),
-                    new Godot.Collections.Array { scanPresence });
-                EmitSignal(nameof(ContactMade), scanPresence);
+                RegisterPresence((ScanPresence) node);
             }
         }
+
+        private void RegisterPresence(ScanPresence presence) {
+            MasterContactList.Add(presence);
+            presence.Connect("tree_exiting",
+                this,
+                nameof(PresenceExitingTree),
+                new Godot.Collections.Array { presence });
+            EmitSignal(nameof(ContactMade), presence);
+        }
+        // protected static ObjectId GenerateCraftId(Godot.Node @object) => @object.GetRid().GetId();
 
         private void PresenceExitingTree(ScanPresence presence) {
             MasterContactList.Remove(presence);

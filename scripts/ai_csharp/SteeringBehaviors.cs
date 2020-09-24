@@ -128,7 +128,7 @@ namespace ISIS {
 				return SeekPosition(currentPosition, target);
 			}
 		}
-		/* public static Vector3 FollowPath(
+		/* public static Vector3 StayOnPath(
 			Vector3 currentPosition,
 			Vector3 currentVelocity,
 			Real requredProximity,
