@@ -3,9 +3,7 @@ using Godot;
 using Real = System.Single;
 
 namespace ISIS {
-
     public class MasterMind : Node {
-
         [Signal] public delegate void ContactMade(ScanPresence contact);
         [Signal] public delegate void ContactLost(ScanPresence contact);
         public List<ScanPresence> MasterContactList { get; private set; } = new List<ScanPresence>();
@@ -20,7 +18,6 @@ namespace ISIS {
                 MasterContactList.Add(presence);
             }
             sceneTree.Connect("node_added", this, nameof(NodeAddedToTree));
-
         }
 
         private void NodeAddedToTree(Node node) {

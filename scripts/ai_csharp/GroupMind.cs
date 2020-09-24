@@ -10,14 +10,14 @@ using MemberId = System.Int32;
 using static ISIS.Static;
 
 namespace ISIS.Minds {
-
 	public partial class GroupMind : Godot.Node {
-
 		protected MasterMind _masterMind;
-		protected List<ScanPresence> _hostileContacts = new List<ScanPresence>();
+		protected readonly List<ScanPresence> _hostileContacts = new List<ScanPresence>();
 
-		protected Dictionary<MemberId, CraftMind> _members = new Dictionary<MemberId, CraftMind>();
+		protected readonly Dictionary<MemberId, CraftMind> _members = new Dictionary<MemberId, CraftMind>();
 		protected GreenBehaviors.Node _mainBehaviorTree;
+
+		private bool _quiedMainBehaviorCancel;
 
 		public override void _Ready() {
 			base._Ready();
@@ -47,7 +47,22 @@ namespace ISIS.Minds {
 		}
 
 		protected virtual void SetupBehavior() {
-			_mainBehaviorTree = DestroyAllHostiles();
+			_mainBehaviorTree = FollowThePath();
+		}
+		protected virtual void Think() {
+			if (_quiedMainBehaviorCancel) {
+				_mainBehaviorTree?.Cancel();
+				_quiedMainBehaviorCancel = false;
+			}
+			_mainBehaviorTree.FullTick();
+		}
+
+		public virtual Relationship AssessRelationship(ScanPresence contact) {
+			if (IsHostileContact(contact))
+				return Relationship.Hostile;
+			if (IsFreindlyContact(contact))
+				return Relationship.Freindly;
+			return Relationship.Neutral;
 		}
 
 		protected virtual bool IsHostileContact(ScanPresence contact) {
@@ -59,14 +74,6 @@ namespace ISIS.Minds {
 				_members.ContainsKey(GenerateCraftId((RigidBody) boid.GetBody()));
 		}
 
-		public virtual Relationship AssessRelationship(ScanPresence contact) {
-			if (IsHostileContact(contact))
-				return Relationship.Hostile;
-			if (IsFreindlyContact(contact))
-				return Relationship.Freindly;
-			return Relationship.Neutral;
-		}
-
 		protected virtual void ContactMade(ScanPresence contact) {
 			if (IsHostileContact(contact))
 				_hostileContacts.Add(contact);
@@ -74,10 +81,6 @@ namespace ISIS.Minds {
 
 		protected virtual void ContactLost(ScanPresence contact) {
 			_hostileContacts.Remove(contact);
-		}
-
-		protected virtual void Think() {
-			_mainBehaviorTree.FullTick();
 		}
 
 		protected virtual void AddMember(CraftMind craftMind) {
@@ -89,8 +92,8 @@ namespace ISIS.Minds {
 		}
 
 		protected virtual void RemoveMember(MemberId id) {
-			_members.Remove(id);
-			CancelAllBehaviors();
+			if (_members.Remove(id))
+				CancelAllBehaviors();
 		}
 
 		protected virtual void RemoveAllMembers() {
@@ -100,13 +103,29 @@ namespace ISIS.Minds {
 		protected static MemberId GenerateCraftId(RigidBody craft) => craft.GetRid().GetId();
 
 		private void CancelAllBehaviors() {
-			_mainBehaviorTree?.Cancel();
+			_quiedMainBehaviorCancel = true;
 		}
 	}
 
 	#region BEHAVIORS
 
 	public partial class GroupMind {
+
+		protected virtual GreenBehaviors.Node FollowThePath() {
+			var path = GetNodeOrNull<Path>("The Path");
+			if (path == null)
+				return DestroyAllHostiles();
+
+			return new Action(
+				"follow the path",
+				tick : _ => NodeState.Running,
+				start : _ => {
+					foreach (var member in _members.Values) {
+						member.FollowPath(path);
+					}
+				}
+			);
+		}
 
 		protected virtual GreenBehaviors.Node DestroyAllHostiles() {
 			// setup basicFlightBehaviorTree
@@ -128,18 +147,14 @@ namespace ISIS.Minds {
 				// conditional
 				.SetGuard(
 					"Are Hostiles Nearby",
-					(_) => _hostileContacts.Count != 0
+					conditional : _ => _hostileContacts.Count != 0
 				)
 				.SetChild(
-					new Sequence(
-						// name
-						"Eliminate Hostiles")
+					new Sequence("Eliminate Hostiles")
 					// action
 					.AddChild(
-						// name
 						"Assign Targets To Members",
-						// at tick callback
-						(_) => {
+						tick : _ => {
 							var hostileCount = _hostileContacts.Count;
 							var ii = 0;
 							foreach (var member in _members.Values) {
@@ -150,26 +165,26 @@ namespace ISIS.Minds {
 						}
 					)
 					.AddChild(
-						new Action(
-							// name
-							"Set Members To Attack Pursue",
-							// at tick callback
-							(_) => memberDrivers.FullTick(),
-							// at start callback
-							(_) => {
-								memberDrivers = EliminateTargets(_members.Keys.ToArray());
-								memberDrivers.Start();
-							}
-						)
+						"Set Members To Attack Pursue",
+						tick : _ => memberDrivers.FullTick(),
+						start : _ => {
+							memberDrivers = EliminateTargets(_members.Keys.ToArray());
+							memberDrivers.Start();
+						}
 					)
 				);
 		}
 
 		protected virtual GreenBehaviors.Node InterceptTargets(params MemberId[] members) {
-			foreach (var id in members) {
-				_members[id].InterceptSetTarget();
-			}
-			return LambdaLeafNode.EmptyRunningNode;
+			return new Action(
+				"Intercept Targets Group",
+				tick : _ => NodeState.Running,
+				start : _ => {
+					foreach (var id in members) {
+						_members[id].InterceptSetTarget();
+					}
+				}
+			);
 		}
 
 		protected virtual GreenBehaviors.Node EliminateTargets(params MemberId[] members) {
@@ -181,8 +196,6 @@ namespace ISIS.Minds {
 			}
 			return childrenRoutines;
 		}
-
 	}
-
 	#endregion
 }

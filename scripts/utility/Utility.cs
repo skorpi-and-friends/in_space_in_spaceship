@@ -1,9 +1,7 @@
 using Godot;
 
 namespace ISIS {
-
     public static class Static {
-
         // ### GDSCRIPT INTEROP UTILITIES
 
         public static bool IsInstanceOfGDScript(Godot.Object godotObject, Godot.Script script) {
@@ -35,7 +33,7 @@ namespace ISIS {
         }
 
         public static float SmallestPositveEquivalentAngleDegree(float angle) {
-            angle = angle % 360f;
+            angle %= 360f;
             if (angle < 0f)
                 return angle + 360f;
             return angle;
@@ -49,14 +47,14 @@ namespace ISIS {
         }
 
         public static float SmallestPositveEquivalentAngleRadians(float angle) {
-            angle = angle % Mathf.Tau;
+            angle %= Mathf.Tau;
             if (angle < 0f)
                 return angle + Mathf.Tau;
             return angle;
         }
 
         public static float SmallestEquivalentAngleRadians(float angle) {
-            angle = angle % Mathf.Tau;
+            angle %= Mathf.Tau;
             if (angle > Mathf.Pi)
                 angle -= Mathf.Tau;
             else if (angle < -Mathf.Pi)
@@ -65,7 +63,7 @@ namespace ISIS {
         }
 
         public static float SmallestEquivalentAngleDegree(float angle) {
-            angle = angle % Mathf.Tau;
+            angle %= Mathf.Tau;
             if (angle > Mathf.Pi)
                 angle -= Mathf.Tau;
             else if (angle < -Mathf.Pi)
@@ -166,5 +164,4 @@ namespace ISIS {
             }
         }
     }
-
 }

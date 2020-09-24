@@ -1,12 +1,10 @@
 using System;
 using Godot;
 using MemberId = System.Int32;
-using static PlayerMindModuleMixin;
+using static ISIS.PlayerMindModuleMixin;
 
 namespace ISIS.Minds {
-
     public class SubMind : GroupMind, IPlayerMindModule {
-
         private RigidBody _activeCraft;
         public RigidBody active_craft {
             get => _activeCraft;
@@ -17,11 +15,11 @@ namespace ISIS.Minds {
                     if (isMindful)
                         AddMember(mind);
                 }
-
                 // remove the new guy from membership
                 RemoveMember(GenerateCraftId(value));
 
                 _activeCraft = value;
+                GD.Print("active_craft set");
             }
         }
 
@@ -54,7 +52,11 @@ namespace ISIS.Minds {
         protected override void CollectMembers() {
             if (_playerMind == null)
                 return;
+            GD.Print("members collected");
             foreach (var item in _playerMind.GetChildren()) {
+                if (item == active_craft)
+                    continue;
+
                 var(isMindfulCraft, craftMind) = CraftMind.IsMindfulCraft(item);
                 if (!isMindfulCraft)
                     continue;
