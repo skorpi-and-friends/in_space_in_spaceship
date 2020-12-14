@@ -216,3 +216,17 @@ static func max_vec_componentwise(a: Vector3, b: Vector3) -> Vector3:
 			max(a.y, b.y),
 			max(a.z, b.z)
 	);
+
+static func materialFromViewportTexture(viewport:Viewport) -> SpatialMaterial:
+	var material = SpatialMaterial.new();
+	applyViewportTexture(material,viewport);
+	return material;
+
+static func applyViewportTexture(material:SpatialMaterial, viewport:Viewport) -> void:
+	material.flags_unshaded = true;
+	material.flags_transparent = true;
+	material.flags_do_not_receive_shadows = true;
+	
+	material.albedo_color = Color.white;
+	material.albedo_texture = viewport.get_texture();
+	material.albedo_texture.flags |= Texture.FLAG_VIDEO_SURFACE;

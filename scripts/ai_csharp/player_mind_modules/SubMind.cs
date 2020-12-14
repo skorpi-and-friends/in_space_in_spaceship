@@ -19,7 +19,7 @@ namespace ISIS.Minds {
                 // deactivate the autopilot of the new guy
                 var(isNewGuyMindful, newGuyMind) = CraftMind.IsMindful(value);
                 if (isNewGuyMindful) {
-                    newGuyMind.DisableAutoPilot();
+                    newGuyMind.EnableAutoPilot = false;
                     // remove the new guy from membership
                     RemoveMember(GenerateCraftId(value));
                 }
@@ -50,6 +50,7 @@ namespace ISIS.Minds {
         }
 
         public override void _Ready() {
+            // if (GetTree().GetNodesInGroup("MasterMind").Count == 0)  return;
             base._Ready();
             _isReady = true;
         }

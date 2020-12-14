@@ -110,7 +110,6 @@ namespace ISIS.Minds {
 	#region BEHAVIORS
 
 	public partial class GroupMind {
-
 		protected virtual GreenBehaviors.Node FollowThePath() {
 			var path = GetNodeOrNull<Path>("The Path");
 			if (path == null)

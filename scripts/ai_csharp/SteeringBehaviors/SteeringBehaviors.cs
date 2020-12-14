@@ -8,14 +8,16 @@ using Real = System.Double;
 using Real = System.Single;
 #endif
 
-namespace ISIS {
+namespace ISIS.SteeringBehaviors {
+	/// <summary>
+	/// Pure steering behavior functions that return the steer vector as a fraction of LinearVLimit.
+	/// </summary>
 	public static partial class SteeringBehaviors {
-		/* Pure steering behavior functions */
 		public static Vector3 SeekPosition(
 			Vector3 currentPosition,
-			Vector3 targetPosition
-		) => /* currentVelocity - */ (targetPosition - currentPosition).Normalized();
-		public static Vector3 FleePosition(
+			Vector3 targetDirection
+		) => /* currentVelocity - */ (targetDirection - currentPosition).Normalized();
+		public static Vector3 FleeDirection(
 			Vector3 currentPosition,
 			Vector3 targetPosition
 		) => /* -(currentVelocity */ -SeekPosition(currentPosition, targetPosition);
@@ -58,27 +60,69 @@ namespace ISIS {
 
 			return targetPosition + (timeToTargetPosition * targetVelocity);
 		}
-		/* public static Vector3 AvoidObstacle(Collider obstacle, Transform currentTransform) {
-			{
-				// linearInputModifier.z *= -.5f; // brake
 
-				// add the opposite of the collision point vector
-				//toPosition -= (info.point * collisionAvoidanceVectorMultiplier);
+		public static Vector3 AvoidObstacle(
+			Vector3 obstacleCenter,
+			Real obstacleRadius,
+			Transform currentTransform) {
+			// linearInputModifier.z *= -.5f; // brake
 
-				var obstacleCenter = obstacle.bounds.center;
+			// add the opposite of the collision point vector
+			//toPosition -= (info.point * collisionAvoidanceVectorMultiplier);
 
-				var toCenterOfObstacle = obstacleCenter - currentTransform.position;
-				var toCenterAlongForward = currentTransform.forward * Vector3.Dot(toCenterOfObstacle, currentTransform.forward);
+			var forward = currentTransform.Orthonormalized().basis.z;
 
-				var fromCenterToForwardAxis = toCenterOfObstacle - toCenterAlongForward;
+			var toCenterOfObstacle = obstacleCenter - currentTransform.origin;
+			/* 
+			var toCenterAlongForward = forward * toCenterOfObstacle.Dot(forward);
+			var fromCenterToForwardAxis = toCenterAlongForward.Normalized() - toCenterOfObstacle.Normalized(); 
+			*/
+			var fromCenterToForwardAxis = toCenterOfObstacle.Normalized() - forward;
+			return SeekPosition(currentTransform.origin, fromCenterToForwardAxis.Normalized() * (obstacleRadius * 1.25f));
 
-				return -fromCenterToForwardAxis;
-				// Debug.DrawRay(currentTransform.position, toAvoidPosition * 2, Color.blue);
-				//toRotation = toPosition -= (_latestRaycastHitInfo.point);
+			//toRotation = toPosition -= (_latestRaycastHitInfo.point);
+			//toPosition = -fromForwardToCenter;
+		}
 
-				//toPosition = -fromForwardToCenter;
+		/// <summary>
+		/// 	Obstacle avoidance behavior  on Sebastian Lague's solution.
+		/// 	https://github.com/SebLague/Boids
+		/// 	Will cast rays that are in an increasing angular difference with
+		/// 	the velocity vector till a non obstracted direction is found and moves
+		/// 	in that direction.
+		/// </summary>
+		/// <param name="castForObstruction">
+		/// 	A lambda that'll raycast and return wether it hit something or not.
+		/// 	bool castForObstruction(Vector3 from, Vector3 to).
+		/// 	Handle the collisionMask and exclusion in the lambda yourself.
+		/// </param>
+		/// <param name="raycastDistanceAdjustment">
+		/// 	Will be added to the raycast distance. Use it to adjust for craft
+		/// 	size.
+		/// </param>
+		public static Vector3 AvoidObstacleSebLague(
+			Vector3 currentVelocity,
+			Func<Vector3, Vector3, bool> castForObstruction,
+			Transform currentTransform,
+			Real raycastDistanceAdjustment = 0
+		) {
+			var currentPosition = currentTransform.origin;
+			var raycastDistance = currentVelocity.Length() + raycastDistanceAdjustment;
+
+			// since we'll be testing from the velocity vector outwards (not the forward vector)
+			// we can't use the object's transform
+			var globalVelocity = currentTransform.TransformPoint(currentVelocity);
+			var transformer = new Transform(BasisFacingDirection(globalVelocity), currentPosition);
+
+			Vector3[] rayDirections = BoidHelper.directions;
+			for (int i = 0; i < BoidHelper.DirectionCount; i++) {
+				var dir = transformer.TransformDirection(rayDirections[i]);
+				if (!castForObstruction(currentPosition, dir * raycastDistance)) {
+					return dir;
+				}
 			}
-		} */
+			return Vector3.Zero;
+		}
 
 		// FIXME: improve
 		// lifted from Craig Reynolds' OpenSteer

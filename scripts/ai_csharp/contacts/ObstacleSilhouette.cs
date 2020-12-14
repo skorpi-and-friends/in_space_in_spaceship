@@ -9,6 +9,7 @@ using Real = System.Single;
 
 namespace ISIS {
     public class ObstacleSilhouette : Area {
+        public const int CollisionSillhoeteLayer = 1 << 5;
         public ObstaclePresence Presence { get; private set; }
 
         [Export] public Real Radius { get; private set; }

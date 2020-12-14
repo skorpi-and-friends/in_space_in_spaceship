@@ -1,8 +1,14 @@
 using Godot;
 
+#if GODOT_Real_IS_DOUBLE
+using Real = System.Double;
+#else
+using Real = System.Single;
+#endif
+
 namespace ISIS {
     public static class Static {
-        // ### GDSCRIPT INTEROP UTILITIES
+        #region GDSCRIPT INTEROP UTILITIES
 
         public static bool IsInstanceOfGDScript(Godot.Object godotObject, Godot.Script script) {
             var instanceScript = (Godot.Script) godotObject.GetScript();
@@ -13,47 +19,51 @@ namespace ISIS {
             }
             return false;
         }
-
-        // ### AUTOLOAD UTILITES
+        #endregion
+        #region  AUTOLOAD UTILITES
 
         public static Godot.Node ISISGlobals(this Godot.Node node) => node.GetNode("/root/Globals");
+        public static Godot.Node DebugDraw(this Godot.Node node) => node.GetNode("/root/DebugDraw");
 
-        // ### FLOAT UTILITES
+        #endregion
+        #region  FLOAT UTILITES
 
-        public static float Sign(this float value) => Mathf.Sign(value);
-        public static float Abs(this float value) => Mathf.Abs(value);
+        public static bool EqualsF(this Real value, Real other) =>
+            Mathf.IsEqualApprox(value, other);
+        public static Real Sign(this Real value) => Mathf.Sign(value);
+        public static Real Abs(this Real value) => Mathf.Abs(value);
 
-        public const float DegreeToRadian = 57.29578f;
-        public const float RadianToDegree = 1.0f / DegreeToRadian;
-        public static float DeltaAngleDegrees(float a, float b) {
+        public const Real DegreeToRadian = 57.29578f;
+        public const Real RadianToDegree = 1.0f / DegreeToRadian;
+        public static Real DeltaAngleDegrees(Real a, Real b) {
             var speaA = SmallestPositveEquivalentAngleDegree(a);
             var speaB = SmallestPositveEquivalentAngleDegree(b);
             var result = Mathf.Abs(speaA - speaB);
             return result > 180f ? result - 360f : result;
         }
 
-        public static float SmallestPositveEquivalentAngleDegree(float angle) {
+        public static Real SmallestPositveEquivalentAngleDegree(Real angle) {
             angle %= 360f;
             if (angle < 0f)
                 return angle + 360f;
             return angle;
         }
 
-        public static float DeltaAngleRadians(float a, float b) {
+        public static Real DeltaAngleRadians(Real a, Real b) {
             var speaA = SmallestPositveEquivalentAngleRadians(a);
             var speaB = SmallestPositveEquivalentAngleRadians(b);
             var result = Mathf.Abs(speaA - speaB);
             return result > Mathf.Pi ? result - Mathf.Pi : result;
         }
 
-        public static float SmallestPositveEquivalentAngleRadians(float angle) {
+        public static Real SmallestPositveEquivalentAngleRadians(Real angle) {
             angle %= Mathf.Tau;
             if (angle < 0f)
                 return angle + Mathf.Tau;
             return angle;
         }
 
-        public static float SmallestEquivalentAngleRadians(float angle) {
+        public static Real SmallestEquivalentAngleRadians(Real angle) {
             angle %= Mathf.Tau;
             if (angle > Mathf.Pi)
                 angle -= Mathf.Tau;
@@ -62,7 +72,7 @@ namespace ISIS {
             return angle;
         }
 
-        public static float SmallestEquivalentAngleDegree(float angle) {
+        public static Real SmallestEquivalentAngleDegree(Real angle) {
             angle %= Mathf.Tau;
             if (angle > Mathf.Pi)
                 angle -= Mathf.Tau;
@@ -71,7 +81,11 @@ namespace ISIS {
             return angle;
         }
 
-        // ### VECTOR3 UTILITIES
+        #endregion
+        #region  VECTOR3 UTILITIES
+
+        public static bool IsZero(this Godot.Vector3 value) =>
+            value == Vector3.Zero;
 
         public static Godot.Vector3 Min(this Godot.Vector3 value, Godot.Vector3 other) =>
             value < other ? value : other;
@@ -99,7 +113,8 @@ namespace ISIS {
                 Mathf.Clamp(value.z, -clamp.z, clamp.z)
             );
 
-        // ### SPATIAL NODE UTILITIES
+        #endregion
+        #region SPATIAL NODE UTILITIES
 
         public static Basis BasisFacingDirection(Vector3 forward) => BasisFacingDirection(forward, Vector3.Up);
 
@@ -111,7 +126,7 @@ namespace ISIS {
         }
 
         public static Vector3 TransformPoint(this Transform transform, Vector3 point) => transform.basis.Xform(point) + transform.origin;
-        public static Vector3 TransformPointInv(this Transform transform, Vector3 point) => transform.basis.XformInv(point) + transform.origin;
+        public static Vector3 TransformPointInv(this Transform transform, Vector3 point) => transform.basis.XformInv(point) - transform.origin;
         public static Vector3 TransformVector(this Transform transform, Vector3 vector) => transform.basis.Xform(vector);
         public static Vector3 TransformVectorInv(this Transform transform, Vector3 vector) => transform.basis.XformInv(vector);
         public static Vector3 TransformDirection(this Transform transform, Vector3 direction) => transform.basis.Orthonormalized().Xform(direction);
@@ -119,7 +134,8 @@ namespace ISIS {
 
         public static Vector3 GlobalTranslation(this Godot.Spatial self) => self.GlobalTransform.origin;
 
-        // ### RELATIVE DIRECTION UTILITIES
+        #endregion
+        #region  RELATIVE DIRECTION UTILITIES
 
         public enum GeneralRelativeDirection {
             Ahead,
@@ -127,12 +143,12 @@ namespace ISIS {
             Behind
         }
 
-        public const float DirectionDeterminationCosThreshold = 0.707f;
+        public const Real DirectionDeterminationCosThreshold = 0.707f;
 
         public static GeneralRelativeDirection GetGeneralRelativeDirectionOfTransforms(
             Transform currentTransform,
             Transform targetTransform,
-            float cosThreshold = DirectionDeterminationCosThreshold
+            Real cosThreshold = DirectionDeterminationCosThreshold
         ) => GetGeneralRelativeDirectionOfPositions(
             targetTransform.origin,
             currentTransform.origin,
@@ -143,7 +159,7 @@ namespace ISIS {
             Vector3 position,
             Vector3 currentPostion,
             Vector3 forwardDirection,
-            float cosThreshold = DirectionDeterminationCosThreshold
+            Real cosThreshold = DirectionDeterminationCosThreshold
         ) {
             var targetDirection = (position - currentPostion).Normalized();
             return GetGeneralRelativeDirectionOfDirections(targetDirection, forwardDirection, cosThreshold);
@@ -152,7 +168,7 @@ namespace ISIS {
         public static GeneralRelativeDirection GetGeneralRelativeDirectionOfDirections(
             Vector3 direction,
             Vector3 forwardDirection,
-            float cosThreshold = DirectionDeterminationCosThreshold
+            Real cosThreshold = DirectionDeterminationCosThreshold
         ) {
             var forwardness = forwardDirection.Dot(direction);
             if (forwardness > cosThreshold) {
@@ -163,5 +179,17 @@ namespace ISIS {
                 return GeneralRelativeDirection.Aside;
             }
         }
+        #endregion
+        #region PHYSICS UTILITIES
+
+        #endregion
+        #region STEERING BEHAVIOR UTILITIES
+        public static(Vector3 linearInput, Vector3 angularInput) Add(this(Vector3, Vector3) value, (Vector3, Vector3) other) =>
+            (value.Item1 + other.Item1, value.Item1 + other.Item2);
+
+        public static(Vector3 linearInput, Vector3 angularInput) Scale(this(Vector3, Vector3) value, Real scalar) =>
+            (value.Item1 * scalar, value.Item1 * scalar);
+
+        #endregion
     }
 }

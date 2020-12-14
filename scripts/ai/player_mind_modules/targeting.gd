@@ -1,12 +1,20 @@
 extends PlayerMindModule
 
-onready var _master_mind := get_tree().get_nodes_in_group("MasterMind")[0] as Node;
+onready var _master_mind:= get_tree().get_nodes_in_group("MasterMind")[0] as Node;
 onready var _hudModule := get_node("../Hud") as HudModule;
 
 var current_target: Spatial setget _set_current_target
 
 func _ready() -> void:
+#	if !_hudModule:
+#		queue_free();
+#		return;
+#	var master_minds = get_tree().get_nodes_in_group("MasterMind");
+#	if len(master_minds) == 0:
+#		return;
+#	_master_mind = master_minds[0];
 	assert(_hudModule);
+	assert(_master_mind);
 	
 	assert(OK == _master_mind.connect("ContactMade", self, "_contact_made"));
 	assert(OK == _master_mind.connect("ContactLost", self, "_contact_lost"));

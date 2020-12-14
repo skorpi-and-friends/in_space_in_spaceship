@@ -19,7 +19,7 @@ func _ready() -> void:
 #	assert(_top_color_bar);
 
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	if !target:
 		return;
 	var target_world_position := target.global_transform.origin;

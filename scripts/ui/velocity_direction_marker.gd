@@ -5,7 +5,7 @@ onready var craft: CraftMaster; #:= get_node_or_null(_craft_path) as CraftMaster
 onready var _marker := $Marker as Control;
 export var _marker_size := Vector2(16, 16);
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	if !craft:
 		return;
 	var viewport := get_viewport();

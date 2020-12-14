@@ -2,6 +2,8 @@
 
 ## To-do
 
+- [ ] Fix cockpit world displays
+- [ ] Move current HUD PlayerMindModule functionality to Targeting
 - [X] Craft Tracker HUD
 - [ ] Collision Avoidance AI
 - [ ] Turrets
@@ -55,6 +57,9 @@
 - [ ] Basic Level
 
 - [ ] Skybox
+
+- [ ] UI
+  - [ ] Sensetivity goes down if target is in reticule
 
 - [ ] HUD
   - [x] Simple Target Tracker
@@ -264,3 +269,31 @@ The acceleration limit seems to be errenous on the larger craft but works observ
 ### Underscore prefixes on private gdscript functions
 
 Only just noticed this style guide. Damn.
+
+### SteerinRoutine outputs
+
+Currently, the `SteeringRoutines` return two values: 
+
+- `AngularInput`: angular velocity for the craft to maitain
+- `LinearInput`: linear velocity the for craft to maintain _as a fraction of `LinearVLimit`_
+
+The decision to use fractions for the `LinearInput` was made at a vain attempt to make them more pure (vain, since they're far from pure in all other aspects) and imagined gains in combining results from multiple `Routines`. The method most used to calculate `AngularInput`, on the other hand, returns concrete velocity values and convering that to a fraction of `LinearVLimit` only to convert it back...feels silly.
+
+### Cockpit World Displays
+
+The viewport textured meshes used to implement the velocity/weapon display screens and the camera screens inside the *cockpit world* aren't working. Most strange is that these screens work when in the immersive cockpit mode (which only cut pastes the nodes into the craft into the *game world* (at runtime non the less)). The only difference beteween the two cases as I see it is they reside in different Worlds and Viewports and they use two different cameras. I can't find any valid difference in how these nodes are set up in the *cockpit world* or *game world*.
+
+What's more, the screens work sometimes. When the running window is in some dimensions (in patterns I can't figure out), the screens flicker on and off implying they're drwaing correctly in some rames. There were also instances where toggling visiblity of some objects in the Remote Node tree seems to fix the problem. Nodes located in the cockpit world specifically. I was unable to duplicate this effect after the first few times.
+
+First suspect is the Godot 3.2.3 update since the screens don't work on previous commits either. But then, if I'm not mistaken, I remember the screens working during the first few weeks after I updated it.
+
+Another suspect is the .NET 5.0 SDK I'm using to compile it. I haven't tested the game after the update. But then, the scripts related to the issues are written `gdscript`.
+
+### Combining SteeringBehaviours
+
+I tried the following schemes to combine AvoidObstacle and PathFollow:
+
+- Use multipliers to give AvoidObstacle 10x strength
+- Ignore PathFollow if AvoidObstacle output is not zero
+
+And they don't really work. They struggle with some obstacles and crash into them face forward (or sidewards sometimes).
