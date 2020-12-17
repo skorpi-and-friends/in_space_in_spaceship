@@ -67,15 +67,15 @@ func caclulate_torque():
 		Vector2(craft_extents.x, craft_extents.y).length()
 	);
 	
-#	state.angular_thruster_torque = axes_diameter.cross(thruster_force);
+	# state.angular_thruster_torque = axes_diameter.cross(thruster_force);
 	# FIXME: is this correct?
 	state.angular_thruster_torque = thruster_force * axes_diameter;
 
-#	var axes_circimferences := axes_diameter * PI;
-#	var radian_to_meter := axes_circimferences / TAU;
-#	state.angular_acceleration_limit = accel_limit / radian_to_meter;
+	# var axes_circimferences := axes_diameter * PI;
+	# var radian_to_meter := axes_circimferences / TAU;
+	# state.angular_acceleration_limit = accel_limit / radian_to_meter;
 	
-#	state.angular_acceleration_limit = accel_limit * axes_diameter * .5;
+	# state.angular_acceleration_limit = accel_limit * axes_diameter * .5;
 
 	# FIXME: have disabled angular_acceleartion limit for now
 	# meaning it'll use all the acceleration the angular thrusters

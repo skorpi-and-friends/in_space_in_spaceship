@@ -46,6 +46,8 @@ func _ready():
 ## @param size: size of the box in world units
 ## @param color
 func draw_box(position: Vector3, size: Vector3, color: Color = Color(1,1,1)):
+	if (len(_boxes) > 5):
+		return;
 	var mi := _get_box()
 	var mat := _get_line_material()
 	mat.albedo_color = color

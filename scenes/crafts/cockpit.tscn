@@ -67,7 +67,7 @@ flags_unshaded = true
 [sub_resource type="QuadMesh" id=11]
 size = Vector2( 1.53, 0.9 )
 
-[sub_resource type="CubeMesh" id=13]
+[sub_resource type="CubeMesh" id=12]
 flip_faces = true
 
 [node name="Cockpit" type="Spatial"]
@@ -206,7 +206,7 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.342663, 0.738443 )
 [node name="CockpitRoom" type="MeshInstance" parent="World"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00651836, 0.144485, 0.00730205 )
 use_in_baked_light = true
-mesh = SubResource( 13 )
+mesh = SubResource( 12 )
 material/0 = null
 
 [node name="OmniLight" type="OmniLight" parent="World"]

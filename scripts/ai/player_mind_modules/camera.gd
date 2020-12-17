@@ -18,9 +18,12 @@ var _current_craft_has_cockpit := false;
 
 
 func _ready():
-	#setup cockpit later as CockpitMaster might not be ready at this point
 	switch_free_look(true);
-	call_deferred("_setup_cockpit");
+
+	#grab cockpit later as CockpitMaster might not be ready at this point
+	yield(get_tree(),"idle_frame");
+	cockpit = Globals.cockpit_master;
+	switch_interface_mode(InterfaceMode.ORBIT);
 
 
 func _process(_delta: float) -> void:
@@ -50,10 +53,6 @@ func _input(event: InputEvent) -> void:
 			orbit_camera.distance += 1;
 		elif event.is_action_pressed("Decrease Camera Distance"):
 			orbit_camera.distance -= 1;
-
-
-func _setup_cockpit():
-	cockpit = Globals.cockpit_master;
 
 
 func switch_interface_mode(mode: int = (i_mode +1)% (InterfaceMode.ORBIT +1)):
