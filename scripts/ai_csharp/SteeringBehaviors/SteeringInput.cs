@@ -7,7 +7,7 @@ using Real = System.Double;
 using Real = System.Single;
 #endif
 
-namespace ISIS.SteeringBehaviors {
+namespace ISIS.Minds.SteeringBehaviors {
     public struct SteeringInput {
         public Vector3 LinearInput { get; set; }
         public Vector3 AngularInput { get; set; }

@@ -12,7 +12,7 @@ using Real = System.Double;
 using Real = System.Single;
 #endif
 
-namespace ISIS.SteeringBehaviors {
+namespace ISIS.Minds.SteeringBehaviors {
     /// <summary>
     /// Class form of <seealso cref="SteeringRoutines.AvoidObstacleSebLagueRay"/>.
     /// </summary>

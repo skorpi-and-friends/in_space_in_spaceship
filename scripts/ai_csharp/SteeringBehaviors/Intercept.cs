@@ -7,7 +7,7 @@ using Real = System.Double;
 using Real = System.Single;
 #endif
 
-namespace ISIS.SteeringBehaviors {
+namespace ISIS.Minds.SteeringBehaviors {
     public static partial class SteeringRoutines {
         public static LinearRoutineClosure InterceptRoutine(ScanPresence quarry) {
             // const string name = nameof(InterceptRoutine);
@@ -15,13 +15,11 @@ namespace ISIS.SteeringBehaviors {
 
             return (Transform currentTransform, CraftStateWrapper currentState) => {
                 var linearVLimit = currentState.LinearVLimit;
-                var steerVector = quarryRigidbody != null ?
+                return quarryRigidbody != null ?
                     SteeringBehaviors.InterceptObject(
                         currentTransform.origin, linearVLimit.z, quarryRigidbody) :
                     SteeringBehaviors.SeekPosition(
                         currentTransform.origin, quarry.GlobalTransform.origin);
-
-                return currentTransform.TransformVectorInv(steerVector);
             };
         }
     }

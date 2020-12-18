@@ -28,13 +28,13 @@ func _process(_delta: float) -> void:
 
 
 func _ready():
+	# give modules chance to be fully ready (including deferred calls)
+	yield(get_tree(), "idle_frame")
 	for child in get_children():
 		var craft := child as CraftMaster;
 		if craft:
-			call_deferred("take_control_of_craft", craft);
+			take_control_of_craft(craft);
 			break;
-	# assert on the next frame
-	yield(get_tree(), "idle_frame")
 	assert(active_craft);
 
 

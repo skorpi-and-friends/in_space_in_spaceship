@@ -12,7 +12,7 @@ using Real = System.Double;
 using Real = System.Single;
 #endif
 
-namespace ISIS.SteeringBehaviors {
+namespace ISIS.Minds.SteeringBehaviors {
     public static partial class SteeringRoutines {
         public enum PathFollowDirection {
             Forward = 1,
@@ -44,16 +44,16 @@ namespace ISIS.SteeringBehaviors {
             float distanceOfPointAlongPath(Vector3 point) => curve.GetClosestOffset(path.GlobalTransform.TransformVector(point));
 
             return (Transform currentTransform, CraftStateWrapper currentState) => {
-                var steerVector = SteeringBehaviors.FollowPath(
-                    currentTransform.origin,
-                    currentState.LinearVelocty,
-                    requredProximity : requirePathProximityMeters, //FIXME: parameterize
-                    closestPointOnPathToPoint,
-                    distanceOfPointAlongPath,
-                    pathDistanceToPoint,
+                return SteeringBehaviors.FollowPath(
+                    currentPosition: currentTransform.origin,
+                    currentVelocity: currentState.LinearVelocty,
+                    requredProximity: requirePathProximityMeters,
+                    closestPointOnPathToPoint: closestPointOnPathToPoint,
+                    distanceOfPointAlongPath: distanceOfPointAlongPath,
+                    pathDistanceToPoint: pathDistanceToPoint,
                     direction: (int) followDirection,
-                    predictionTime : predectionTimeSeconds);
-                return currentTransform.TransformVectorInv(steerVector);
+                    predictionTime : predectionTimeSeconds,
+                    path);
             };
         }
     }

@@ -7,7 +7,7 @@ using Real = System.Double;
 using Real = System.Single;
 #endif
 
-namespace ISIS.SteeringBehaviors {
+namespace ISIS.Minds.SteeringBehaviors {
     public static partial class SteeringRoutines {
         public static Vector3 FacePositionAngularInput(Vector3 position, Transform currentTransform) =>
             FaceLocalDirectionAngularInput(currentTransform.basis.XformInv(position - currentTransform.origin));
@@ -127,14 +127,14 @@ namespace ISIS.SteeringBehaviors {
                     var linearInput = routine(currentTransform, currentState);
                     return (
                         linearInput,
-                        FaceLocalDirectionAngularInput(linearInput)
+                        FaceDirectionAngularInput(linearInput.Normalized(), currentTransform)
                     );
                 };
             } else {
                 return (Transform currentTransform, CraftStateWrapper currentState) => {
                     return (
                         routine(currentTransform, currentState),
-                        FaceLocalDirectionAngularInput(currentState.LinearVelocty.Normalized())
+                        FaceDirectionAngularInput(currentState.LinearVelocty.Normalized(), currentTransform)
                     );
                 };
             }

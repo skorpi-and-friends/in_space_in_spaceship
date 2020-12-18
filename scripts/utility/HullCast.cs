@@ -47,11 +47,10 @@ namespace ISIS {
             if (motion.Equals(parameters.Transform.origin))
                 GD.Print($"HullCast: to === from\n cast result: {castResult}");
 
-            // if cast result == [1, 1]
-            if (((Real) castResult[0]).EqualsF(1) && ((Real) castResult[1]).EqualsF(1)) {
+            // Godot physics returns empty array when shape can't move
+            if (castResult.Count > 0 && ((Real) castResult[0]).EqualsF(1) && ((Real) castResult[1]).EqualsF(1)) {
                 return (false, null);
             }
-            GD.Print("hull cast caught someting");
             var result = space.GetRestInfo(parameters);
             if (result.Count == 0)
                 return (false, null);

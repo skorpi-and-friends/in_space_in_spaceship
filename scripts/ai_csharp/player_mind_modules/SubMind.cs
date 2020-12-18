@@ -1,86 +1,90 @@
 using System;
 using Godot;
 using MemberId = System.Int32;
-using static ISIS.PlayerMindModuleMixin;
 
 namespace ISIS.Minds {
-    public class SubMind : GroupMind, IPlayerMindModule {
-        private RigidBody _activeCraft;
-        public RigidBody active_craft {
-            get => _activeCraft;
-            set {
-                // make the old guy a member
-                if (_activeCraft != null) {
-                    var(isOldGuyMindful, oldGuyMind) = CraftMind.IsMindful(_activeCraft);
-                    if (isOldGuyMindful)
-                        AddMember(oldGuyMind);
-                }
+	public class SubMind : GroupMind, IPlayerMindModule {
+		private RigidBody _activeCraft;
+		public RigidBody active_craft {
+			get => _activeCraft;
+			set {
+				// make the old guy a member
+				if (_activeCraft != null) {
+					if (GenerateCraftId(_activeCraft) == GenerateCraftId(value))
+						return;
+					var(isOldGuyMindful, oldGuyMind) = CraftMind.IsMindful(_activeCraft);
+					if (isOldGuyMindful)
+						AddMember(oldGuyMind);
+				}
+				// deactivate the autopilot of the new guy
+				var(isNewGuyMindful, newGuyMind) = CraftMind.IsMindful(value);
+				if (isNewGuyMindful) {
+					newGuyMind.EnableAutoPilot = false;
+					// remove the new guy from membership
+					RemoveMember(GenerateCraftId(value));
+				}
 
-                // deactivate the autopilot of the new guy
-                var(isNewGuyMindful, newGuyMind) = CraftMind.IsMindful(value);
-                if (isNewGuyMindful) {
-                    newGuyMind.EnableAutoPilot = false;
-                    // remove the new guy from membership
-                    RemoveMember(GenerateCraftId(value));
-                }
+				_activeCraft = value;
+			}
+		}
 
-                _activeCraft = value;
-            }
-        }
+		protected Node _playerMind;
+		public Node player_mind {
+			get => _playerMind;
+			set {
+				_playerMind = value;
 
-        protected Node _playerMind;
-        public Node player_mind {
-            get => _playerMind;
-            set {
-                _playerMind = value;
-                if (!_isReady) return;
-                RemoveAllMembers();
-                CollectMembers();
-            }
-        }
+				// no need to reset if not yet ready
+				if (!_isReady) return;
 
-        private bool _isReady;
+				// reset stuff
+				RemoveAllMembers();
+				CollectMembers();
+			}
+		}
 
-        public SubMind() {
-            this._InitModule();
-        }
+		private bool _isReady;
 
-        public void _update_engine_input(Godot.Object state) {
-            // do notin
-        }
+		public SubMind() {
+			this._InitModule();
+		}
 
-        public override void _Ready() {
-            // if (GetTree().GetNodesInGroup("MasterMind").Count == 0)  return;
-            base._Ready();
-            _isReady = true;
-        }
+		public void _update_engine_input(Godot.Object state) {
+			// do notin
+		}
 
-        protected override void CollectMembers() {
-            if (_playerMind == null)
-                return;
-            foreach (var item in _playerMind.GetChildren()) {
-                if (item == active_craft)
-                    continue;
+		public override void _Ready() {
+			// if (GetTree().GetNodesInGroup("MasterMind").Count == 0)  return;
+			base._Ready();
+			_isReady = true;
+		}
 
-                var(isMindfulCraft, craftMind) = CraftMind.IsMindfulCraft(item);
-                if (!isMindfulCraft)
-                    continue;
-                AddMember(craftMind);
-            }
-        }
+		protected override void CollectMembers() {
+			if (_playerMind == null)
+				return;
+			foreach (var item in _playerMind.GetChildren()) {
+				if (item == active_craft)
+					continue;
 
-        protected override bool IsHostileContact(ScanPresence contact) {
-            return contact is Boid && (!_playerMind?.IsAParentOf(contact)).GetValueOrDefault();
-        }
+				var(isMindfulCraft, craftMind) = CraftMind.IsMindfulCraft(item);
+				if (!isMindfulCraft)
+					continue;
+				AddMember(craftMind);
+			}
+		}
 
-        protected override void ContactMade(ScanPresence contact) {
-            if (IsHostileContact(contact)) {
-                _hostileContacts.Add(contact);
-            }
-        }
+		protected override bool IsHostileContact(ScanPresence contact) {
+			return contact is Boid && (!_playerMind?.IsAParentOf(contact)).GetValueOrDefault();
+		}
 
-        protected override void ContactLost(ScanPresence contact) {
-            _hostileContacts.Remove(contact);
-        }
-    }
+		protected override void ContactMade(ScanPresence contact) {
+			if (IsHostileContact(contact)) {
+				_hostileContacts.Add(contact);
+			}
+		}
+
+		protected override void ContactLost(ScanPresence contact) {
+			_hostileContacts.Remove(contact);
+		}
+	}
 }

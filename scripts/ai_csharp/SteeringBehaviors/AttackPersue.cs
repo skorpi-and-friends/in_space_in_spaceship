@@ -12,7 +12,7 @@ using Real = System.Double;
 using Real = System.Single;
 #endif
 
-namespace ISIS.SteeringBehaviors {
+namespace ISIS.Minds.SteeringBehaviors {
     public static partial class SteeringRoutines {
         // FIXME: Attack in itself contains Intercept, we don't need to intercept first
         public static SteeringRoutineClosure AttackPersueRoutineClosure(in DecoratorNode wrappingNode,

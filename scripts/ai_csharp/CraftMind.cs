@@ -3,7 +3,7 @@ using GreenBehaviors;
 using GreenBehaviors.Composite;
 using GreenBehaviors.Decorator;
 using GreenBehaviors.LeafLambda;
-using ISIS.SteeringBehaviors;
+using ISIS.Minds.SteeringBehaviors;
 using static ISIS.Static;
 // using SteeringRoutineResult = System.ValueTuple<Godot.Vector3, Godot.Vector3, string>;
 
@@ -31,13 +31,17 @@ namespace ISIS.Minds {
 			base._Process(delta);
 			if (EnableAutoPilot) {
 				var state = GetCraftState(Craft);
-				// var craftInput = (Vector3.Zero, Vector3.Zero);
-				var linearInput = Vector3.Zero;
-				var angularInput = Vector3.Zero;
-				if (ActiveRoutine != null) {
-					(linearInput, angularInput) = ActiveRoutine.Invoke(Craft.GlobalTransform, state);
-				}
-				linearInput *= state.LinearVLimit;
+				var currentTransform = Craft.GlobalTransform;
+
+				var(linearInput, angularInput) = ActiveRoutine?.Invoke(currentTransform, state) ?? (Vector3.Zero, Vector3.Zero);
+
+#if DEBUG 
+				// GD.Print($"linear input: {linearInput}");
+				// this.DebugDraw().Call("draw_line_3d", currentPosition, flockAverageCenter, new Color(0, 1, 0));
+				this.DebugDraw().Call("draw_line_3d", Craft.GlobalTranslation(), currentTransform.origin + (linearInput * state.LinearVLimit), new Color(1, 1, 0));
+				this.DebugDraw().Call("draw_line_3d", Craft.GlobalTranslation(), currentTransform.TransformPoint(state.LinearVelocty), new Color(0, 1, 1));
+#endif
+				linearInput = currentTransform.TransformVectorInv(linearInput) * state.LinearVLimit;
 				state.SetCraftInput(linearInput, angularInput);
 			}
 		}
@@ -88,7 +92,7 @@ namespace ISIS.Minds {
 
 		public virtual void FollowPath(Path path) {
 #if DEBUG
-			ActiveRoutineDesc = $"Following Path {path}";
+			ActiveRoutineDesc = $"Following Path {path.Name}";
 #endif
 			ActiveRoutine = SteeringRoutines.LookWhereYouGoRoutineComposer(
 				SteeringRoutines.SurvivalRoutineComposer(
@@ -97,6 +101,26 @@ namespace ISIS.Minds {
 					GetCraftExtents(Craft)
 				)
 			);
+		}
+
+		/// <summary>
+		/// Does not add itself into flock.
+		/// </summary>
+		public virtual void FlyWithFlock(SteeringBehaviors.Boids.Flock flock) {
+#if DEBUG
+			ActiveRoutineDesc = $"Flying With FLock {flock.Name}";
+#endif
+			ActiveRoutine = SteeringRoutines.LookWhereYouGoRoutineComposer(
+				SteeringRoutines.SurvivalRoutineComposer(
+					SteeringRoutines.Cohesion(flock),
+					Craft,
+					GetCraftExtents(Craft)
+				)
+			);
+
+			/* ActiveRoutine = SteeringRoutines.NoAngularInputComposer(
+				SteeringRoutines.Cohesion(flock)
+			); */
 		}
 	}
 
@@ -134,6 +158,17 @@ namespace ISIS.Minds {
 		/// </summary>
 		public static CraftStateWrapper GetCraftState(Godot.Object craft) {
 			var engine = (Object) craft.Get("engine");
+			if (engine == null) {
+				var(isCraft, _) = IsCraftMaster(craft);
+				GD.Print($"is {(craft as Godot.Node)?.Name} a craftMaster: {isCraft}");
+				GD.Print($"does it have sire_craft: {craft.Get("sire_craft") != null}");
+				GD.Print($"does it have arms: {craft.Get("arms") != null}");
+				GD.Print($"does it have attires: {craft.Get("attires") != null}");
+				GD.Print($"does it have mother: {craft.Get("mother") != null}");
+				GD.Print($"script: {craft.GetScript()}");
+				GD.Print($"craft_master_child script: {GD.Load<GDScript>("res://scripts/crafts/craft_master_child.gd")}");
+				(craft as Godot.Node)?.PrintTreePretty();
+			}
 			return new CraftStateWrapper((Godot.Object) engine.Get("state"));
 		}
 

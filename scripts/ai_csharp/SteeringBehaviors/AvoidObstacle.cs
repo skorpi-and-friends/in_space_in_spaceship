@@ -1,9 +1,4 @@
 using Godot;
-using GreenBehaviors;
-using GreenBehaviors.Composite;
-using GreenBehaviors.Decorator;
-using GreenBehaviors.LeafLambda;
-using ISIS.Minds;
 using static ISIS.Static;
 
 #if GODOT_Real_IS_DOUBLE
@@ -12,7 +7,7 @@ using Real = System.Double;
 using Real = System.Single;
 #endif
 
-namespace ISIS.SteeringBehaviors {
+namespace ISIS.Minds.SteeringBehaviors {
     public static partial class SteeringRoutines {
         /// <summary>
         /// Avoids obstacles by casting rays in the direction of velocity and if obstacle is detected,
@@ -80,18 +75,19 @@ namespace ISIS.SteeringBehaviors {
 
             var raycastExclusionList = new Godot.Collections.Array { craft.GetRid() };
 
-            System.Func<Vector3, Vector3, bool> raycaster = (from, to) => {
+            bool raycaster(Vector3 from, Vector3 to) {
                 var collisionResult = physicsSpace.IntersectRay(
                     from,
                     to,
                     raycastExclusionList,
-                    ObstacleSilhouette.CollisionSillhoeteLayer,
-                    collideWithBodies : false,
-                    collideWithAreas : true);
+                    // collisionMask :  ObstacleSilhouette.CollisionSillhoeteLayer,
+                    collideWithBodies : true,
+                    collideWithAreas : true
+                );
                 return collisionResult.Count > 0;
-            };
+            }
 
-            var raycast = new RayCast {
+            /* var raycast = new RayCast {
                 CollideWithBodies = false,
                 CollideWithAreas = true,
                 Enabled = true,
@@ -99,7 +95,7 @@ namespace ISIS.SteeringBehaviors {
             };
 
             raycast.Name = "ObstacleDetectionRaycast";
-            craft.CallDeferred("add_child", raycast);
+            craft.CallDeferred("add_child", raycast); */
 
             return (Transform currentTransform, CraftStateWrapper currentState) => {
                 var localVelocity = currentState.LinearVelocty;
@@ -117,8 +113,12 @@ namespace ISIS.SteeringBehaviors {
                 );
                 castTo *= predectionTimeSeconds;
 
-                raycast.CastTo = castTo;
-                if (!raycast.IsColliding()) {
+                // do the transformation last
+                castTo = currentTransform.TransformPoint(castTo);
+
+                // raycast.CastTo = castTo;
+                // if (!raycast.IsColliding()) {
+                if (!raycaster(currentTransform.origin, castTo)) {
 #if DEBUG 
                     craft.DebugDraw().Call("draw_line_3d", currentTransform.origin, castTo, new Color(0, 1, 0));
 #endif
@@ -181,6 +181,8 @@ namespace ISIS.SteeringBehaviors {
 
             return (Transform currentTransform, CraftStateWrapper currentState) => {
                 var localVelocity = currentState.LinearVelocty;
+
+                // early return
                 if (localVelocity.LengthSquared().EqualsF(0)) {
                     return Vector3.Zero;
                 }

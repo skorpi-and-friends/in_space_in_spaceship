@@ -46,8 +46,6 @@ func _ready():
 ## @param size: size of the box in world units
 ## @param color
 func draw_box(position: Vector3, size: Vector3, color: Color = Color(1,1,1)):
-	if (len(_boxes) > 5):
-		return;
 	var mi := _get_box()
 	var mat := _get_line_material()
 	mat.albedo_color = color
@@ -65,7 +63,7 @@ func draw_box(position: Vector3, size: Vector3, color: Color = Color(1,1,1)):
 ## @param b: end position in world units
 ## @param color
 func draw_line_3d(a: Vector3, b: Vector3, color: Color):
-	if (len(_lines) > 5):
+	if (len(_lines) > 100):
 		return;
 	var g = ImmediateGeometry.new()
 	g.material_override = _get_line_material()
@@ -111,8 +109,7 @@ func _get_box() -> MeshInstance:
 		mi.mesh = _box_mesh
 		add_child(mi)
 	else:
-		mi = _box_pool[-1]
-		_box_pool.pop_back()
+		mi = _box_pool.pop_back()
 	return mi
 
 
@@ -143,9 +140,8 @@ func _process_3d_lines_delayed_free(items: Array):
 		var d = items[i]
 		if d.frame <= Engine.get_frames_drawn():
 			_recycle_line_material(d.node.material_override)
-			d.node.queue_free()
-			items[i] = items[i - 1]
-			items.pop_back()
+			d["node"].queue_free()
+			items.remove(i)
 		else:
 			i += 1
 
@@ -233,4 +229,57 @@ static func _create_wirecube_mesh(color := Color(1,1,1)) -> ArrayMesh:
 	var mesh := ArrayMesh.new()
 	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_LINES, arrays)
 	return mesh
+
+
+
+# func _get_box() -> MeshInstance:
+# 	var mi : MeshInstance
+# 	if len(_box_pool) == 0:
+# 		mi = MeshInstance.new()
+# 		if _box_mesh == null:
+# 			_box_mesh = _create_wirecube_mesh(Color(1, 1, 1))
+# 		mi.mesh = _box_mesh
+# 		add_child(mi)
+# 	else:
+# 		mi = _box_pool.pop_back()
+# 	return mi
+
+
+# func _process_3d_box_delayed_free(items: Array):
+# 	var i := 0
+# 	while i < len(items):
+# 		var d = items[i]
+# 		if d.frame <= Engine.get_frames_drawn():
+# 			_recycle_line_material(d.node.material_override);
+# 			d.node.material_override = null;
+# 			_recycle_box(d.node);
+# 			items[i] = items[i - 1]
+# 			items.pop_back()
+# 		else:
+# 			i += 1
+
+
+# func _process(delta: float):
+# 	_process_3d_lines_delayed_free(_lines)
+# 	_process_3d_box_delayed_free(_boxes)
+
+# 	# Progressively delete boxes
+# 	if len(_box_pool) > 0:
+# 		var first_measure = len(_box_pool);
+# 		_box_pool.pop_back().free();
+# 		assert(!_box_pool || first_measure - 1 == len(_box_pool))
+
+# 	# Remove text lines after some time
+# 	for key in _texts.keys():
+# 		var t = _texts[key]
+# 		if t.frame <= Engine.get_frames_drawn():
+# 			_texts.erase(key)
+
+# 	# Update canvas
+# 	if _canvas_item == null:
+# 		_canvas_item = Node2D.new()
+# 		_canvas_item.position = Vector2(8, 8)
+# 		_canvas_item.connect("draw", self, "_on_CanvasItem_draw")
+# 		add_child(_canvas_item)
+# 	_canvas_item.update()
 

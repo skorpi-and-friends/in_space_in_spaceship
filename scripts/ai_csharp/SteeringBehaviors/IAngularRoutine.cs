@@ -6,7 +6,7 @@ using Real = System.Double;
 using Real = System.Single;
 #endif
 
-namespace ISIS.SteeringBehaviors {
+namespace ISIS.Minds.SteeringBehaviors {
     /// <summary>
     ///     A function that's to be polled every frame (or so) to calculate the angular input a craft is supposed to take.
     /// </summary>

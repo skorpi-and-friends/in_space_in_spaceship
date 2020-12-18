@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using System.Linq;
+// using System.Linq;
 using Godot;
 using GreenBehaviors;
 using GreenBehaviors.Composite;
@@ -19,7 +19,7 @@ namespace ISIS.Minds {
 
 		private bool _quiedMainBehaviorCancel;
 
-		public override void _Ready() {
+		public async override void _Ready() {
 			base._Ready();
 			CollectMembers();
 			_masterMind = (MasterMind) GetTree().GetNodesInGroup("MasterMind") [0];
@@ -29,6 +29,7 @@ namespace ISIS.Minds {
 			foreach (var contact in _masterMind.MasterContactList) {
 				ContactMade(contact);
 			}
+			await ToSignal(GetTree(), "idle_frame");
 			SetupBehavior();
 		}
 
@@ -47,14 +48,14 @@ namespace ISIS.Minds {
 		}
 
 		protected virtual void SetupBehavior() {
-			_mainBehaviorTree = FollowThePath();
+			_mainBehaviorTree = DefaultBehavior();
 		}
 		protected virtual void Think() {
 			if (_quiedMainBehaviorCancel) {
 				_mainBehaviorTree?.Cancel();
 				_quiedMainBehaviorCancel = false;
 			}
-			_mainBehaviorTree.FullTick();
+			_mainBehaviorTree?.FullTick();
 		}
 
 		public virtual Relationship AssessRelationship(ScanPresence contact) {
@@ -85,6 +86,7 @@ namespace ISIS.Minds {
 
 		protected virtual void AddMember(CraftMind craftMind) {
 			var id = GenerateCraftId(craftMind.Craft);
+			// we check if already a memeber since CancelAllBehaviors() is expensive
 			if (_members.ContainsKey(id))
 				return;
 			_members[id] = craftMind;
@@ -110,11 +112,58 @@ namespace ISIS.Minds {
 	#region BEHAVIORS
 
 	public partial class GroupMind {
-		protected virtual GreenBehaviors.Node FollowThePath() {
-			var path = GetNodeOrNull<Path>("The Path");
-			if (path == null)
-				return DestroyAllHostiles();
+		protected virtual GreenBehaviors.Node DefaultBehavior() {
+			var ticker = new SimpleInclude("Tick Default Behavior", LambdaLeafNode.EmptySuccessNode);
+			return new Sequence("Default Behavior")
+				// action
+				.AddChild(
+					"Init Default Behavior",
+					tick : _ => {
+						if (_members.Count == 0)
+							ticker.SetChild(LambdaLeafNode.EmptySuccessNode);
 
+						var keys = new MemberId[_members.Count];
+						_members.Keys.CopyTo(keys, 0);
+
+						ticker.SetChild(FormIntoFlock(keys));
+
+						/* var path = GetNodeOrNull<Path>("The Path");
+						if (path == null)
+							ticker.SetChild(DestroyAllHostiles(keys));
+
+						ticker.SetChild(FollowThePath(path, keys)); */
+
+						return NodeState.Success;
+					}
+				)
+				.AddChild(ticker);
+		}
+
+		protected virtual GreenBehaviors.Node FormIntoFlock(params MemberId[] flockingMembers) {
+			SteeringBehaviors.Boids.Flock? flock = null;
+			return new Action(
+				"fly in flock",
+				tick : _ => flock.Count > 0 ? NodeState.Running : NodeState.Failure,
+				start : _ => {
+					if (flock == null) {
+						flock = new SteeringBehaviors.Boids.Flock {
+							Name = "Flock"
+						};
+						AddChild(flock);
+					} else {
+						flock.Clear();
+					}
+					foreach (var memberId in flockingMembers) {
+						flock.Add(_members[memberId]);
+						_members[memberId].FlyWithFlock(flock);
+					}
+				},
+				finish: (_, _DISCARD) => flock?.QueueFree(),
+				cancel : _ => flock?.QueueFree()
+			);
+		}
+
+		protected virtual GreenBehaviors.Node FollowThePath(Path path, params MemberId[] members) {
 			return new Action(
 				"follow the path",
 				tick : _ => NodeState.Running,
@@ -126,7 +175,19 @@ namespace ISIS.Minds {
 			);
 		}
 
-		protected virtual GreenBehaviors.Node DestroyAllHostiles() {
+		protected virtual GreenBehaviors.Node InterceptTargets(params MemberId[] members) {
+			return new Action(
+				"Intercept Targets Group",
+				tick : _ => NodeState.Running,
+				start : _ => {
+					foreach (var id in members) {
+						_members[id].InterceptSetTarget();
+					}
+				}
+			);
+		}
+
+		protected virtual GreenBehaviors.Node DestroyAllHostiles(params MemberId[] members) {
 			// setup basicFlightBehaviorTree
 			/* 
 
@@ -156,8 +217,8 @@ namespace ISIS.Minds {
 						tick : _ => {
 							var hostileCount = _hostileContacts.Count;
 							var ii = 0;
-							foreach (var member in _members.Values) {
-								member.Target = _hostileContacts[ii % hostileCount];
+							foreach (var memberId in members) {
+								_members[memberId].Target = _hostileContacts[ii % hostileCount];
 								ii++;
 							}
 							return NodeState.Success;
@@ -167,25 +228,12 @@ namespace ISIS.Minds {
 						"Set Members To Attack Pursue",
 						tick : _ => memberDrivers.FullTick(),
 						start : _ => {
-							memberDrivers = EliminateTargets(_members.Keys.ToArray());
+							memberDrivers = EliminateTargets(members);
 							memberDrivers.Start();
 						}
 					)
 				);
 		}
-
-		protected virtual GreenBehaviors.Node InterceptTargets(params MemberId[] members) {
-			return new Action(
-				"Intercept Targets Group",
-				tick : _ => NodeState.Running,
-				start : _ => {
-					foreach (var id in members) {
-						_members[id].InterceptSetTarget();
-					}
-				}
-			);
-		}
-
 		protected virtual GreenBehaviors.Node EliminateTargets(params MemberId[] members) {
 			var childrenRoutines = new PrioritizedSelector("");
 			foreach (var memberId in members) {

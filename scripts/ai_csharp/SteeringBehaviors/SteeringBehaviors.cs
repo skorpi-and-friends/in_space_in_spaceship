@@ -8,16 +8,16 @@ using Real = System.Double;
 using Real = System.Single;
 #endif
 
-namespace ISIS.SteeringBehaviors {
+namespace ISIS.Minds.SteeringBehaviors {
 	/// <summary>
 	/// Pure steering behavior functions that return the steer vector as a fraction of LinearVLimit.
 	/// </summary>
 	public static partial class SteeringBehaviors {
 		public static Vector3 SeekPosition(
 			Vector3 currentPosition,
-			Vector3 targetDirection
-		) => /* currentVelocity - */ (targetDirection - currentPosition).Normalized();
-		public static Vector3 FleeDirection(
+			Vector3 targetPosition
+		) => /* currentVelocity - */ (targetPosition - currentPosition).Normalized();
+		public static Vector3 FleePosition(
 			Vector3 currentPosition,
 			Vector3 targetPosition
 		) => /* -(currentVelocity */ -SeekPosition(currentPosition, targetPosition);
@@ -109,9 +109,9 @@ namespace ISIS.SteeringBehaviors {
 			var currentPosition = currentTransform.origin;
 			var raycastDistance = currentVelocity.Length() + raycastDistanceAdjustment;
 
+			var globalVelocity = currentTransform.TransformPoint(currentVelocity);
 			// since we'll be testing from the velocity vector outwards (not the forward vector)
 			// we can't use the object's transform
-			var globalVelocity = currentTransform.TransformPoint(currentVelocity);
 			var transformer = new Transform(BasisFacingDirection(globalVelocity), currentPosition);
 
 			Vector3[] rayDirections = BoidHelper.directions;
@@ -134,11 +134,9 @@ namespace ISIS.SteeringBehaviors {
 			Func<Vector3, float> distanceOfPointAlongPath,
 			Func<float, Vector3> pathDistanceToPoint,
 			int direction,
-			Real predictionTime
+			Real predictionTime,
+			Godot.Node node
 		) {
-			// our goal will be offset from our path distance by this amount
-			var pathDistanceOffset = direction * predictionTime * currentVelocity.Length();
-
 			// predict our future position
 			var futurePosition = currentPosition + (predictionTime * currentVelocity);
 
@@ -147,7 +145,7 @@ namespace ISIS.SteeringBehaviors {
 			var futurePathDistance = distanceOfPointAlongPath(futurePosition);
 
 			// are we facing in the correction direction?
-			var rightway = (pathDistanceOffset > 0) ?
+			var rightway = (direction > 0) ?
 				(currentPathDistance < futurePathDistance) :
 				(currentPathDistance > futurePathDistance);
 
@@ -157,16 +155,23 @@ namespace ISIS.SteeringBehaviors {
 			var distanceFromPathSq = onPath.DistanceSquaredTo(futurePosition);
 
 			// no steering is required if (a) our future position is inside
-			// the path tube and (b) we are facing in the correct direction
+			// the path tube and (b) we are travelling in the correct direction
 			if (rightway && (distanceFromPathSq < requredProximity * requredProximity)) {
 				// all is well, return zero steering
 				return Vector3.Forward;
 			} else {
 				// otherwise we need to steer towards a target point obtained
-				// by adding pathDistanceOffset to our current path position
+				// by adding some offset to our current path position
+
+				// our goal will be offset from our path distance by this amount
+				// FIXME: pathDistanceOffset will be zero if speed is zero
+				var pathDistanceOffset = (direction * predictionTime * currentVelocity.Length()) + 1;
 
 				float targetPathDistance = currentPathDistance + pathDistanceOffset;
 				var target = pathDistanceToPoint(targetPathDistance);
+#if DEBUG 
+				// node.DebugDraw().Call("draw_line_3d", currentPosition, target, new Color(1, 1, 0));
+#endif
 
 				// return steering to seek target on path
 				return SeekPosition(currentPosition, target);
@@ -197,5 +202,26 @@ namespace ISIS.SteeringBehaviors {
 				return SeekPosition(currentPosition, onPath);
 			}
 		} */
+		/// <summary>
+		/// Assumes the craft is in the flock.
+		/// </summary>
+		public static Vector3 Cohesion(Boids.Flock flock, Vector3 currentPosition) {
+			var flockMemberCount = flock.Count;
+			if (flockMemberCount > 1) {
+				// subtract current position since flock includes current craft
+				// and we didn'exclude it when it was orginally summeed
+				var exculidngCenterSum = flock.CenterSum - currentPosition;
+				// subtract from count by one to exclude current craft
+				var flockAverageCenter = exculidngCenterSum / (flockMemberCount - 1);
+
+				var seekVector = SeekPosition(currentPosition, flockAverageCenter);
+#if DEBUG 
+				// flock.DebugDraw().Call("draw_line_3d", currentPosition, flockAverageCenter, new Color(0, 1, 0));
+				flock.DebugDraw().Call("draw_ray_3d", currentPosition, seekVector, 2000, new Color(1, 1, 0));
+#endif
+				return seekVector;
+			}
+			return Vector3.Zero;
+		}
 	}
 }

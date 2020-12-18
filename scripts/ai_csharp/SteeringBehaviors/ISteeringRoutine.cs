@@ -6,7 +6,7 @@ using Real = System.Double;
 using Real = System.Single;
 #endif
 
-namespace ISIS.SteeringBehaviors {
+namespace ISIS.Minds.SteeringBehaviors {
     // TODO: Decide on either an OOP approach or the closure approach.
     // TODO: consider a generator approach 
 
@@ -14,7 +14,10 @@ namespace ISIS.SteeringBehaviors {
     ///     A function that's to be polled every frame (or so) to calculate the steering action the
     ///     craft is supposed to take.
     /// </summary>
-    /// <returns>LinearInput as a fraction LinearVLimit and AngularInput as velocity to be maintained.</returns>
+    /// <returns>
+    ///     <para> LinearInput as a percentage LinearVLimit with respect to global rotation.</para>
+    ///     <para>AngularInput as velocity to be maintained.</para>
+    /// </returns>
     public delegate(Vector3 linearInput, Vector3 angularInput) SteeringRoutineClosure(Transform currentTransform,
         CraftStateWrapper currentState);
 

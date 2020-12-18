@@ -40,6 +40,7 @@ namespace ISIS {
             get => (Vector3) _craftStateActual.Get("linear_input");
             set => _craftStateActual.Set("linear_input", value);
         }
+
         public Vector3 AngularInput {
             get => (Vector3) _craftStateActual.Get("angular_input");
             set => _craftStateActual.Set("angular_input", value);

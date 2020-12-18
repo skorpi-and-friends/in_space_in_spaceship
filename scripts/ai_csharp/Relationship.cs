@@ -1,4 +1,4 @@
-namespace ISIS {
+namespace ISIS.Minds {
     public enum Relationship {
 
         Neutral,

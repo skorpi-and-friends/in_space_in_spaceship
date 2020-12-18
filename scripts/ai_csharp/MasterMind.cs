@@ -9,7 +9,7 @@ using Real = System.Double;
 using Real = System.Single;
 #endif
 
-namespace ISIS {
+namespace ISIS.Minds {
     public class MasterMind : Node {
         [Signal] public delegate void ContactMade(ScanPresence contact);
         [Signal] public delegate void ContactLost(ScanPresence contact);

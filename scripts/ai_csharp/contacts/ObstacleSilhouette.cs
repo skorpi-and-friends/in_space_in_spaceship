@@ -7,7 +7,7 @@ using Real = System.Double;
 using Real = System.Single;
 #endif
 
-namespace ISIS {
+namespace ISIS.Minds {
     public class ObstacleSilhouette : Area {
         public const int CollisionSillhoeteLayer = 1 << 5;
         public ObstaclePresence Presence { get; private set; }

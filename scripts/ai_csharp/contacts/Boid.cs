@@ -1,7 +1,7 @@
 using System;
 using Godot;
 
-namespace ISIS {
+namespace ISIS.Minds {
     public class Boid : ScanPresence {
         public override void _EnterTree() {
             base._EnterTree();

@@ -3,6 +3,7 @@
 ## To-do
 
 - [ ] Fix cockpit world displays
+- [ ] Find a way to profile C# scripts
 - [ ] Move current HUD PlayerMindModule functionality to Targeting
 - [X] Craft Tracker HUD
 - [ ] Collision Avoidance AI
@@ -297,3 +298,31 @@ I tried the following schemes to combine AvoidObstacle and PathFollow:
 - Ignore PathFollow if AvoidObstacle output is not zero
 
 And they don't really work. They struggle with some obstacles and crash into them face forward (or sidewards sometimes).
+
+### Hullcast
+
+The following errors messages fill the prompt (but it doesn't throw an exception/tear down the program) tanking the frame rate.
+
+```c++
+E 0:01:04.789   rest_info: Condition "!shape" is true. Returned: false
+  <C++ Source>  modules/bullet/space_bullet.cpp:255 @ rest_info()
+  <Stack Trace> :0 @ IntPtr Godot.NativeCalls.godot_icall_1_632(IntPtr , IntPtr , IntPtr )()
+                PhysicsDirectSpaceState.cs:100 @ Godot.Collections.Dictionary Godot.PhysicsDirectSpaceState.GetRestInfo(Godot.PhysicsShapeQueryParameters )()
+                HullCast.cs:54 @ System.ValueTuple`2[System.Boolean,System.Nullable`1[ISIS.HullCastResult]] ISIS.HullCast.Cast(Godot.PhysicsShapeQueryParameters , Godot.Vector3 , Godot.PhysicsDirectSpaceState )()
+                AvoidObstacle.cs:203 @ Godot.Vector3 ISIS.Minds.SteeringBehaviors.SteeringRoutines+<>c__DisplayClass6_0.<AvoidObstacleSebLague>b__1(Godot.Transform , ISIS.CraftStateWrapper )()
+                SteeringRoutines.cs:87 @ Godot.Vector3 ISIS.Minds.SteeringBehaviors.SteeringRoutines+<>c__DisplayClass18_0.<FirstPriorityRoutineComposer>b__0(Godot.Transform , ISIS.CraftStateWrapper )()
+                SteeringRoutines.cs:127 @ System.ValueTuple`2[Godot.Vector3,Godot.Vector3] ISIS.Minds.SteeringBehaviors.SteeringRoutines+<>c__DisplayClass21_0.<LookWhereYouGoRoutineComposer>b__0(Godot.Transform , ISIS.CraftStateWrapper )()
+                CraftMind.cs:36 @ void ISIS.Minds.CraftMind._Process(Single )()
+
+E 0:01:04.797   get: Condition "!id_map.has(p_rid.get_data())" is true. Returned: __null
+  <C++ Source>  ./core/rid.h:150 @ get()
+  <Stack Trace> :0 @ IntPtr Godot.NativeCalls.godot_icall_2_676(IntPtr , IntPtr , IntPtr , Godot.Vector3& )()
+                PhysicsDirectSpaceState.cs:69 @ Godot.Collections.Array Godot.PhysicsDirectSpaceState.CastMotion(Godot.PhysicsShapeQueryParameters , Godot.Vector3 )()
+                HullCast.cs:45 @ System.ValueTuple`2[System.Boolean,System.Nullable`1[ISIS.HullCastResult]] ISIS.HullCast.Cast(Godot.PhysicsShapeQueryParameters , Godot.Vector3 , Godot.PhysicsDirectSpaceState )()
+                AvoidObstacle.cs:203 @ Godot.Vector3 ISIS.Minds.SteeringBehaviors.SteeringRoutines+<>c__DisplayClass6_0.<AvoidObstacleSebLague>b__1(Godot.Transform , ISIS.CraftStateWrapper )()
+                SteeringRoutines.cs:87 @ Godot.Vector3 ISIS.Minds.SteeringBehaviors.SteeringRoutines+<>c__DisplayClass18_0.<FirstPriorityRoutineComposer>b__0(Godot.Transform , ISIS.CraftStateWrapper )()
+                SteeringRoutines.cs:127 @ System.ValueTuple`2[Godot.Vector3,Godot.Vector3] ISIS.Minds.SteeringBehaviors.SteeringRoutines+<>c__DisplayClass21_0.<LookWhereYouGoRoutineComposer>b__0(Godot.Transform , ISIS.CraftStateWrapper )()
+                CraftMind.cs:36 @ void ISIS.Minds.CraftMind._Process(Single )()
+```
+
+Investigate.

@@ -1,6 +1,6 @@
 namespace ISIS {
     using Godot;
-    public class HullCastResult {
+    public struct HullCastResult {
         /// <summary>
         ///  The object's surface normal at the intersection point.
         /// </summary>

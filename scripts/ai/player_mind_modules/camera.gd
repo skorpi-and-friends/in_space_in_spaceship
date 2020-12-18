@@ -20,9 +20,13 @@ var _current_craft_has_cockpit := false;
 func _ready():
 	switch_free_look(true);
 
-	#grab cockpit later as CockpitMaster might not be ready at this point
-	yield(get_tree(),"idle_frame");
+	#grab cockpit the next frame as CockpitMaster might not be ready at this point
+	call_deferred("_setup_cockpit");
+
+func _setup_cockpit() -> void:
 	cockpit = Globals.cockpit_master;
+	# wait some more since player mind might not be ready
+	yield(get_tree(),"idle_frame");
 	switch_interface_mode(InterfaceMode.ORBIT);
 
 
@@ -36,7 +40,6 @@ func _process(_delta: float) -> void:
 			player_mind.graph_value = state.angular_input.y;
 #	angular_input *= state.angular_v_limit;
 #	angular_input *= delta;
-
 
 
 func _input(event: InputEvent) -> void:

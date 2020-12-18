@@ -175,9 +175,6 @@ script = ExtResource( 2 )
 [node name="GroupMind" type="Node" parent="."]
 script = ExtResource( 3 )
 
-[node name="TestFighter6" parent="GroupMind" instance=ExtResource( 10 )]
-transform = Transform( -1, 0, -1.50996e-07, 0, 1, 0, 1.50996e-07, 0, -0.999999, 1511.54, 0, 182.336 )
-
 [node name="TestFighter9" parent="GroupMind" instance=ExtResource( 10 )]
 transform = Transform( -1, 0, -1.50996e-07, 0, 1, 0, 1.50996e-07, 0, -0.999999, 1509.73, -65.9264, 73.7322 )
 
@@ -192,6 +189,21 @@ transform = Transform( -1, 0, -1.50996e-07, 0, 1, 0, 1.50996e-07, 0, -0.999999, 
 
 [node name="TestFighter5" parent="GroupMind" instance=ExtResource( 10 )]
 transform = Transform( -1, 0, -1.50996e-07, 0, 1, 0, 1.50996e-07, 0, -0.999999, 1495.69, 147.995, 227.842 )
+
+[node name="TestFighter6" parent="GroupMind" instance=ExtResource( 10 )]
+transform = Transform( -1, 0, -1.50996e-07, 0, 1, 0, 1.50996e-07, 0, -0.999999, 1511.54, 0, 182.336 )
+
+[node name="TestFighter2" parent="GroupMind" instance=ExtResource( 10 )]
+transform = Transform( -1, 0, -1.50996e-07, 0, 1, 0, 1.50996e-07, 0, -0.999999, -1564.34, -3.7444, -23.2856 )
+
+[node name="TestFighter7" parent="GroupMind" instance=ExtResource( 10 )]
+transform = Transform( -1, 0, -1.50996e-07, 0, 1, 0, 1.50996e-07, 0, -0.999999, -1531.39, 69.0917, 438.622 )
+
+[node name="TestFighter8" parent="GroupMind" instance=ExtResource( 10 )]
+transform = Transform( -1, 0, -1.50996e-07, 0, 1, 0, 1.50996e-07, 0, -0.999999, -1482.71, -177.79, -305.254 )
+
+[node name="Artery" parent="GroupMind" instance=ExtResource( 9 )]
+transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -1284.99, 0, 73.3256 )
 
 [node name="The Path" type="Path" parent="GroupMind"]
 curve = SubResource( 10 )
@@ -216,18 +228,6 @@ transform = Transform( -1, 0, -1.50996e-07, 0, 1, 0, 1.50996e-07, 0, -0.999999, 
 [node name="Disabled" type="Spatial" parent="."]
 visible = false
 script = SubResource( 12 )
-
-[node name="Artery" parent="Disabled" instance=ExtResource( 9 )]
-transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -1284.99, 0, 73.3256 )
-
-[node name="TestFighter2" parent="Disabled" instance=ExtResource( 10 )]
-transform = Transform( -1, 0, -1.50996e-07, 0, 1, 0, 1.50996e-07, 0, -0.999999, -1564.34, -3.7444, -23.2856 )
-
-[node name="TestFighter7" parent="Disabled" instance=ExtResource( 10 )]
-transform = Transform( -1, 0, -1.50996e-07, 0, 1, 0, 1.50996e-07, 0, -0.999999, -1531.39, 69.0917, 438.622 )
-
-[node name="TestFighter8" parent="Disabled" instance=ExtResource( 10 )]
-transform = Transform( -1, 0, -1.50996e-07, 0, 1, 0, 1.50996e-07, 0, -0.999999, -1482.71, -177.79, -305.254 )
 
 [node name="TestCrvt" parent="." instance=ExtResource( 12 )]
 

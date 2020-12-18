@@ -6,7 +6,7 @@ using Real = System.Double;
 using Real = System.Single;
 #endif
 
-namespace ISIS.SteeringBehaviors {
+namespace ISIS.Minds.SteeringBehaviors {
     public static class Utility {
         public static bool IsInCroshair(
             Transform currentTransform,

@@ -6,7 +6,7 @@ using Real = System.Double;
 using Real = System.Single;
 #endif
 
-namespace ISIS {
+namespace ISIS.Minds {
     public class ObstaclePresence : ScanPresence {
         // public Real Radius { get; set; }
         public ObstacleSilhouette Silhouette { get; private set; }
