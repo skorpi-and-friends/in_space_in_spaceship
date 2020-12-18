@@ -31,7 +31,7 @@ namespace ISIS.Minds.SteeringBehaviors.Boids {
             CenterSum = Center = HeadingSum = AverageHeading = Vector3.Zero;
             foreach (var craft in _boids) {
                 CenterSum += craft.CraftActual.GlobalTranslation();
-                AverageHeading += craft.State.LinearVelocty;
+                HeadingSum += craft.CraftActual.GlobalTransform.basis.z;
             }
             var memberCount = _boids.Count;
             if (memberCount > 0) {

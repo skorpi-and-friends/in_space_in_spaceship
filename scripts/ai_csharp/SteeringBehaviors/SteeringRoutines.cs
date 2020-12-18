@@ -91,9 +91,45 @@ namespace ISIS.Minds.SteeringBehaviors {
             };
         }
 
+        public static LinearRoutineClosure WeightedRoutineComposer(
+            params(LinearRoutineClosure, Real) [] routinesWithWeights
+        ) {
+            var length = routinesWithWeights.Length;
+            return (Transform currentTransform, CraftStateWrapper currentState) => {
+                var linearInput = Vector3.Zero;
+                for (int ii = 0; ii < length; ii++) {
+                    linearInput = routinesWithWeights[ii].Item1.Invoke(currentTransform, currentState) * routinesWithWeights[ii].Item2;
+                    if (!linearInput.IsZero()) break;
+                }
+                return linearInput;
+            };
+        }
+
+        public static AngularRoutineClosure WeightedRoutineComposer(
+            params(AngularRoutineClosure, Real) [] routinesWithWeights
+        ) {
+            var length = routinesWithWeights.Length;
+            return (Transform currentTransform, CraftStateWrapper currentState) => {
+                var linearInput = Vector3.Zero;
+                for (int ii = 0; ii < length; ii++) {
+                    linearInput = routinesWithWeights[ii].Item1.Invoke(currentTransform, currentState) * routinesWithWeights[ii].Item2;
+                    if (!linearInput.IsZero()) break;
+                }
+                return linearInput;
+            };
+        }
+
         #endregion
 
         #region UTILITY
+
+        public static AngularRoutineClosure LinearToAngularConverter(
+            LinearRoutineClosure routine
+        ) {
+            return (Transform currentTransform, CraftStateWrapper currentState) =>
+                FaceDirectionAngularInput(routine(currentTransform, currentState), currentTransform);
+        }
+
         /// <summary>
         /// Get a set of routines orchestrated purely for survival.
         /// </summary>

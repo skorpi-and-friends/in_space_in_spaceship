@@ -110,17 +110,22 @@ namespace ISIS.Minds {
 #if DEBUG
 			ActiveRoutineDesc = $"Flying With FLock {flock.Name}";
 #endif
-			ActiveRoutine = SteeringRoutines.LookWhereYouGoRoutineComposer(
+			/* ActiveRoutine = SteeringRoutines.LookWhereYouGoRoutineComposer(
 				SteeringRoutines.SurvivalRoutineComposer(
 					SteeringRoutines.Cohesion(flock),
 					Craft,
 					GetCraftExtents(Craft)
 				)
-			);
-
-			/* ActiveRoutine = SteeringRoutines.NoAngularInputComposer(
-				SteeringRoutines.Cohesion(flock)
 			); */
+
+			ActiveRoutine = SteeringRoutines.SurvivalRoutineComposer(
+				SteeringRoutines.LinearAngularRoutineComposer(
+					SteeringRoutines.Cohesion(flock),
+					SteeringRoutines.LinearToAngularConverter(SteeringRoutines.Alignment(flock))
+				),
+				Craft,
+				GetCraftExtents(Craft)
+			);
 		}
 	}
 

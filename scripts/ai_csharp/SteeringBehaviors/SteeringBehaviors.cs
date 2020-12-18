@@ -209,7 +209,7 @@ namespace ISIS.Minds.SteeringBehaviors {
 			var flockMemberCount = flock.Count;
 			if (flockMemberCount > 1) {
 				// subtract current position since flock includes current craft
-				// and we didn'exclude it when it was orginally summeed
+				// and we didn'exclude it when it was orginally summed
 				var exculidngCenterSum = flock.CenterSum - currentPosition;
 				// subtract from count by one to exclude current craft
 				var flockAverageCenter = exculidngCenterSum / (flockMemberCount - 1);
@@ -220,6 +220,26 @@ namespace ISIS.Minds.SteeringBehaviors {
 				flock.DebugDraw().Call("draw_ray_3d", currentPosition, seekVector, 2000, new Color(1, 1, 0));
 #endif
 				return seekVector;
+			}
+			return Vector3.Zero;
+		}
+		/// <summary>
+		/// Assumes the craft is in the flock.
+		/// </summary>
+		public static Vector3 Alignment(Boids.Flock flock, Vector3 craftForwardDirection) {
+			var flockMemberCount = flock.Count;
+			if (flockMemberCount > 1) {
+				// subtract current velocity since flock includes current craft
+				// and we didn'exclude it when it was orginally summed
+				var exculidngHeadingSum = flock.HeadingSum - craftForwardDirection;
+				// subtract from count by one to exclude current craft
+				var flockAverageHeading = exculidngHeadingSum / (flockMemberCount - 1);
+
+				var steerVector = flockAverageHeading.Normalized();
+				/* #if DEBUG
+								flock.DebugDraw().Call("draw_ray_3d", craftForwardDirection, steerVector, 2000, new Color(1, 0, 1));
+				#endif */
+				return steerVector;
 			}
 			return Vector3.Zero;
 		}
