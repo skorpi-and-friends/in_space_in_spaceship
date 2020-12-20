@@ -122,16 +122,18 @@ namespace ISIS.Minds {
 						if (_members.Count == 0)
 							ticker.SetChild(LambdaLeafNode.EmptySuccessNode);
 
-						var keys = new MemberId[_members.Count];
-						_members.Keys.CopyTo(keys, 0);
+						var memberIds = new MemberId[_members.Count];
+						_members.Keys.CopyTo(memberIds, 0);
 
-						ticker.SetChild(FormIntoFlock(keys));
+						// ticker.SetChild(FormIntoFlock(memberIds));
 
-						/* var path = GetNodeOrNull<Path>("The Path");
-						if (path == null)
-							ticker.SetChild(DestroyAllHostiles(keys));
-
-						ticker.SetChild(FollowThePath(path, keys)); */
+						var path = GetNodeOrNull<Path>("The Path");
+						if (path == null) {
+							ticker.SetChild(DestroyAllHostiles(memberIds));
+						} else {
+							// ticker.SetChild(FollowThePath(path, memberIds));
+							ticker.SetChild(FollowThePathInFlock(path, memberIds));
+						}
 
 						return NodeState.Success;
 					}
@@ -158,7 +160,7 @@ namespace ISIS.Minds {
 						_members[memberId].FlyWithFlock(flock);
 					}
 				},
-				finish: (_, _DISCARD) => flock?.QueueFree(),
+				finish: (_, __) => flock?.QueueFree(),
 				cancel : _ => flock?.QueueFree()
 			);
 		}
@@ -172,6 +174,30 @@ namespace ISIS.Minds {
 						member.FollowPath(path);
 					}
 				}
+			);
+		}
+
+		protected virtual GreenBehaviors.Node FollowThePathInFlock(Path path, params MemberId[] members) {
+			SteeringBehaviors.Boids.Flock? flock = null;
+			return new Action(
+				"fly in flock",
+				tick : _ => flock.Count > 0 ? NodeState.Running : NodeState.Failure,
+				start : _ => {
+					if (flock == null) {
+						flock = new SteeringBehaviors.Boids.Flock {
+							Name = "Flock"
+						};
+						AddChild(flock);
+					} else {
+						flock.Clear();
+					}
+					foreach (var memberId in members) {
+						flock.Add(_members[memberId]);
+						_members[memberId].FollowPathInFlock(flock, path);
+					}
+				},
+				finish: (_, __) => flock?.QueueFree(),
+				cancel : _ => flock?.QueueFree()
 			);
 		}
 

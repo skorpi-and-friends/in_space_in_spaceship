@@ -46,7 +46,7 @@ func _set_current_target(target: Spatial) -> void:
 	_hudModule.set_target_indicator(target);
 
 
-func _contact_made(contact: Spatial) -> void:
+func _contact_made(_contact: Spatial) -> void:
 	pass
 
 

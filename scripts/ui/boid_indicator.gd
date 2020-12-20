@@ -14,11 +14,11 @@ var target: CraftMaster setget _set_target;
 func _ready() -> void:
 	assert(_position_indicator);
 
-func initialize(target: CraftMaster, 
+func initialize(set_target: CraftMaster, 
 		aim_leading_pool,
 		player_piloted_craft: CraftMaster = null) -> void:
 	_aim_lead_indicator_pool = aim_leading_pool;
-	self.target = target;
+	self.target = set_target;
 	if player_piloted_craft:
 		self.player_craft = player_piloted_craft;
 

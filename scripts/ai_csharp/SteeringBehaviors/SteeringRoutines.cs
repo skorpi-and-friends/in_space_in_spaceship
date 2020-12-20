@@ -98,8 +98,7 @@ namespace ISIS.Minds.SteeringBehaviors {
             return (Transform currentTransform, CraftStateWrapper currentState) => {
                 var linearInput = Vector3.Zero;
                 for (int ii = 0; ii < length; ii++) {
-                    linearInput = routinesWithWeights[ii].Item1.Invoke(currentTransform, currentState) * routinesWithWeights[ii].Item2;
-                    if (!linearInput.IsZero()) break;
+                    linearInput += routinesWithWeights[ii].Item1.Invoke(currentTransform, currentState) * routinesWithWeights[ii].Item2;
                 }
                 return linearInput;
             };
@@ -110,12 +109,11 @@ namespace ISIS.Minds.SteeringBehaviors {
         ) {
             var length = routinesWithWeights.Length;
             return (Transform currentTransform, CraftStateWrapper currentState) => {
-                var linearInput = Vector3.Zero;
+                var angularInput = Vector3.Zero;
                 for (int ii = 0; ii < length; ii++) {
-                    linearInput = routinesWithWeights[ii].Item1.Invoke(currentTransform, currentState) * routinesWithWeights[ii].Item2;
-                    if (!linearInput.IsZero()) break;
+                    angularInput += routinesWithWeights[ii].Item1.Invoke(currentTransform, currentState) * routinesWithWeights[ii].Item2;
                 }
-                return linearInput;
+                return angularInput;
             };
         }
 
@@ -135,10 +133,12 @@ namespace ISIS.Minds.SteeringBehaviors {
         /// </summary>
         /// <seealso cref="SurvivalRoutineComposer"/>
         public static SteeringRoutineClosure GetSurvivalRoutine(
-            RigidBody craft, Vector3 craftExtents, Real predectionTimeSeconds = 5,
-            bool lookWhereYouGo = true
+            RigidBody craft, Vector3 craftExtents,
+            bool lookWhereYouGo = true, Real predectionTimeSeconds = 5,
+            System.Collections.Generic.IEnumerable<RID> obstacleExculsionList = null
         ) {
-            var linearRoutine = GetPreferredObstacleAvoidanceRoutine(craft, craftExtents, predectionTimeSeconds);
+            var linearRoutine = GetPreferredObstacleAvoidanceRoutine(
+                craft, craftExtents, predectionTimeSeconds, obstacleExculsionList);
             return lookWhereYouGo ?
                 LookWhereYouGoRoutineComposer(linearRoutine) : NoAngularInputComposer(linearRoutine);
         }
@@ -146,8 +146,9 @@ namespace ISIS.Minds.SteeringBehaviors {
         /// <summary>
         /// Currently <see cref="AvoidObstacleSebLagueRay"/>
         /// </summary>
-        public static LinearRoutineClosure GetPreferredObstacleAvoidanceRoutine(RigidBody craft, Vector3 craftExtents, Real predectionTimeSeconds = 5) {
-            return AvoidObstacleSebLagueRay(craft, craftExtents, predectionTimeSeconds);
+        public static LinearRoutineClosure GetPreferredObstacleAvoidanceRoutine(RigidBody craft, Vector3 craftExtents, Real predectionTimeSeconds = 5,
+            System.Collections.Generic.IEnumerable<RID> obstacleExculsionList = null) {
+            return AvoidObstacleGoOpposite(craft, craftExtents, predectionTimeSeconds, obstacleExculsionList);
         }
 
         /// <summary>
@@ -188,11 +189,12 @@ namespace ISIS.Minds.SteeringBehaviors {
         /// <seealso cref="GetPreferredObstacleAvoidanceRoutine"/>
         public static SteeringRoutineClosure SurvivalRoutineComposer(
             SteeringRoutineClosure routine,
-            RigidBody craft, Vector3 craftExtents, Real predectionTimeSeconds = 5
+            RigidBody craft, Vector3 craftExtents, Real predectionTimeSeconds = 5,
+            System.Collections.Generic.IEnumerable<RID> obstacleExculsionList = null
         ) {
             return FirstPriorityRoutineComposer(
                 LookWhereYouGoRoutineComposer(
-                    GetPreferredObstacleAvoidanceRoutine(craft, craftExtents, predectionTimeSeconds)
+                    GetPreferredObstacleAvoidanceRoutine(craft, craftExtents, predectionTimeSeconds, obstacleExculsionList)
                 ),
                 routine
             );
@@ -200,11 +202,12 @@ namespace ISIS.Minds.SteeringBehaviors {
 
         public static LinearRoutineClosure SurvivalRoutineComposer(
             LinearRoutineClosure routine,
-            RigidBody craft, Vector3 craftExtents, Real predectionTimeSeconds = 5
+            RigidBody craft, Vector3 craftExtents, Real predectionTimeSeconds = 5,
+            System.Collections.Generic.IEnumerable<RID> obstacleExculsionList = null
         ) {
-            return FirstPriorityRoutineComposer(
-                GetPreferredObstacleAvoidanceRoutine(craft, craftExtents, predectionTimeSeconds),
-                routine
+            return WeightedRoutineComposer(
+                (GetPreferredObstacleAvoidanceRoutine(craft, craftExtents, predectionTimeSeconds, obstacleExculsionList), 20),
+                (routine, 1)
             );
         }
     }

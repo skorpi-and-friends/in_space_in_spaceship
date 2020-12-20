@@ -51,6 +51,73 @@ namespace ISIS.Minds.SteeringBehaviors {
             };
         }
 
+        public static LinearRoutineClosure AvoidObstacleGoOpposite(
+            RigidBody craft,
+            Vector3 craftExtents,
+            Real predectionTimeSeconds = 5,
+            System.Collections.Generic.IEnumerable<RID> obstacleExculsionList = null
+        ) {
+            var halfExtents = craftExtents * .5f;
+
+            var halfWidestDimension = halfExtents.x > halfExtents.y ? halfExtents.x : halfExtents.y;
+            if (halfExtents.z > halfWidestDimension)
+                halfWidestDimension = halfExtents.z;
+
+            var physicsSpace = craft.GetWorld().DirectSpaceState;
+
+            var raycastExclusionList = obstacleExculsionList != null ?
+                new Godot.Collections.Array(obstacleExculsionList) :
+                new Godot.Collections.Array();
+
+            raycastExclusionList.Add(craft.GetRid());
+
+            bool raycaster(Vector3 from, Vector3 to) {
+                var collisionResult = physicsSpace.IntersectRay(
+                    from,
+                    to,
+                    raycastExclusionList,
+                    // collisionMask :  ObstacleSilhouette.CollisionSillhoeteLayer,
+                    collideWithBodies : true,
+                    collideWithAreas : true
+                );
+                return collisionResult.Count > 0;
+            }
+
+            return (Transform currentTransform, CraftStateWrapper currentState) => {
+                var localVelocity = currentState.LinearVelocty;
+                if (localVelocity.LengthSquared().EqualsF(0)) {
+                    return Vector3.Zero;
+                }
+
+                // we'll have to expand the velocity by half our craft extents 
+                // to adjust collision anticipation for craft size.
+                // A 50M vehicle will collide far sooner than a 5M vehicle.
+                var castTo = new Vector3(
+                    localVelocity.x.Sign() * (localVelocity.x.Abs() + halfExtents.x),
+                    localVelocity.y.Sign() * (localVelocity.y.Abs() + halfExtents.y),
+                    localVelocity.z.Sign() * (localVelocity.z.Abs() + halfExtents.z)
+                );
+                castTo *= predectionTimeSeconds;
+
+                // do the transformation last
+                castTo = currentTransform.TransformPoint(castTo);
+
+                if (!raycaster(currentTransform.origin, castTo)) {
+#if DEBUG 
+                    craft.DebugDraw().Call("draw_line_3d", currentTransform.origin, castTo, new Color(0, 1, 0));
+#endif
+                    return Vector3.Zero;
+                }
+#if DEBUG 
+                craft.DebugDraw().Call("draw_line_3d", currentTransform.origin, castTo, new Color(1, 0, 0));
+#endif
+                var avoidVector = -castTo.Normalized();
+#if DEBUG 
+                craft.DebugDraw().Call("draw_line_3d", currentTransform.origin, avoidVector * castTo.Length(), new Color(0, 0, 1));
+#endif
+                return avoidVector;
+            };
+        }
         /// <summary>
         /// Avoids obstacles by casting rays in the direction of velocity and if obstacle is detected,
         /// cast's rays in different directions until a way out is found. These rays are cast in
@@ -63,7 +130,8 @@ namespace ISIS.Minds.SteeringBehaviors {
         public static LinearRoutineClosure AvoidObstacleSebLagueRay(
             RigidBody craft,
             Vector3 craftExtents,
-            Real predectionTimeSeconds = 5
+            Real predectionTimeSeconds = 5,
+            System.Collections.Generic.IEnumerable<RID> obstacleExculsionList = null
         ) {
             var halfExtents = craftExtents * .5f;
 
@@ -73,7 +141,11 @@ namespace ISIS.Minds.SteeringBehaviors {
 
             var physicsSpace = craft.GetWorld().DirectSpaceState;
 
-            var raycastExclusionList = new Godot.Collections.Array { craft.GetRid() };
+            var raycastExclusionList = obstacleExculsionList != null ?
+                new Godot.Collections.Array(obstacleExculsionList) :
+                new Godot.Collections.Array();
+
+            raycastExclusionList.Add(craft.GetRid());
 
             bool raycaster(Vector3 from, Vector3 to) {
                 var collisionResult = physicsSpace.IntersectRay(

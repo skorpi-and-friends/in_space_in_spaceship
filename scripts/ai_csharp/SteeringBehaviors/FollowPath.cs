@@ -52,8 +52,7 @@ namespace ISIS.Minds.SteeringBehaviors {
                     distanceOfPointAlongPath: distanceOfPointAlongPath,
                     pathDistanceToPoint: pathDistanceToPoint,
                     direction: (int) followDirection,
-                    predictionTime : predectionTimeSeconds,
-                    path);
+                    predictionTime : predectionTimeSeconds);
             };
         }
     }

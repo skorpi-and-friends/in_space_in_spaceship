@@ -1,10 +1,14 @@
 using Godot;
-using GreenBehaviors;
-using GreenBehaviors.Composite;
 using GreenBehaviors.Decorator;
-using GreenBehaviors.LeafLambda;
 using ISIS.Minds.SteeringBehaviors;
 using static ISIS.Static;
+
+#if GODOT_Real_IS_DOUBLE
+using Real = System.Double;
+#else
+using Real = System.Single;
+#endif
+
 // using SteeringRoutineResult = System.ValueTuple<Godot.Vector3, Godot.Vector3, string>;
 
 namespace ISIS.Minds {
@@ -38,8 +42,8 @@ namespace ISIS.Minds {
 #if DEBUG 
 				// GD.Print($"linear input: {linearInput}");
 				// this.DebugDraw().Call("draw_line_3d", currentPosition, flockAverageCenter, new Color(0, 1, 0));
-				this.DebugDraw().Call("draw_line_3d", Craft.GlobalTranslation(), currentTransform.origin + (linearInput * state.LinearVLimit), new Color(1, 1, 0));
-				this.DebugDraw().Call("draw_line_3d", Craft.GlobalTranslation(), currentTransform.TransformPoint(state.LinearVelocty), new Color(0, 1, 1));
+				// this.DebugDraw().Call("draw_line_3d", Craft.GlobalTranslation(), currentTransform.origin + (linearInput * state.LinearVLimit), new Color(1, 1, 0));
+				// this.DebugDraw().Call("draw_line_3d", Craft.GlobalTranslation(), currentTransform.TransformPoint(state.LinearVelocty), new Color(0, 1, 1));
 #endif
 				linearInput = currentTransform.TransformVectorInv(linearInput) * state.LinearVLimit;
 				state.SetCraftInput(linearInput, angularInput);
@@ -118,13 +122,43 @@ namespace ISIS.Minds {
 				)
 			); */
 
-			ActiveRoutine = SteeringRoutines.SurvivalRoutineComposer(
-				SteeringRoutines.LinearAngularRoutineComposer(
-					SteeringRoutines.Cohesion(flock),
-					SteeringRoutines.LinearToAngularConverter(SteeringRoutines.Alignment(flock))
-				),
-				Craft,
-				GetCraftExtents(Craft)
+			ActiveRoutine = SteeringRoutines.LookWhereYouGoRoutineComposer(
+				// SteeringRoutines.LinearAngularRoutineComposer(
+				SteeringRoutines.WeightedRoutineComposer(
+					(SteeringRoutines.Cohesion(flock), 1),
+					(SteeringRoutines.Alignment(flock), 1),
+					(SteeringRoutines.Separation(flock), 10)
+				) //,
+				// SteeringRoutines.LinearToAngularConverter(SteeringRoutines.Alignment(flock))
+				// ),
+				// Craft,
+				// GetCraftExtents(Craft)
+			);
+		}
+
+		/// <summary>
+		/// Does not add itself into flock.
+		/// </summary>
+		public virtual void FollowPathInFlock(SteeringBehaviors.Boids.Flock flock, Path path) {
+#if DEBUG
+			ActiveRoutineDesc = $"Following Path {path.Name} in flock {flock.Name}";
+#endif
+			var rids = flock.RIDs;
+			rids.Remove(Craft.GetRid());
+			ActiveRoutine = SteeringRoutines.LookWhereYouGoRoutineComposer(
+				SteeringRoutines.SurvivalRoutineComposer(
+					SteeringRoutines.WeightedRoutineComposer(
+						(SteeringRoutines.FollowPathRoutine(path, requirePathProximityMeters : 50), 1),
+						(SteeringRoutines.Cohesion(flock), 1),
+						(SteeringRoutines.Alignment(flock), 1),
+						(SteeringRoutines.Separation(flock), 10)
+					),
+					// SteeringRoutines.LinearToAngularConverter(SteeringRoutines.Alignment(flock))
+					// ),
+					Craft,
+					GetCraftExtents(Craft),
+					obstacleExculsionList : rids
+				)
 			);
 		}
 	}

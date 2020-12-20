@@ -326,3 +326,14 @@ E 0:01:04.797   get: Condition "!id_map.has(p_rid.get_data())" is true. Returned
 ```
 
 Investigate.
+
+### Why does the obstacle avoidance suck?
+
+After trying multiple implementations of `AvoidObstacle` and 2 ways of *combining* it with the other routines, the boids things still fly face first into some of the obstacles. We also find ourselves needing a set up that's very tight fitting or a mesh shape to avoid clipping issues when the boids collide with obstacles.
+
+One main issue facing it right now is how the Godot raycast implementation doesn't detect the obstacle if the raycast origin is inside it. In one of the `AvoidObstacle` implementations, we use separately set up collision shapes (usually spherical and on a different layer) to cover the obstacles. If the shape isn't tightfitting, the boid can find itself inside it and unable to detect the obstacle even though it's grinding up against it in the *true* collision layer.
+
+Things to try:
+- raycast with whiskers
+- cast in forward and velocity directions
+- use a separate behavior that moves away from any nearby obstacles and blend the two

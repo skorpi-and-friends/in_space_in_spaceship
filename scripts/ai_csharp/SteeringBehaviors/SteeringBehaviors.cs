@@ -53,8 +53,8 @@ namespace ISIS.Minds.SteeringBehaviors {
 			// possible accept predition time as a parameter
 
 			// calculate predection time
-			var toTarget = targetPosition - currentPosition;
-			var distanceToTarget = toTarget.Length();
+			var relativePosition = targetPosition - currentPosition;
+			var distanceToTarget = relativePosition.Length();
 			var timeToTargetPosition = distanceToTarget / travelSpeed;
 			// time to target intercept position
 
@@ -134,8 +134,7 @@ namespace ISIS.Minds.SteeringBehaviors {
 			Func<Vector3, float> distanceOfPointAlongPath,
 			Func<float, Vector3> pathDistanceToPoint,
 			int direction,
-			Real predictionTime,
-			Godot.Node node
+			Real predictionTime
 		) {
 			// predict our future position
 			var futurePosition = currentPosition + (predictionTime * currentVelocity);
@@ -152,7 +151,7 @@ namespace ISIS.Minds.SteeringBehaviors {
 			// find the point on the path nearest the predicted future position
 			var onPath = closestPointOnPathToPoint(futurePosition);
 
-			var distanceFromPathSq = onPath.DistanceSquaredTo(futurePosition);
+			var distanceFromPathSq = futurePosition.DistanceSquaredTo(onPath);
 
 			// no steering is required if (a) our future position is inside
 			// the path tube and (b) we are travelling in the correct direction
@@ -169,9 +168,6 @@ namespace ISIS.Minds.SteeringBehaviors {
 
 				float targetPathDistance = currentPathDistance + pathDistanceOffset;
 				var target = pathDistanceToPoint(targetPathDistance);
-#if DEBUG 
-				// node.DebugDraw().Call("draw_line_3d", currentPosition, target, new Color(1, 1, 0));
-#endif
 
 				// return steering to seek target on path
 				return SeekPosition(currentPosition, target);
@@ -216,13 +212,14 @@ namespace ISIS.Minds.SteeringBehaviors {
 
 				var seekVector = SeekPosition(currentPosition, flockAverageCenter);
 #if DEBUG 
-				// flock.DebugDraw().Call("draw_line_3d", currentPosition, flockAverageCenter, new Color(0, 1, 0));
-				flock.DebugDraw().Call("draw_ray_3d", currentPosition, seekVector, 2000, new Color(1, 1, 0));
+				flock.DebugDraw().Call("draw_line_3d", currentPosition, flockAverageCenter, new Color(1, 1, 0));
+				// flock.DebugDraw().Call("draw_ray_3d", currentPosition, seekVector, 200, new Color(1, 1, 0));
 #endif
 				return seekVector;
 			}
 			return Vector3.Zero;
 		}
+
 		/// <summary>
 		/// Assumes the craft is in the flock.
 		/// </summary>
@@ -235,13 +232,28 @@ namespace ISIS.Minds.SteeringBehaviors {
 				// subtract from count by one to exclude current craft
 				var flockAverageHeading = exculidngHeadingSum / (flockMemberCount - 1);
 
-				var steerVector = flockAverageHeading.Normalized();
-				/* #if DEBUG
-								flock.DebugDraw().Call("draw_ray_3d", craftForwardDirection, steerVector, 2000, new Color(1, 0, 1));
-				#endif */
-				return steerVector;
+				return flockAverageHeading.Normalized();
 			}
 			return Vector3.Zero;
+		}
+
+		// lifted from Craig Reynolds' OpenSteer
+		public static Vector3 Separation(Boids.Flock flock, Vector3 currentPosition) {
+			var steering = Vector3.Zero;
+			foreach (var craft in flock) {
+				// add in steering contribution
+				// (opposite of the offset direction, divided once by distance
+				// to normalize, divided another time to get 1/d falloff)
+				var relativePosition = craft.CraftActual.GlobalTranslation() - currentPosition;
+				var offsetSquared = relativePosition.LengthSquared();
+				if (offsetSquared.IsZero()) continue;
+				steering -= relativePosition / offsetSquared;
+			}
+#if DEBUG
+			// flock.DebugDraw().Call("draw_line_3d", currentPosition, flockAverageCenter, new Color(0, 1, 0));
+			flock.DebugDraw().Call("draw_ray_3d", currentPosition, steering.Normalized(), 200, new Color(1, 1, 1));
+#endif
+			return steering;
 		}
 	}
 }

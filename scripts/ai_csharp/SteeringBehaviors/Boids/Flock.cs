@@ -45,6 +45,16 @@ namespace ISIS.Minds.SteeringBehaviors.Boids {
             // this.DebugDraw().Call("draw_box", Center, Vector3.One * 10);
         }
 
+        public HashSet<RID> RIDs {
+            get {
+                var rids = new HashSet<RID>();
+                foreach (var boid in _boids) {
+                    rids.Add(boid.CraftActual.GetRid());
+                }
+                return rids;
+            }
+        }
+
         #region IEnumerable Implementation
 
         public IEnumerator<CraftWrapper> GetEnumerator() {

@@ -28,6 +28,7 @@ namespace ISIS {
         #endregion
         #region  FLOAT UTILITES
 
+        public static bool IsZero(this Real value) => value.EqualsF(0);
         public static bool EqualsF(this Real value, Real other) =>
             Mathf.IsEqualApprox(value, other);
         public static Real Sign(this Real value) => Mathf.Sign(value);
