@@ -131,8 +131,8 @@ namespace ISIS.Minds {
 						if (path == null) {
 							ticker.SetChild(DestroyAllHostiles(memberIds));
 						} else {
-							// ticker.SetChild(FollowThePath(path, memberIds));
-							ticker.SetChild(FollowThePathInFlock(path, memberIds));
+							ticker.SetChild(FollowThePath(path, memberIds));
+							// ticker.SetChild(FollowThePathInFlock(path, memberIds));
 						}
 
 						return NodeState.Success;

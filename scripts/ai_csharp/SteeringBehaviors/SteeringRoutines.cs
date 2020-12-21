@@ -27,14 +27,20 @@ namespace ISIS.Minds.SteeringBehaviors {
 
         #region OOP HELPERS
         /// <summary>
-        /// Use this to convert <see cref="ISteeringRoutine"/> implementing objects to the
-        /// closure form of SteeringRoutines.
+        /// Use this to convert <see cref="ISteeringRoutine"/> implementing objects to <see cref="SteeringRoutineClosure"/>.
         /// </summary>
         public static SteeringRoutineClosure SteeringRoutineObjectAdapter(ISteeringRoutine routine) =>
             (Transform currentTransform, CraftStateWrapper currentState) => {
                 var(linearInput, angularInput) = routine.CalculateSteering(currentTransform, currentState);
                 return (linearInput, angularInput);
             };
+
+        /// <summary>
+        /// Use this to convert <see cref="ILinearRoutine"/> implementing objects to <see cref="LinearRoutineClosure"/>.
+        /// </summary>
+        public static LinearRoutineClosure LinearRoutineObjectAdapter(ILinearRoutine routine) =>
+            (Transform currentTransform, CraftStateWrapper currentState) =>
+            routine.CalculateSteering(currentTransform, currentState);
 
         #endregion
 
@@ -144,11 +150,14 @@ namespace ISIS.Minds.SteeringBehaviors {
         }
 
         /// <summary>
-        /// Currently <see cref="AvoidObstacleSebLagueRay"/>
+        /// Currently <see cref="AvoidObstacleCastToInputPlusV"/>
         /// </summary>
         public static LinearRoutineClosure GetPreferredObstacleAvoidanceRoutine(RigidBody craft, Vector3 craftExtents, Real predectionTimeSeconds = 5,
             System.Collections.Generic.IEnumerable<RID> obstacleExculsionList = null) {
-            return AvoidObstacleGoOpposite(craft, craftExtents, predectionTimeSeconds, obstacleExculsionList);
+            // return AvoidObstacleSilhottes(craft, craftExtents, predectionTimeSeconds, obstacleExculsionList);
+            return LinearRoutineObjectAdapter(
+                new AvoidObstacleCastToInput(craft, craftExtents, predectionTimeSeconds, obstacleExculsionList)
+            );
         }
 
         /// <summary>
@@ -205,6 +214,12 @@ namespace ISIS.Minds.SteeringBehaviors {
             RigidBody craft, Vector3 craftExtents, Real predectionTimeSeconds = 5,
             System.Collections.Generic.IEnumerable<RID> obstacleExculsionList = null
         ) {
+            // return AvoidObstacleCastToNextInput(routine, craft, craftExtents, predectionTimeSeconds, obstacleExculsionList);
+            /*             return FirstPriorityRoutineComposer(
+                            GetPreferredObstacleAvoidanceRoutine(craft, craftExtents, predectionTimeSeconds, obstacleExculsionList),
+                            routine
+                        );
+             */
             return WeightedRoutineComposer(
                 (GetPreferredObstacleAvoidanceRoutine(craft, craftExtents, predectionTimeSeconds, obstacleExculsionList), 20),
                 (routine, 1)

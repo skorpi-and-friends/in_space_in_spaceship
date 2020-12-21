@@ -15,6 +15,7 @@ using Real = System.Single;
 namespace ISIS.Minds.SteeringBehaviors {
     public static partial class SteeringRoutines {
         // FIXME: Attack in itself contains Intercept, we don't need to intercept first
+        // FIXME: move these too `CraftMind`, they'e not Routines
         public static SteeringRoutineClosure AttackPersueRoutineClosure(in DecoratorNode wrappingNode,
             RigidBody craft,
             ScanPresence quarry

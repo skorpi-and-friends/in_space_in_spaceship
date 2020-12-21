@@ -31,19 +31,18 @@ namespace ISIS.Minds {
 			// SurvivalRoutine = SteeringRoutines.AvoidObstacle(Craft);
 		}
 
-		public override void _Process(float delta) {
+		public override void _PhysicsProcess(float delta) {
 			base._Process(delta);
 			if (EnableAutoPilot) {
 				var state = GetCraftState(Craft);
 				var currentTransform = Craft.GlobalTransform;
 
 				var(linearInput, angularInput) = ActiveRoutine?.Invoke(currentTransform, state) ?? (Vector3.Zero, Vector3.Zero);
-
 #if DEBUG 
 				// GD.Print($"linear input: {linearInput}");
 				// this.DebugDraw().Call("draw_line_3d", currentPosition, flockAverageCenter, new Color(0, 1, 0));
-				// this.DebugDraw().Call("draw_line_3d", Craft.GlobalTranslation(), currentTransform.origin + (linearInput * state.LinearVLimit), new Color(1, 1, 0));
-				// this.DebugDraw().Call("draw_line_3d", Craft.GlobalTranslation(), currentTransform.TransformPoint(state.LinearVelocty), new Color(0, 1, 1));
+				this.DebugDraw().Call("draw_line_3d", Craft.GlobalTranslation(), currentTransform.origin + (linearInput * state.LinearVLimit), new Color(1, 1, 0));
+				this.DebugDraw().Call("draw_line_3d", Craft.GlobalTranslation(), currentTransform.TransformPoint(state.LinearVelocty), new Color(0, 1, 1));
 #endif
 				linearInput = currentTransform.TransformVectorInv(linearInput) * state.LinearVLimit;
 				state.SetCraftInput(linearInput, angularInput);

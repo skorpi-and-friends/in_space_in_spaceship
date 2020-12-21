@@ -329,11 +329,30 @@ Investigate.
 
 ### Why does the obstacle avoidance suck?
 
-After trying multiple implementations of `AvoidObstacle` and 2 ways of *combining* it with the other routines, the boids things still fly face first into some of the obstacles. We also find ourselves needing a set up that's very tight fitting or a mesh shape to avoid clipping issues when the boids collide with obstacles.
+After trying multiple implementations of `AvoidObstacle` and 2 ways of *combining* it with the other routines, the boids things still fly face first into some of the obstacles. What's more, in most of the current implementations, the boids get stuck if they collide into a large obstacle in their way, the behaviors unable to determine their way around as if are shell shocked at their very much expected failure.
 
 One main issue facing it right now is how the Godot raycast implementation doesn't detect the obstacle if the raycast origin is inside it. In one of the `AvoidObstacle` implementations, we use separately set up collision shapes (usually spherical and on a different layer) to cover the obstacles. If the shape isn't tightfitting, the boid can find itself inside it and unable to detect the obstacle even though it's grinding up against it in the *true* collision layer.
 
 Things to try:
 - raycast with whiskers
-- cast in forward and velocity directions
-- use a separate behavior that moves away from any nearby obstacles and blend the two
+- cast (probe for obstacle ) in forward + velocity directions
+- use a separate behavior that moves away from any nearby obstacles (as opposed to one in velocity direction) and blend the two
+- cast previous input + velocity direction
+- persist avoidance for few frames after trigger
+- cast in direction main behavior want to go to
+
+---
+
+I have noticed that one of the main reasons it struggles is because the velocity direction changes too quickly/easily, especially as they slow down when they obstacle avoidance kicks in. The velocity is in the obstacle direction half the time (and the avoidance triggers) but it registers as danger free the other half as the craft powerful engines switftly obey the conflicting (and alternating) orders and that's (appears to be) how we end up crashing in half the time. 
+
+---
+
+Using the previous "frame's" input vector directions to probe for obstacles (as opposed to the velocity direction), we seem to arrive at a much better obstacle avoidance behavior. At least in the test setup I was using anyways (a path with obstacles). They still occasionally crash and get stuck and  I can already see a few tradeoffs and a few improvements but I'm going to try and improve other things first.
+
+---
+
+It's curious why using the previous "frame's" input vector to probe for obstacles works better. After all, if we had detected obstacles in the previous frame (and triggered obstacle avoidance), the input we'll observe in the current frame will not have obstacles in it's directions and thus bypassing obstacle avoidance and going to the behavior. A main behavior which will most likely want to go in obstacle's direction, triggering the avoidance the next frame. This cycle seems similar to the one where the velocity direction alternates between a free corridor and an obstacle and somehow it works better. Could it be it's because this cycle alternates per frame, as opposed to whatever length of time the craft engines can implement velocity direction change? 
+
+---
+
+The "probe in the pervious frame's input" approach seems to keep our boids out of collision most of the times but it has some big glaring issues that leave me unsatisfied. It still gets stuck (as describe above) in those seeminly rare instances it collides with our test asteroids. It also has horrible performance profile, needing to cast an ever increasing number of times *per frame* whenever it gets close to an obstacle. If it gets stuck, it casts until it's exhausted all the directions it's set to try (around 100 now but originally 300) every frame tanking the frame rate. It's horrible if we have multiple boids in play. With the numbers I plan to deploy later on, it almost makes want to give up this approach. How the hell did Sebastian Lague make it work?

@@ -1,35 +1,36 @@
-[gd_scene load_steps=13 format=2]
+[gd_scene load_steps=14 format=2]
 
 [ext_resource path="res://textures/asteroid_001_normals.png" type="Texture" id=1]
 [ext_resource path="res://mesh/asteroid_001.dae" type="PackedScene" id=2]
 [ext_resource path="res://scenes/level/obstacle_template.tscn" type="PackedScene" id=3]
 [ext_resource path="res://scripts/utility/collision_shape_from_mesh.gd" type="Script" id=4]
+[ext_resource path="res://scripts/utility/disabled.gd" type="Script" id=5]
 
 [sub_resource type="SphereShape" id=1]
-radius = 222.0
-
-[sub_resource type="SphereShape" id=2]
 radius = 108.312
 
-[sub_resource type="CapsuleShape" id=3]
-radius = 91.0669
-height = 111.856
-
-[sub_resource type="CapsuleShape" id=4]
-radius = 82.4012
-height = 142.282
-
-[sub_resource type="CapsuleShape" id=5]
-radius = 80.4406
-height = 128.106
-
-[sub_resource type="CapsuleShape" id=6]
+[sub_resource type="CapsuleShape" id=2]
 radius = 66.3437
 height = 217.861
 
-[sub_resource type="CapsuleShape" id=7]
+[sub_resource type="CapsuleShape" id=3]
 radius = 54.1331
 height = 162.448
+
+[sub_resource type="CapsuleShape" id=4]
+radius = 80.4406
+height = 128.106
+
+[sub_resource type="CapsuleShape" id=5]
+radius = 82.4012
+height = 142.282
+
+[sub_resource type="CapsuleShape" id=6]
+radius = 91.0669
+height = 111.856
+
+[sub_resource type="SphereShape" id=7]
+radius = 222.0
 
 [sub_resource type="SpatialMaterial" id=8]
 albedo_color = Color( 0.5, 0.18, 0, 1 )
@@ -40,48 +41,47 @@ normal_texture = ExtResource( 1 )
 [node name="Asteroid001" instance=ExtResource( 3 )]
 MassMetricTon = 1000
 
-[node name="Sphere" type="CollisionShape" parent="ObstaclePresence/ObstacleSilhouette" index="0"]
+[node name="Disabled" type="Spatial" parent="." index="0"]
 visible = false
-shape = SubResource( 1 )
-disabled = true
+script = ExtResource( 5 )
 
-[node name="CollisionShape4" type="CollisionShape" parent="." index="1"]
-visible = false
+[node name="CollisionShape4" type="CollisionShape" parent="Disabled" index="0"]
+transform = Transform( -1.62921e-07, 0, 1, 0, 1, 0, -1, 0, -1.62921e-07, 0, 0, 0 )
+shape = SubResource( 1 )
+
+[node name="CollisionShape6" type="CollisionShape" parent="Disabled" index="1"]
+transform = Transform( 0.505096, 0.734987, 0.452406, 0.775603, -0.156624, -0.61148, -0.378572, 0.659744, -0.649168, -20.0158, 26.0569, 16.2113 )
 shape = SubResource( 2 )
 
-[node name="CollisionShape" type="CollisionShape" parent="." index="2"]
-transform = Transform( 0.909482, -0.152909, -0.386602, -0.122918, 0.789434, -0.601403, 0.397156, 0.594486, 0.69918, -10.9262, -17.2684, 36.294 )
-visible = false
+[node name="CollisionShape7" type="CollisionShape" parent="Disabled" index="2"]
+transform = Transform( -0.0190009, -0.442282, 0.896674, -0.218482, 0.876998, 0.427947, -0.975656, -0.187775, -0.113294, 7.75202, -59.3596, -121.932 )
 shape = SubResource( 3 )
 
-[node name="CollisionShape2" type="CollisionShape" parent="." index="3"]
-transform = Transform( 0.176773, -0.601181, 0.779315, 0.613707, 0.686343, 0.390252, -0.76949, 0.409285, 0.490276, 50.1874, -3.79089, 53.5988 )
-visible = false
+[node name="CollisionShape5" type="CollisionShape" parent="Disabled" index="3"]
+transform = Transform( 0.667988, -0.264479, 0.695587, 0, 0.934714, 0.355401, -0.744172, -0.237403, 0.624378, -19.3764, -57.1178, -29.6184 )
 shape = SubResource( 4 )
 
-[node name="CollisionShape5" type="CollisionShape" parent="." index="4"]
-transform = Transform( 0.744172, 0.237403, -0.624378, 0, 0.934714, 0.355401, 0.667988, -0.264479, 0.695587, 29.6184, -57.1178, -19.3764 )
-visible = false
+[node name="CollisionShape2" type="CollisionShape" parent="Disabled" index="4"]
+transform = Transform( -0.76949, 0.409285, 0.490276, 0.613707, 0.686343, 0.390252, -0.176773, 0.601181, -0.779315, 53.5988, -3.79089, -50.1874 )
 shape = SubResource( 5 )
 
-[node name="CollisionShape6" type="CollisionShape" parent="." index="5"]
-transform = Transform( 0.378572, -0.659744, 0.649168, 0.775603, -0.156624, -0.61148, 0.505096, 0.734987, 0.452406, -6.13566, 16.5662, -12.9941 )
-visible = false
+[node name="CollisionShape" type="CollisionShape" parent="Disabled" index="5"]
+transform = Transform( 0.397156, 0.594486, 0.69918, -0.122918, 0.789434, -0.601403, -0.909482, 0.152909, 0.386602, 36.294, -17.2684, 10.9262 )
 shape = SubResource( 6 )
 
-[node name="CollisionShape7" type="CollisionShape" parent="." index="6"]
-transform = Transform( 0.975656, 0.187775, 0.113294, -0.218482, 0.876998, 0.427947, -0.0190007, -0.442282, 0.896674, 121.932, -59.3596, 7.75204 )
+[node name="Sphere" type="CollisionShape" parent="ObstaclePresence/ObstacleSilhouette" index="0"]
 visible = false
 shape = SubResource( 7 )
+disabled = true
 
-[node name="MeshCollisionShape" type="CollisionShape" parent="." index="7"]
+[node name="MeshCollisionShape" type="CollisionShape" parent="." index="2"]
 script = ExtResource( 4 )
 mesh_node_path = NodePath("../Mesh/rock000")
 
-[node name="Mesh" parent="." index="8" instance=ExtResource( 2 )]
+[node name="Mesh" parent="." index="3" instance=ExtResource( 2 )]
 
 [node name="rock000" parent="Mesh" index="0"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.249359, 0, -1.21474 )
 material_override = SubResource( 8 )
 
 [editable path="Mesh"]

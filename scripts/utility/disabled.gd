@@ -6,3 +6,5 @@ class_name Disabled
 func _enter_tree() -> void:
 	for child in get_children():
 		remove_child(child);
+		child.queue_free();
+	queue_free();

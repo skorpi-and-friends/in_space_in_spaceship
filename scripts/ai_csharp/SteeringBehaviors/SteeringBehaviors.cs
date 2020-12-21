@@ -87,36 +87,37 @@ namespace ISIS.Minds.SteeringBehaviors {
 		/// <summary>
 		/// 	Obstacle avoidance behavior  on Sebastian Lague's solution.
 		/// 	https://github.com/SebLague/Boids
-		/// 	Will cast rays that are in an increasing angular difference with
-		/// 	the velocity vector till a non obstracted direction is found and moves
-		/// 	in that direction.
+		/// 	Will cast rays that are in an increasing angular difference from the castRoot direction
+		///     till a non obstracted direction is found and moves in that direction.
 		/// </summary>
+		/// <param name="castRoot">
+		/// 	Direction from which to sweep outwards from to find a non obstucted one.
+		/// </param>
 		/// <param name="castForObstruction">
 		/// 	A lambda that'll raycast and return wether it hit something or not.
 		/// 	bool castForObstruction(Vector3 from, Vector3 to).
 		/// 	Handle the collisionMask and exclusion in the lambda yourself.
 		/// </param>
-		/// <param name="raycastDistanceAdjustment">
-		/// 	Will be added to the raycast distance. Use it to adjust for craft
-		/// 	size.
-		/// </param>
 		public static Vector3 AvoidObstacleSebLague(
-			Vector3 currentVelocity,
+			Vector3 castRoot,
+			Real raycastDistance,
 			Func<Vector3, Vector3, bool> castForObstruction,
 			Transform currentTransform,
-			Real raycastDistanceAdjustment = 0
+			Node node = null
 		) {
 			var currentPosition = currentTransform.origin;
-			var raycastDistance = currentVelocity.Length() + raycastDistanceAdjustment;
 
-			var globalVelocity = currentTransform.TransformPoint(currentVelocity);
-			// since we'll be testing from the velocity vector outwards (not the forward vector)
+			// since we'll be testing from the castRoot vector outwards (not the forward vector)
 			// we can't use the object's transform
-			var transformer = new Transform(BasisFacingDirection(globalVelocity), currentPosition);
+			var transformer = new Transform(BasisFacingDirection(castRoot), currentPosition);
 
 			Vector3[] rayDirections = BoidHelper.directions;
 			for (int i = 0; i < BoidHelper.DirectionCount; i++) {
 				var dir = transformer.TransformDirection(rayDirections[i]);
+#if DEBUG 
+				// node?.DebugDraw().Call("draw_line_3d", currentPosition, flockAverageCenter, new Color(1, 1, 0));
+				node?.DebugDraw().Call("draw_ray_3d", currentPosition, dir, raycastDistance, Colors.Pink);
+#endif
 				if (!castForObstruction(currentPosition, dir * raycastDistance)) {
 					return dir;
 				}
@@ -173,7 +174,9 @@ namespace ISIS.Minds.SteeringBehaviors {
 				return SeekPosition(currentPosition, target);
 			}
 		}
-		/* public static Vector3 StayOnPath(
+
+		// TODO: test this
+		public static Vector3 StayOnPath(
 			Vector3 currentPosition,
 			Vector3 currentVelocity,
 			Real requredProximity,
@@ -181,7 +184,7 @@ namespace ISIS.Minds.SteeringBehaviors {
 			Real predictionTime
 		) {
 			// predict our future position
-			var futurePosition = currentPosition + predictionTime * currentVelocity;
+			var futurePosition = currentPosition + (predictionTime * currentVelocity);
 
 			var onPath = closestPointOnPathToPoint(futurePosition);
 
@@ -197,7 +200,8 @@ namespace ISIS.Minds.SteeringBehaviors {
 				// as seek target
 				return SeekPosition(currentPosition, onPath);
 			}
-		} */
+		}
+
 		/// <summary>
 		/// Assumes the craft is in the flock.
 		/// </summary>

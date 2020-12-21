@@ -10,7 +10,7 @@ using Real = System.Single;
 
 namespace ISIS {
     public static class BoidHelper {
-        public const int DirectionCount = 300;
+        public const int DirectionCount = 100;
         public static readonly Vector3[] directions;
 
         static BoidHelper() {
