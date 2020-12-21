@@ -40,7 +40,7 @@ func _process(_delta: float) -> void:
 
 func _format_vector_for_display(vector: Vector3,label: RichTextLabel, prefix: String, postfix:String):
 	label.clear();
-	label.append_bbcode("[code]");
+	assert(label.append_bbcode("[code]") == OK);
 	label.add_text(prefix);
 	label.add_text(": ");
 	color_vector_for_RichLabel(vector, label);

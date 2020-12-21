@@ -1,106 +1,223 @@
 using Godot;
-using GreenBehaviors;
-using GreenBehaviors.Composite;
 using GreenBehaviors.Decorator;
-using GreenBehaviors.LeafLambda;
+using ISIS.Minds.SteeringBehaviors;
 using static ISIS.Static;
+
+#if GODOT_Real_IS_DOUBLE
+using Real = System.Double;
+#else
+using Real = System.Single;
+#endif
+
 // using SteeringRoutineResult = System.ValueTuple<Godot.Vector3, Godot.Vector3, string>;
 
 namespace ISIS.Minds {
-    // KEEP THIS CLASS SIMPLE BOYO
-    public partial class CraftMind : Godot.Node {
-        public RigidBody Craft => GetParent<RigidBody>();
-        public Boid Presence => GetNode<Boid>("../Boid");
+	// KEEP THIS CLASS SIMPLE BOYO
+	public partial class CraftMind : Godot.Node {
+		public RigidBody Craft => GetParent<RigidBody>();
+		public Boid Presence => GetNode<Boid>("../Boid");
 #if DEBUG
-        [Export] public string ActiveRoutineDesc;
+		[Export] public string ActiveRoutineDesc = "NO ACTIVE ROUTINE";
 #endif
-        public ScanPresence Target { get; set; }
-        public SteeringRoutine ActiveRoutine { get; set; }
+		[Export] public bool EnableAutoPilot { get; set; } = true;
+		public ScanPresence Target { get; set; }
+		public SteeringRoutineClosure ActiveRoutine { get; set; }
+		// public SteeringRoutineClosure SurvivalRoutine { get; set; }
 
-        public override void _Process(float delta) {
-            base._Process(delta);
-            if (ActiveRoutine != null) {
-                var state = GetCraftState(Craft);
-                var(linearInput, angularInput) = ActiveRoutine.Invoke(Craft.GlobalTransform, state);
-                state.SetCraftInput(linearInput, angularInput);
-            }
-        }
+		public async override void _Ready() {
+			base._Ready();
+			await ToSignal(GetTree(), "idle_frame");
+			// SurvivalRoutine = SteeringRoutines.AvoidObstacleSebLagueRay(Craft, GetCraftExtents(Craft));
+			// SurvivalRoutine = SteeringRoutines.AvoidObstacle(Craft);
+		}
 
-        public virtual void DisableAutoPilot() {
+		public override void _PhysicsProcess(float delta) {
+			base._Process(delta);
+			if (EnableAutoPilot) {
+				var state = GetCraftState(Craft);
+				var currentTransform = Craft.GlobalTransform;
+
+				var(linearInput, angularInput) = ActiveRoutine?.Invoke(currentTransform, state) ?? (Vector3.Zero, Vector3.Zero);
+#if DEBUG 
+				// GD.Print($"linear input: {linearInput}");
+				// this.DebugDraw().Call("draw_line_3d", currentPosition, flockAverageCenter, new Color(0, 1, 0));
+				this.DebugDraw().Call("draw_line_3d", Craft.GlobalTranslation(), currentTransform.origin + (linearInput * state.LinearVLimit), new Color(1, 1, 0));
+				this.DebugDraw().Call("draw_line_3d", Craft.GlobalTranslation(), currentTransform.TransformPoint(state.LinearVelocty), new Color(0, 1, 1));
+#endif
+				linearInput = currentTransform.TransformVectorInv(linearInput) * state.LinearVLimit;
+				state.SetCraftInput(linearInput, angularInput);
+			}
+		}
+
+		public virtual void RemoveActiveRoutine() {
 #if DEBUG
-            ActiveRoutineDesc = $"NO ACTIVE ROUTINE";
+			ActiveRoutineDesc = "NO ACTIVE ROUTINE";
 #endif
-            ActiveRoutine = null;
-        }
+			ActiveRoutine = null;
+			// ActiveRoutine = SteeringRoutines.GetSurvivalRoutine(
+			// 	Craft,
+			// 	GetCraftExtents(Craft)
+			// );
+		}
 
-        public virtual void InterceptSetTarget() {
-            if (Target == null) {
-                return;
-            }
+		public virtual void InterceptSetTarget() {
+			if (Target == null) {
+				return;
+			}
 #if DEBUG
-            ActiveRoutineDesc = $"Intercepting Target {Target.Name}";
+			ActiveRoutineDesc = $"Intercepting Target {Target.Name}";
 #endif
-            ActiveRoutine = SteeringRoutines.InterceptRoutine(Target);
-        }
-        public virtual void EliminateSetTarget(in DecoratorNode craftInputRoutineWrapper) {
-            if (Target == null) {
-                return;
-            }
+			ActiveRoutine = SteeringRoutines.LookWhereYouGoRoutineComposer(
+				SteeringRoutines.SurvivalRoutineComposer(
+					SteeringRoutines.InterceptRoutine(Target),
+					Craft,
+					GetCraftExtents(Craft)
+				)
+			);
+		}
+
+		public virtual void EliminateSetTarget(in DecoratorNode craftInputRoutineWrapper) {
+			if (Target == null) {
+				return;
+			}
 #if DEBUG
-            ActiveRoutineDesc = $"Eliminating Target {Target.Name}";
+			ActiveRoutineDesc = $"Eliminating Target {Target.Name}";
 #endif
-            ActiveRoutine = SteeringRoutines.AttackPersueRoutineClosure(in craftInputRoutineWrapper,
-                Craft,
-                Target
-            );
-        }
-        public virtual void FollowPath(Path path) {
+			ActiveRoutine = SteeringRoutines.SurvivalRoutineComposer(
+				SteeringRoutines.AttackPersueRoutineClosure(in craftInputRoutineWrapper,
+					Craft,
+					Target
+				),
+				Craft,
+				GetCraftExtents(Craft)
+			);
+		}
+
+		public virtual void FollowPath(Path path) {
 #if DEBUG
-            ActiveRoutineDesc = $"Following Path {path}";
+			ActiveRoutineDesc = $"Following Path {path.Name}";
 #endif
-            ActiveRoutine = SteeringRoutines.FollowPathRoutine(path);
-        }
-    }
+			ActiveRoutine = SteeringRoutines.LookWhereYouGoRoutineComposer(
+				SteeringRoutines.SurvivalRoutineComposer(
+					SteeringRoutines.FollowPathRoutine(path),
+					Craft,
+					GetCraftExtents(Craft)
+				)
+			);
+		}
 
-    #region UTILITITES
-    public partial class CraftMind {
-        public static(bool, CraftMind) IsMindfulCraft(object instance) {
-            var(isCraftMaster, craft) = IsCraftMaster(instance);
-            if (!isCraftMaster) {
-                return (false, null);
-            }
-            return IsMindful(craft);
-        }
+		/// <summary>
+		/// Does not add itself into flock.
+		/// </summary>
+		public virtual void FlyWithFlock(SteeringBehaviors.Boids.Flock flock) {
+#if DEBUG
+			ActiveRoutineDesc = $"Flying With FLock {flock.Name}";
+#endif
+			/* ActiveRoutine = SteeringRoutines.LookWhereYouGoRoutineComposer(
+				SteeringRoutines.SurvivalRoutineComposer(
+					SteeringRoutines.Cohesion(flock),
+					Craft,
+					GetCraftExtents(Craft)
+				)
+			); */
 
-        public static(bool, CraftMind) IsMindful(RigidBody craft) {
-            var mind = craft.GetNodeOrNull<CraftMind>("Mind");
-            if (mind == null) {
-                return (false, null);
-            }
-            return (true, mind);
-        }
+			ActiveRoutine = SteeringRoutines.LookWhereYouGoRoutineComposer(
+				// SteeringRoutines.LinearAngularRoutineComposer(
+				SteeringRoutines.WeightedRoutineComposer(
+					(SteeringRoutines.Cohesion(flock), 1),
+					(SteeringRoutines.Alignment(flock), 1),
+					(SteeringRoutines.Separation(flock), 10)
+				) //,
+				// SteeringRoutines.LinearToAngularConverter(SteeringRoutines.Alignment(flock))
+				// ),
+				// Craft,
+				// GetCraftExtents(Craft)
+			);
+		}
 
-        public static(bool, RigidBody) IsCraftMaster(object instance) {
-            if (!(instance is Godot.RigidBody godotObject))
-                return (false, null);
+		/// <summary>
+		/// Does not add itself into flock.
+		/// </summary>
+		public virtual void FollowPathInFlock(SteeringBehaviors.Boids.Flock flock, Path path) {
+#if DEBUG
+			ActiveRoutineDesc = $"Following Path {path.Name} in flock {flock.Name}";
+#endif
+			var rids = flock.RIDs;
+			rids.Remove(Craft.GetRid());
+			ActiveRoutine = SteeringRoutines.LookWhereYouGoRoutineComposer(
+				SteeringRoutines.SurvivalRoutineComposer(
+					SteeringRoutines.WeightedRoutineComposer(
+						(SteeringRoutines.FollowPathRoutine(path, requirePathProximityMeters : 50), 1),
+						(SteeringRoutines.Cohesion(flock), 1),
+						(SteeringRoutines.Alignment(flock), 1),
+						(SteeringRoutines.Separation(flock), 10)
+					),
+					// SteeringRoutines.LinearToAngularConverter(SteeringRoutines.Alignment(flock))
+					// ),
+					Craft,
+					GetCraftExtents(Craft),
+					obstacleExculsionList : rids
+				)
+			);
+		}
+	}
 
-            var craftMasterScript = GD.Load<GDScript>("res://scripts/crafts/craft_master.gd");
-            if (!Static.IsInstanceOfGDScript(godotObject, craftMasterScript))
-                return (false, null);
+	#region UTILITIES
+	public partial class CraftMind {
+		public static(bool, CraftMind) IsMindfulCraft(object instance) {
+			var(isCraftMaster, craft) = IsCraftMaster(instance);
+			if (!isCraftMaster) {
+				return (false, null);
+			}
+			return IsMindful(craft);
+		}
 
-            return (true, godotObject);
-        }
+		public static(bool, CraftMind) IsMindful(RigidBody craft) {
+			var mind = craft.GetNodeOrNull<CraftMind>("Mind");
+			if (mind == null) {
+				return (false, null);
+			}
+			return (true, mind);
+		}
 
-        /// <summary>
-        /// Assumes passed craft is already verified to be a craft
-        /// </summary>
-        public static CraftStateWrapper GetCraftState(Godot.Object craft) {
-            return new CraftStateWrapper((Godot.Object) ((Godot.Object) craft.Get("engine")).Get("state"));
-        }
+		public static(bool, RigidBody) IsCraftMaster(object instance) {
+			if (!(instance is RigidBody godotObject))
+				return (false, null);
 
-        public static void FirePrimaryWeapons(Godot.Object craft) {
-            ((Godot.Object) craft.Get("arms")).Call("activate_primary");
-        }
-    }
-    #endregion
+			var craftMasterScript = GD.Load<GDScript>("res://scripts/crafts/craft_master.gd");
+			if (!IsInstanceOfGDScript(godotObject, craftMasterScript))
+				return (false, null);
+
+			return (true, godotObject);
+		}
+
+		/// <summary>
+		/// Assumes passed craft is already verified to be a craft
+		/// </summary>
+		public static CraftStateWrapper GetCraftState(Godot.Object craft) {
+			var engine = (Object) craft.Get("engine");
+			if (engine == null) {
+				var(isCraft, _) = IsCraftMaster(craft);
+				GD.Print($"is {(craft as Godot.Node)?.Name} a craftMaster: {isCraft}");
+				GD.Print($"does it have sire_craft: {craft.Get("sire_craft") != null}");
+				GD.Print($"does it have arms: {craft.Get("arms") != null}");
+				GD.Print($"does it have attires: {craft.Get("attires") != null}");
+				GD.Print($"does it have mother: {craft.Get("mother") != null}");
+				GD.Print($"script: {craft.GetScript()}");
+				GD.Print($"craft_master_child script: {GD.Load<GDScript>("res://scripts/crafts/craft_master_child.gd")}");
+				(craft as Godot.Node)?.PrintTreePretty();
+			}
+			return new CraftStateWrapper((Godot.Object) engine.Get("state"));
+		}
+
+		public static Vector3 GetCraftExtents(Godot.Object craft) {
+			var engine = (Godot.Object) craft.Get("engine");
+			return (Vector3) engine.Get("craft_extents");
+		}
+
+		public static void FirePrimaryWeapons(Godot.Object craft) {
+			((Godot.Object) craft.Get("arms")).Call("activate_primary");
+		}
+	}
+	#endregion
 }

@@ -18,9 +18,12 @@ var factory_integrity := 0.0;
 var recovery_rate := 0.0;
 
 func _ready():
+	# disable collision
 	collision_mask = 0;
+	
 	assert(connect("area_entered",self,"on_entered") == OK);
 	assert(connect("body_entered",self,"on_entered") == OK);
+	
 	for child in get_children():
 		if child is Attire:
 			members.append(child);

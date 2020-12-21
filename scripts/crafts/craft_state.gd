@@ -1,6 +1,7 @@
 extends Node
 
 class_name CraftState
+
 # Linear velocity in local-space.
 # In m/s.
 export var linear_velocity: Vector3

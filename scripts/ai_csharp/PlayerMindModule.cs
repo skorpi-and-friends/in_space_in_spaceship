@@ -1,7 +1,7 @@
 using System;
 using Godot;
 
-namespace ISIS {
+namespace ISIS.Minds {
     public interface IPlayerMindModule {
         RigidBody active_craft { get; set; }
         Godot.Node player_mind { get; set; }

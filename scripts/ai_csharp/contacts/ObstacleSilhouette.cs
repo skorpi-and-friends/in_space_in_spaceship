@@ -7,24 +7,25 @@ using Real = System.Double;
 using Real = System.Single;
 #endif
 
-namespace ISIS {
-    public class ObstacleSilhouette : Area {
-        public ObstaclePresence Presence { get; private set; }
+namespace ISIS.Minds {
+	public class ObstacleSilhouette : Area {
+		public const int CollisionSillhoeteLayer = 1 << 5;
+		public ObstaclePresence Presence { get; private set; }
 
-        [Export] public Real Radius { get; private set; }
-        private CollisionShape _collisionSphere;
+		[Export] public Real Radius { get; private set; }
+		private CollisionShape _collisionSphere;
 
-        public override void _EnterTree() {
-            base._EnterTree();
-            _collisionSphere = GetNode<CollisionShape>("Sphere");
-            System.Diagnostics.Debug.Assert(_collisionSphere != null);
+		public override void _EnterTree() {
+			base._EnterTree();
+			_collisionSphere = GetNode<CollisionShape>("Sphere");
+			System.Diagnostics.Debug.Assert(_collisionSphere != null);
 
-            Radius = ((SphereShape) _collisionSphere.Shape).Radius;
-        }
-        public override void _Ready() {
-            base._Ready();
-            Presence = GetParent<ObstaclePresence>();
-            System.Diagnostics.Debug.Assert(Presence != null);
-        }
-    }
+			Radius = ((SphereShape) _collisionSphere.Shape).Radius;
+		}
+		public override void _Ready() {
+			base._Ready();
+			Presence = GetParent<ObstaclePresence>();
+			System.Diagnostics.Debug.Assert(Presence != null);
+		}
+	}
 }

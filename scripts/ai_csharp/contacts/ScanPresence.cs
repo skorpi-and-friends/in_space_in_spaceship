@@ -1,7 +1,7 @@
 using System;
 using Godot;
 
-namespace ISIS {
+namespace ISIS.Minds {
     public class ScanPresence : Spatial {
         public override void _EnterTree() {
             Name = GetParent().Name; // inherit parent's name

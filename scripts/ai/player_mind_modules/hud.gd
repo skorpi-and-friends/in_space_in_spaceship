@@ -11,8 +11,8 @@ var _boid_contact_indicators := {};
 var velocity_direction_marker := velocity_direction_marker_scene.instance() as Control;
 var _target_indicator := target_indicator_scene.instance() as TargetIndicator;
 
-onready var _master_mind:Node = get_tree().get_nodes_in_group("MasterMind")[0];
-onready var _submindModule := get_node("../SubMind");
+onready var _master_mind:=get_tree().get_nodes_in_group("MasterMind")[0] as Node;
+onready var _submind_module := get_node("../SubMind") as Node;
 
 # FIXME: find a sane number for these
 const boid_indicator_pool_size := 9999;
@@ -29,8 +29,15 @@ var _aim_indicator_pool := ObjectPool.new_pool(
 	ObjectPool.Policy.SoftLimited);
 
 func _ready() -> void:
+#	if !_submind_module:
+#		queue_free();
+#		return;
+#	var master_minds = get_tree().get_nodes_in_group("MasterMind");
+#	if len(master_minds) == 0:
+#		return;
+#	_master_mind = master_minds[0];
 	assert(_master_mind);
-	assert(_submindModule);
+	assert(_submind_module);
 	
 	Globals.game_world_hud.add_child(velocity_direction_marker);
 	
@@ -90,7 +97,7 @@ func add_indicator(contact: Spatial,
 	Globals.game_world_hud.add_child(indicator);
 	indicator.initialize(target, _aim_indicator_pool, active_craft);
 	if !~relationship:
-		relationship = _submindModule.AssessRelationship(contact);
+		relationship = _submind_module.AssessRelationship(contact);
 	match relationship:
 		Relationship.Stance.Neutral: 
 			pass;

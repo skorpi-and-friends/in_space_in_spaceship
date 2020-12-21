@@ -2,6 +2,9 @@
 
 ## To-do
 
+- [ ] Fix cockpit world displays
+- [ ] Find a way to profile C# scripts
+- [ ] Move current HUD PlayerMindModule functionality to Targeting
 - [X] Craft Tracker HUD
 - [ ] Collision Avoidance AI
 - [ ] Turrets
@@ -55,6 +58,9 @@
 - [ ] Basic Level
 
 - [ ] Skybox
+
+- [ ] UI
+  - [ ] Sensetivity goes down if target is in reticule
 
 - [ ] HUD
   - [x] Simple Target Tracker
@@ -264,3 +270,89 @@ The acceleration limit seems to be errenous on the larger craft but works observ
 ### Underscore prefixes on private gdscript functions
 
 Only just noticed this style guide. Damn.
+
+### SteerinRoutine outputs
+
+Currently, the `SteeringRoutines` return two values: 
+
+- `AngularInput`: angular velocity for the craft to maitain
+- `LinearInput`: linear velocity the for craft to maintain _as a fraction of `LinearVLimit`_
+
+The decision to use fractions for the `LinearInput` was made at a vain attempt to make them more pure (vain, since they're far from pure in all other aspects) and imagined gains in combining results from multiple `Routines`. The method most used to calculate `AngularInput`, on the other hand, returns concrete velocity values and convering that to a fraction of `LinearVLimit` only to convert it back...feels silly.
+
+### Cockpit World Displays
+
+The viewport textured meshes used to implement the velocity/weapon display screens and the camera screens inside the *cockpit world* aren't working. Most strange is that these screens work when in the immersive cockpit mode (which only cut pastes the nodes into the craft into the *game world* (at runtime non the less)). The only difference beteween the two cases as I see it is they reside in different Worlds and Viewports and they use two different cameras. I can't find any valid difference in how these nodes are set up in the *cockpit world* or *game world*.
+
+What's more, the screens work sometimes. When the running window is in some dimensions (in patterns I can't figure out), the screens flicker on and off implying they're drwaing correctly in some rames. There were also instances where toggling visiblity of some objects in the Remote Node tree seems to fix the problem. Nodes located in the cockpit world specifically. I was unable to duplicate this effect after the first few times.
+
+First suspect is the Godot 3.2.3 update since the screens don't work on previous commits either. But then, if I'm not mistaken, I remember the screens working during the first few weeks after I updated it.
+
+Another suspect is the .NET 5.0 SDK I'm using to compile it. I haven't tested the game after the update. But then, the scripts related to the issues are written `gdscript`.
+
+### Combining SteeringBehaviours
+
+I tried the following schemes to combine AvoidObstacle and PathFollow:
+
+- Use multipliers to give AvoidObstacle 10x strength
+- Ignore PathFollow if AvoidObstacle output is not zero
+
+And they don't really work. They struggle with some obstacles and crash into them face forward (or sidewards sometimes).
+
+### Hullcast
+
+The following errors messages fill the prompt (but it doesn't throw an exception/tear down the program) tanking the frame rate.
+
+```c++
+E 0:01:04.789   rest_info: Condition "!shape" is true. Returned: false
+  <C++ Source>  modules/bullet/space_bullet.cpp:255 @ rest_info()
+  <Stack Trace> :0 @ IntPtr Godot.NativeCalls.godot_icall_1_632(IntPtr , IntPtr , IntPtr )()
+                PhysicsDirectSpaceState.cs:100 @ Godot.Collections.Dictionary Godot.PhysicsDirectSpaceState.GetRestInfo(Godot.PhysicsShapeQueryParameters )()
+                HullCast.cs:54 @ System.ValueTuple`2[System.Boolean,System.Nullable`1[ISIS.HullCastResult]] ISIS.HullCast.Cast(Godot.PhysicsShapeQueryParameters , Godot.Vector3 , Godot.PhysicsDirectSpaceState )()
+                AvoidObstacle.cs:203 @ Godot.Vector3 ISIS.Minds.SteeringBehaviors.SteeringRoutines+<>c__DisplayClass6_0.<AvoidObstacleSebLague>b__1(Godot.Transform , ISIS.CraftStateWrapper )()
+                SteeringRoutines.cs:87 @ Godot.Vector3 ISIS.Minds.SteeringBehaviors.SteeringRoutines+<>c__DisplayClass18_0.<FirstPriorityRoutineComposer>b__0(Godot.Transform , ISIS.CraftStateWrapper )()
+                SteeringRoutines.cs:127 @ System.ValueTuple`2[Godot.Vector3,Godot.Vector3] ISIS.Minds.SteeringBehaviors.SteeringRoutines+<>c__DisplayClass21_0.<LookWhereYouGoRoutineComposer>b__0(Godot.Transform , ISIS.CraftStateWrapper )()
+                CraftMind.cs:36 @ void ISIS.Minds.CraftMind._Process(Single )()
+
+E 0:01:04.797   get: Condition "!id_map.has(p_rid.get_data())" is true. Returned: __null
+  <C++ Source>  ./core/rid.h:150 @ get()
+  <Stack Trace> :0 @ IntPtr Godot.NativeCalls.godot_icall_2_676(IntPtr , IntPtr , IntPtr , Godot.Vector3& )()
+                PhysicsDirectSpaceState.cs:69 @ Godot.Collections.Array Godot.PhysicsDirectSpaceState.CastMotion(Godot.PhysicsShapeQueryParameters , Godot.Vector3 )()
+                HullCast.cs:45 @ System.ValueTuple`2[System.Boolean,System.Nullable`1[ISIS.HullCastResult]] ISIS.HullCast.Cast(Godot.PhysicsShapeQueryParameters , Godot.Vector3 , Godot.PhysicsDirectSpaceState )()
+                AvoidObstacle.cs:203 @ Godot.Vector3 ISIS.Minds.SteeringBehaviors.SteeringRoutines+<>c__DisplayClass6_0.<AvoidObstacleSebLague>b__1(Godot.Transform , ISIS.CraftStateWrapper )()
+                SteeringRoutines.cs:87 @ Godot.Vector3 ISIS.Minds.SteeringBehaviors.SteeringRoutines+<>c__DisplayClass18_0.<FirstPriorityRoutineComposer>b__0(Godot.Transform , ISIS.CraftStateWrapper )()
+                SteeringRoutines.cs:127 @ System.ValueTuple`2[Godot.Vector3,Godot.Vector3] ISIS.Minds.SteeringBehaviors.SteeringRoutines+<>c__DisplayClass21_0.<LookWhereYouGoRoutineComposer>b__0(Godot.Transform , ISIS.CraftStateWrapper )()
+                CraftMind.cs:36 @ void ISIS.Minds.CraftMind._Process(Single )()
+```
+
+Investigate.
+
+### Why does the obstacle avoidance suck?
+
+After trying multiple implementations of `AvoidObstacle` and 2 ways of *combining* it with the other routines, the boids things still fly face first into some of the obstacles. What's more, in most of the current implementations, the boids get stuck if they collide into a large obstacle in their way, the behaviors unable to determine their way around as if are shell shocked at their very much expected failure.
+
+One main issue facing it right now is how the Godot raycast implementation doesn't detect the obstacle if the raycast origin is inside it. In one of the `AvoidObstacle` implementations, we use separately set up collision shapes (usually spherical and on a different layer) to cover the obstacles. If the shape isn't tightfitting, the boid can find itself inside it and unable to detect the obstacle even though it's grinding up against it in the *true* collision layer.
+
+Things to try:
+- raycast with whiskers
+- cast (probe for obstacle ) in forward + velocity directions
+- use a separate behavior that moves away from any nearby obstacles (as opposed to one in velocity direction) and blend the two
+- cast previous input + velocity direction
+- persist avoidance for few frames after trigger
+- cast in direction main behavior want to go to
+
+---
+
+I have noticed that one of the main reasons it struggles is because the velocity direction changes too quickly/easily, especially as they slow down when they obstacle avoidance kicks in. The velocity is in the obstacle direction half the time (and the avoidance triggers) but it registers as danger free the other half as the craft powerful engines switftly obey the conflicting (and alternating) orders and that's (appears to be) how we end up crashing in half the time. 
+
+---
+
+Using the previous "frame's" input vector directions to probe for obstacles (as opposed to the velocity direction), we seem to arrive at a much better obstacle avoidance behavior. At least in the test setup I was using anyways (a path with obstacles). They still occasionally crash and get stuck and  I can already see a few tradeoffs and a few improvements but I'm going to try and improve other things first.
+
+---
+
+It's curious why using the previous "frame's" input vector to probe for obstacles works better. After all, if we had detected obstacles in the previous frame (and triggered obstacle avoidance), the input we'll observe in the current frame will not have obstacles in it's directions and thus bypassing obstacle avoidance and going to the behavior. A main behavior which will most likely want to go in obstacle's direction, triggering the avoidance the next frame. This cycle seems similar to the one where the velocity direction alternates between a free corridor and an obstacle and somehow it works better. Could it be it's because this cycle alternates per frame, as opposed to whatever length of time the craft engines can implement velocity direction change? 
+
+---
+
+The "probe in the pervious frame's input" approach seems to keep our boids out of collision most of the times but it has some big glaring issues that leave me unsatisfied. It still gets stuck (as describe above) in those seeminly rare instances it collides with our test asteroids. It also has horrible performance profile, needing to cast an ever increasing number of times *per frame* whenever it gets close to an obstacle. If it gets stuck, it casts until it's exhausted all the directions it's set to try (around 100 now but originally 300) every frame tanking the frame rate. It's horrible if we have multiple boids in play. With the numbers I plan to deploy later on, it almost makes want to give up this approach. How the hell did Sebastian Lague make it work?

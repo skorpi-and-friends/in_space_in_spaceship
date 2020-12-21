@@ -34,6 +34,7 @@ func _ready() -> void:
 	assert(len(_displays) > 0);
 	assert(_cockpit_core_nodes);
 	assert(_cockpit_world_nodes);
+	assert(Globals.viewport_master);
 
 
 # we can only use cockpits if the craft is setup for it

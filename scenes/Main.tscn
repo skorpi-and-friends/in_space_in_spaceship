@@ -1,61 +1,78 @@
-[gd_scene load_steps=10 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://scripts/viewport_master.gd" type="Script" id=1]
 [ext_resource path="res://scenes/crafts/cockpit.tscn" type="PackedScene" id=2]
 [ext_resource path="res://scenes/test_level.tscn" type="PackedScene" id=3]
 [ext_resource path="res://scenes/ui/craft_hud_universal.tscn" type="PackedScene" id=4]
-[ext_resource path="res://enviroments/default_env.tres" type="Environment" id=5]
+[ext_resource path="res://scripts/utility/disabled.gd" type="Script" id=5]
 
-[sub_resource type="Environment" id=1]
-
-[sub_resource type="World" id=2]
-environment = SubResource( 1 )
-
-[sub_resource type="CanvasItemMaterial" id=3]
+[sub_resource type="CanvasItemMaterial" id=1]
 light_mode = 1
 
-[sub_resource type="World" id=4]
-environment = ExtResource( 5 )
+[sub_resource type="Environment" id=2]
+
+[sub_resource type="World" id=3]
+environment = SubResource( 2 )
 
 [node name="Main" type="Node"]
 script = ExtResource( 1 )
 
-[node name="Cockpit" type="ViewportContainer" parent="."]
-anchor_right = 1.0
-anchor_bottom = 1.0
-stretch = true
-
-[node name="CockpitViewport" type="Viewport" parent="Cockpit"]
-size = Vector2( 1066, 600 )
-world = SubResource( 2 )
-handle_input_locally = false
-render_target_update_mode = 3
-audio_listener_enable_3d = true
-
-[node name="Cockpit" parent="Cockpit/CockpitViewport" instance=ExtResource( 2 )]
-
-[node name="Game" type="ViewportContainer" parent="."]
-material = SubResource( 3 )
+[node name="GameContainer" type="ViewportContainer" parent="."]
+material = SubResource( 1 )
 anchor_right = 1.0
 anchor_bottom = 1.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 stretch = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
-[node name="GameViewport" type="Viewport" parent="Game"]
+[node name="GameViewport" type="Viewport" parent="GameContainer"]
 size = Vector2( 1066, 600 )
-world = SubResource( 4 )
 handle_input_locally = false
 render_target_update_mode = 3
 audio_listener_enable_3d = true
 physics_object_picking = true
 
-[node name="TestLevel" parent="Game/GameViewport" instance=ExtResource( 3 )]
+[node name="TestLevel" parent="GameContainer/GameViewport" instance=ExtResource( 3 )]
 
-[node name="HUD" type="Control" parent="."]
+[node name="CockpitContainer" type="ViewportContainer" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+stretch = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="CockpitViewport" type="Viewport" parent="CockpitContainer"]
+size = Vector2( 1066, 600 )
+own_world = true
+world = SubResource( 3 )
+handle_input_locally = false
+render_target_update_mode = 3
+audio_listener_enable_3d = true
+physics_object_picking = true
+
+[node name="Cockpit" parent="CockpitContainer/CockpitViewport" instance=ExtResource( 2 )]
+
+[node name="AllWorldHud" type="CanvasLayer" parent="."]
+layer = 100
+
+[node name="HUD" type="Control" parent="AllWorldHud"]
 anchor_right = 1.0
 anchor_bottom = 1.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
-[node name="CraftInteface" parent="HUD" instance=ExtResource( 4 )]
+[node name="CraftInteface" parent="AllWorldHud/HUD" instance=ExtResource( 4 )]
+
+[node name="Disable" type="Spatial" parent="."]
+visible = false
+script = ExtResource( 5 )
+
+[node name="CockpitViewportLayer" type="CanvasLayer" parent="Disable"]
+layer = 50

@@ -37,6 +37,7 @@ func _init_from_config(config: CraftConfig):
 	_angular_pid.integrat_gain = Vector3.ONE * config.angular_integrat_gain;
 	_angular_pid.differential_gain = Vector3.ONE * config.angular_differential_gain;
 
+	
 # FIXME: this horrible coupling
 func _moi_changed(state: CraftState):
 	var max_torque := state.angular_thruster_torque * state.force_multiplier;

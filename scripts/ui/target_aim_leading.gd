@@ -14,7 +14,7 @@ func _ready() -> void:
 	assert(_marker);
 
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	if !target || !weapon:
 		_marker.visible = false;
 		return;
